@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\{DB, Schema};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 // Extiende roles de Spatie con metadatos de jerarquía y scope sin tocar su schema.
 // Relación 1:1 con roles — role_id es la PK (no hay id UUID separado).
@@ -21,8 +23,8 @@ return new class extends Migration
             $table->foreign('role_id')->references('id')->on('roles')->cascadeOnDelete();
         });
 
-        DB::statement("ALTER TABLE role_metadata ADD CONSTRAINT role_metadata_hierarchy_level_check
-            CHECK (hierarchy_level BETWEEN 1 AND 10)");
+        DB::statement('ALTER TABLE role_metadata ADD CONSTRAINT role_metadata_hierarchy_level_check
+            CHECK (hierarchy_level BETWEEN 1 AND 10)');
     }
 
     public function down(): void

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Database\Seeders;
@@ -21,18 +22,18 @@ class SoDExclusionsSeeder extends Seeder
     private function ensureSystemUser(): void
     {
         DB::table('users')->insertOrIgnore([
-            'id'                    => self::SYSTEM_USER_ID,
-            'email'                 => 'system@pharmacontrol.internal',
+            'id' => self::SYSTEM_USER_ID,
+            'email' => 'system@pharmacontrol.internal',
             // Hash inválido deliberado — esta cuenta nunca debe autenticarse
-            'password_hash'         => '$2y$12$SYSTEM.ACCOUNT.DO.NOT.LOGIN.xxxxxxxxxxxxxxxxxxxxxxxx',
-            'first_name'            => 'System',
-            'last_name'             => 'PharmaControl',
-            'status'                => 'INACTIVE',
-            'two_factor_enabled'    => false,
-            'must_change_password'  => false,
+            'password_hash' => '$2y$12$SYSTEM.ACCOUNT.DO.NOT.LOGIN.xxxxxxxxxxxxxxxxxxxxxxxx',
+            'first_name' => 'System',
+            'last_name' => 'PharmaControl',
+            'status' => 'INACTIVE',
+            'two_factor_enabled' => false,
+            'must_change_password' => false,
             'failed_login_attempts' => 0,
-            'created_at'            => now(),
-            'updated_at'            => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 
@@ -54,8 +55,8 @@ class SoDExclusionsSeeder extends Seeder
             DB::table('role_exclusions')->updateOrInsert(
                 ['role_a_id' => $roleAId, 'role_b_id' => $roleBId],
                 [
-                    'level'      => $exclusion['level'],
-                    'reason'     => $exclusion['reason'],
+                    'level' => $exclusion['level'],
+                    'reason' => $exclusion['reason'],
                     'created_by' => self::SYSTEM_USER_ID,
                     'created_at' => now(),
                 ]
@@ -68,76 +69,76 @@ class SoDExclusionsSeeder extends Seeder
     {
         return [
             [
-                'role_a'  => 'super-admin',
-                'role_b'  => 'branch-manager',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'super-admin es rol global exclusivo — no puede combinarse con roles de sucursal',
+                'role_a' => 'super-admin',
+                'role_b' => 'branch-manager',
+                'level' => 'ABSOLUTE',
+                'reason' => 'super-admin es rol global exclusivo — no puede combinarse con roles de sucursal',
             ],
             [
-                'role_a'  => 'super-admin',
-                'role_b'  => 'pharmacist',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'super-admin es rol global exclusivo',
+                'role_a' => 'super-admin',
+                'role_b' => 'pharmacist',
+                'level' => 'ABSOLUTE',
+                'reason' => 'super-admin es rol global exclusivo',
             ],
             [
-                'role_a'  => 'super-admin',
-                'role_b'  => 'cashier',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'super-admin es rol global exclusivo',
+                'role_a' => 'super-admin',
+                'role_b' => 'cashier',
+                'level' => 'ABSOLUTE',
+                'reason' => 'super-admin es rol global exclusivo',
             ],
             [
-                'role_a'  => 'super-admin',
-                'role_b'  => 'purchasing',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'super-admin es rol global exclusivo',
+                'role_a' => 'super-admin',
+                'role_b' => 'purchasing',
+                'level' => 'ABSOLUTE',
+                'reason' => 'super-admin es rol global exclusivo',
             ],
             [
-                'role_a'  => 'super-admin',
-                'role_b'  => 'auditor',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'super-admin es rol global exclusivo',
+                'role_a' => 'super-admin',
+                'role_b' => 'auditor',
+                'level' => 'ABSOLUTE',
+                'reason' => 'super-admin es rol global exclusivo',
             ],
             [
-                'role_a'  => 'cashier',
-                'role_b'  => 'auditor',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'El cajero no puede auditar sus propias transacciones',
+                'role_a' => 'cashier',
+                'role_b' => 'auditor',
+                'level' => 'ABSOLUTE',
+                'reason' => 'El cajero no puede auditar sus propias transacciones',
             ],
             [
-                'role_a'  => 'pharmacist',
-                'role_b'  => 'purchasing',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'Quien dispensa no puede aprobar las compras que dispensa',
+                'role_a' => 'pharmacist',
+                'role_b' => 'purchasing',
+                'level' => 'ABSOLUTE',
+                'reason' => 'Quien dispensa no puede aprobar las compras que dispensa',
             ],
             [
-                'role_a'  => 'cashier',
-                'role_b'  => 'purchasing',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'Previene fraude: el cajero no puede crear órdenes que él mismo procesaría',
+                'role_a' => 'cashier',
+                'role_b' => 'purchasing',
+                'level' => 'ABSOLUTE',
+                'reason' => 'Previene fraude: el cajero no puede crear órdenes que él mismo procesaría',
             ],
             [
-                'role_a'  => 'auditor',
-                'role_b'  => 'pharmacist',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'El auditor de dispensación no puede ser quien dispensa',
+                'role_a' => 'auditor',
+                'role_b' => 'pharmacist',
+                'level' => 'ABSOLUTE',
+                'reason' => 'El auditor de dispensación no puede ser quien dispensa',
             ],
             [
-                'role_a'  => 'auditor',
-                'role_b'  => 'cashier',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'El auditor de ventas no puede ser quien vende',
+                'role_a' => 'auditor',
+                'role_b' => 'cashier',
+                'level' => 'ABSOLUTE',
+                'reason' => 'El auditor de ventas no puede ser quien vende',
             ],
             [
-                'role_a'  => 'auditor',
-                'role_b'  => 'purchasing',
-                'level'   => 'ABSOLUTE',
-                'reason'  => 'El auditor de inventario no puede gestionar compras',
+                'role_a' => 'auditor',
+                'role_b' => 'purchasing',
+                'level' => 'ABSOLUTE',
+                'reason' => 'El auditor de inventario no puede gestionar compras',
             ],
             [
-                'role_a'  => 'branch-manager',
-                'role_b'  => 'auditor',
-                'level'   => 'RECOMMENDED',
-                'reason'  => 'El gerente no debería auditar sus propias operaciones de sucursal',
+                'role_a' => 'branch-manager',
+                'role_b' => 'auditor',
+                'level' => 'RECOMMENDED',
+                'reason' => 'El gerente no debería auditar sus propias operaciones de sucursal',
             ],
         ];
     }

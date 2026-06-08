@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\{DB, Schema};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 // TABLA APPEND-ONLY — el rol de BD de la app NO debe tener permisos UPDATE/DELETE.
 // Retención mínima 2 años (requisito regulatorio COFEPRIS).
@@ -38,9 +40,9 @@ return new class extends Migration
         DB::statement("ALTER TABLE audit_logs ADD CONSTRAINT audit_logs_status_check
             CHECK (status IN ('SUCCESS','FAILED','BLOCKED'))");
 
-        DB::statement("CREATE INDEX audit_logs_entity_id_partial_idx
+        DB::statement('CREATE INDEX audit_logs_entity_id_partial_idx
             ON audit_logs (entity_id)
-            WHERE entity_id IS NOT NULL");
+            WHERE entity_id IS NOT NULL');
     }
 
     public function down(): void

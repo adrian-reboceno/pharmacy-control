@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\{DB, Schema};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 // Extiende la tabla de Spatie model_has_roles con columnas de scope de sucursal
 // y trazabilidad de asignación. NO usar after() — PostgreSQL no lo soporta.
@@ -20,13 +22,13 @@ return new class extends Migration
             $table->foreign('assigned_by')->references('id')->on('users')->nullOnDelete();
         });
 
-        DB::statement("CREATE INDEX model_has_roles_branch_id_idx
+        DB::statement('CREATE INDEX model_has_roles_branch_id_idx
             ON model_has_roles (branch_id)
-            WHERE branch_id IS NOT NULL");
+            WHERE branch_id IS NOT NULL');
 
-        DB::statement("CREATE INDEX model_has_roles_expires_at_idx
+        DB::statement('CREATE INDEX model_has_roles_expires_at_idx
             ON model_has_roles (expires_at)
-            WHERE expires_at IS NOT NULL");
+            WHERE expires_at IS NOT NULL');
     }
 
     public function down(): void
