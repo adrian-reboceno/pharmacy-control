@@ -9,6 +9,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\PermissionRegistrar;
 
 /**
  * SuperAdminSeeder
@@ -39,10 +40,10 @@ class SuperAdminSeeder extends Seeder
 
     public function run(): void
     {
-        $email     = env('SUPER_ADMIN_EMAIL',      'admin@pharmaco.mx');
-        $password  = env('SUPER_ADMIN_PASSWORD',   'Ch4ng3M3_N0w!#2026');
+        $email = env('SUPER_ADMIN_EMAIL', 'admin@pharmaco.mx');
+        $password = env('SUPER_ADMIN_PASSWORD', 'Ch4ng3M3_N0w!#2026');
         $firstName = env('SUPER_ADMIN_FIRST_NAME', 'Super');
-        $lastName  = env('SUPER_ADMIN_LAST_NAME',  'Admin');
+        $lastName = env('SUPER_ADMIN_LAST_NAME', 'Admin');
 
         // ── 1. Crear o recuperar el usuario ───────────────────────────────────
         $user = DB::table('users')->where('email', $email)->first();
@@ -51,31 +52,31 @@ class SuperAdminSeeder extends Seeder
             $userId = Str::uuid()->toString();
 
             DB::table('users')->insert([
-                'id'                       => $userId,
-                'email'                    => $email,
-                'password_hash'            => Hash::make($password),
-                'first_name'               => $firstName,
-                'last_name'                => $lastName,
-                'phone'                    => null,
-                'status'                   => 'ACTIVE',
-                'two_factor_enabled'       => false,
-                'two_factor_secret'        => null,
+                'id' => $userId,
+                'email' => $email,
+                'password_hash' => Hash::make($password),
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'phone' => null,
+                'status' => 'ACTIVE',
+                'two_factor_enabled' => false,
+                'two_factor_secret' => null,
                 // must_change_password = true obliga a cambiar en el primer login.
                 // En producción dejar en true. Solo false para entornos de prueba.
-                'must_change_password'     => (bool) env('SUPER_ADMIN_SKIP_PASSWORD_CHANGE', false),
-                'password_changed_at'      => now(),
-                'failed_login_attempts'    => 0,
-                'locked_until'             => null,
-                'last_login_at'            => null,
-                'last_activity_at'         => null,
+                'must_change_password' => (bool) env('SUPER_ADMIN_SKIP_PASSWORD_CHANGE', false),
+                'password_changed_at' => now(),
+                'failed_login_attempts' => 0,
+                'locked_until' => null,
+                'last_login_at' => null,
+                'last_activity_at' => null,
                 // Email pre-verificado — el super-admin no necesita verificación de correo.
-                'email_verified_at'        => now(),
+                'email_verified_at' => now(),
                 'email_verification_token' => null,
-                'deleted_at'               => null,
+                'deleted_at' => null,
                 // El primer super-admin no tiene creador humano.
-                'created_by'               => null,
-                'created_at'               => now(),
-                'updated_at'               => now(),
+                'created_by' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             $this->command->info("✅ Usuario super-admin creado: {$email}");
@@ -87,36 +88,37 @@ class SuperAdminSeeder extends Seeder
 
         // ── 2. Asignar el rol super-admin ─────────────────────────────────────
         $role = Role::where('name', 'super-admin')
-                    ->where('guard_name', 'api')
-                    ->first();
+            ->where('guard_name', 'api')
+            ->first();
 
         if ($role === null) {
             $this->command->error(
-                '❌ Rol super-admin no encontrado. ' .
+                '❌ Rol super-admin no encontrado. '.
                 'Ejecuta RolesAndPermissionsSeeder primero.'
             );
+
             return;
         }
 
         // Verificar si ya tiene el rol asignado (idempotencia)
         $alreadyAssigned = DB::table('model_has_roles')
-            ->where('role_id',    $role->id)
+            ->where('role_id', $role->id)
             ->where('model_type', 'App\\Models\\User')
             ->where('model_uuid', $userId)
             ->exists();
 
         if (! $alreadyAssigned) {
             DB::table('model_has_roles')->insert([
-                'role_id'     => $role->id,
-                'model_type'  => 'App\\Models\\User',
-                'model_uuid'  => $userId,
+                'role_id' => $role->id,
+                'model_type' => 'App\\Models\\User',
+                'model_uuid' => $userId,
                 // branch_id = null: super-admin es rol global, sin scope de sucursal.
-                'branch_id'   => null,
+                'branch_id' => null,
                 // assigned_by = null: el sistema asigna el primer super-admin.
                 'assigned_by' => null,
                 'assigned_at' => now(),
                 // expires_at = null: sin expiración.
-                'expires_at'  => null,
+                'expires_at' => null,
             ]);
 
             $this->command->info('✅ Rol super-admin asignado correctamente.');
@@ -125,7 +127,7 @@ class SuperAdminSeeder extends Seeder
         }
 
         // ── 3. Limpiar caché de permisos Spatie ───────────────────────────────
-        app(\Spatie\Permission\PermissionRegistrar::class)
+        app(PermissionRegistrar::class)
             ->forgetCachedPermissions();
 
         // ── 4. Resumen en consola ─────────────────────────────────────────────
@@ -134,7 +136,7 @@ class SuperAdminSeeder extends Seeder
             ['Campo', 'Valor'],
             [
                 ['Email',     $email],
-                ['Password',  env('SUPER_ADMIN_PASSWORD') ? '*** (desde .env)' : $password . '  ⚠️  CAMBIAR en producción'],
+                ['Password',  env('SUPER_ADMIN_PASSWORD') ? '*** (desde .env)' : $password.'  ⚠️  CAMBIAR en producción'],
                 ['Rol',       'super-admin (nivel 10 — acceso total)'],
                 ['Status',    'ACTIVE'],
                 ['2FA',       'Desactivado — activar tras el primer login'],
@@ -145,7 +147,7 @@ class SuperAdminSeeder extends Seeder
         if (! env('SUPER_ADMIN_PASSWORD')) {
             $this->command->newLine();
             $this->command->warn(
-                '⚠️  IMPORTANTE: estás usando la contraseña por defecto.' . PHP_EOL .
+                '⚠️  IMPORTANTE: estás usando la contraseña por defecto.'.PHP_EOL.
                 '   Define SUPER_ADMIN_PASSWORD en .env antes de ejecutar en producción.'
             );
         }

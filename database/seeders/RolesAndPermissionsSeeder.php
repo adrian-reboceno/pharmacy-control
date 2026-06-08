@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Database\Seeders;
@@ -35,11 +36,11 @@ class RolesAndPermissionsSeeder extends Seeder
             DB::table('role_metadata')->updateOrInsert(
                 ['role_id' => $role->id],
                 [
-                    'display_name'    => $definition['display_name'],
+                    'display_name' => $definition['display_name'],
                     'hierarchy_level' => $definition['hierarchy_level'],
-                    'branch_scoped'   => $definition['branch_scoped'],
-                    'created_at'      => now(),
-                    'updated_at'      => now(),
+                    'branch_scoped' => $definition['branch_scoped'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -52,6 +53,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             if ($roleName === 'super-admin') {
                 $role->syncPermissions(Permission::where('guard_name', 'api')->get());
+
                 continue;
             }
 
@@ -113,12 +115,12 @@ class RolesAndPermissionsSeeder extends Seeder
     private function roleDefinitions(): array
     {
         return [
-            'super-admin'    => ['display_name' => 'Super Administrador',  'hierarchy_level' => 10, 'branch_scoped' => false],
+            'super-admin' => ['display_name' => 'Super Administrador',  'hierarchy_level' => 10, 'branch_scoped' => false],
             'branch-manager' => ['display_name' => 'Gerente de Sucursal',  'hierarchy_level' => 8,  'branch_scoped' => true],
-            'pharmacist'     => ['display_name' => 'Farmacéutico',         'hierarchy_level' => 6,  'branch_scoped' => true],
-            'cashier'        => ['display_name' => 'Cajero',               'hierarchy_level' => 4,  'branch_scoped' => true],
-            'purchasing'     => ['display_name' => 'Encargado de Compras', 'hierarchy_level' => 4,  'branch_scoped' => true],
-            'auditor'        => ['display_name' => 'Auditor',              'hierarchy_level' => 2,  'branch_scoped' => false],
+            'pharmacist' => ['display_name' => 'Farmacéutico',         'hierarchy_level' => 6,  'branch_scoped' => true],
+            'cashier' => ['display_name' => 'Cajero',               'hierarchy_level' => 4,  'branch_scoped' => true],
+            'purchasing' => ['display_name' => 'Encargado de Compras', 'hierarchy_level' => 4,  'branch_scoped' => true],
+            'auditor' => ['display_name' => 'Auditor',              'hierarchy_level' => 2,  'branch_scoped' => false],
         ];
     }
 

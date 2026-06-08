@@ -1,9 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\{DB, Schema};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 // Restricciones Static Separation of Duty (SSoD / RBAC2).
 // La exclusión es bidireccional; la BD almacena UNA sola fila por par.
@@ -32,8 +34,8 @@ return new class extends Migration
             $table->index('role_b_id');
         });
 
-        DB::statement("ALTER TABLE role_exclusions ADD CONSTRAINT role_exclusions_role_ids_check
-            CHECK (role_a_id <> role_b_id)");
+        DB::statement('ALTER TABLE role_exclusions ADD CONSTRAINT role_exclusions_role_ids_check
+            CHECK (role_a_id <> role_b_id)');
 
         DB::statement("ALTER TABLE role_exclusions ADD CONSTRAINT role_exclusions_level_check
             CHECK (level IN ('ABSOLUTE','RECOMMENDED'))");
