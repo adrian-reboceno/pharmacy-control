@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use PharmaControl\Auth\Domain\Exception\AccountLockedException;
 use PharmaControl\Auth\Domain\Exception\InvalidCredentialsException;
 use PharmaControl\Auth\Infrastructure\Middleware\Rbac2Middleware;
+use PharmaControl\Catalog\Categories\Domain\Exception\CategoryCycleException;
+use PharmaControl\Catalog\Categories\Domain\Exception\CategoryNotFoundException;
+use PharmaControl\Catalog\Categories\Domain\Exception\DuplicateCategorySlugException;
 use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotFoundException;
 use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotModifiableException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\DuplicateLaboratoryNameException;
@@ -37,6 +40,15 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(function (InvalidCredentialsException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage(), 'error' => 'INVALID_CREDENTIALS'], 401);
+        });
+        $exceptions->render(function (CategoryNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateCategorySlugException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (CategoryCycleException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'CYCLE_DETECTED'], 422);
         });
         $exceptions->render(function (LaboratoryNotFoundException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage()], 404);

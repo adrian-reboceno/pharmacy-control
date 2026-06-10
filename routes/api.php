@@ -11,9 +11,14 @@ use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Auth\SwitchRoleController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\ClassificationController;
 use App\Http\Controllers\Catalog\LaboratoryController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/v1/docs', function () {
+    return view('api-docs');
+});
 
 Route::prefix('v1/auth')->group(function (): void {
 
@@ -47,6 +52,14 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.laboratories.manage'])->
     Route::get('/laboratories/{id}', [LaboratoryController::class, 'show']);
     Route::put('/laboratories/{id}', [LaboratoryController::class, 'update']);
     Route::delete('/laboratories/{id}', [LaboratoryController::class, 'destroy']);
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.categories.manage'])->group(function (): void {
+    Route::get('/categories/tree',   [CategoryController::class, 'tree']);
+    Route::get('/categories/{id}',   [CategoryController::class, 'show']);
+    Route::post('/categories',        [CategoryController::class, 'store']);
+    Route::put('/categories/{id}',   [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.classifications.manage'])->group(function (): void {
