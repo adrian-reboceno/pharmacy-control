@@ -76,11 +76,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'auth.sessions.view', 'auth.sessions.revoke',
             'auth.audit.view', 'auth.audit.export',
             'auth.2fa.manage',
-            // catalog (7)
+            // catalog (8)
             'catalog.products.create', 'catalog.products.view', 'catalog.products.edit',
             'catalog.products.deactivate', 'catalog.products.price',
             'catalog.categories.manage',
             'catalog.suppliers.manage',
+            'catalog.classifications.manage',
             // inventory (7)
             'inventory.batch.create', 'inventory.batch.view', 'inventory.batch.adjust',
             'inventory.batch.transfer', 'inventory.batch.writeoff',
@@ -171,7 +172,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // auditor: solo lectura en todos los módulos
             'auditor' => [
                 'auth.users.view', 'auth.audit.view', 'auth.audit.export',
-                'catalog.products.view',
+                'catalog.products.view', 'catalog.classifications.manage',
                 'inventory.batch.view', 'inventory.reports.view', 'inventory.alerts.view',
                 'sales.reports.view',
                 'prescriptions.view', 'prescriptions.reports.view',
