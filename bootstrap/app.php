@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -8,6 +9,10 @@ use Illuminate\Http\Request;
 use PharmaControl\Auth\Domain\Exception\AccountLockedException;
 use PharmaControl\Auth\Domain\Exception\InvalidCredentialsException;
 use PharmaControl\Auth\Infrastructure\Middleware\Rbac2Middleware;
+use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotFoundException;
+use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotModifiableException;
+use PharmaControl\Catalog\Laboratories\Domain\Exception\DuplicateLaboratoryNameException;
+use PharmaControl\Catalog\Laboratories\Domain\Exception\LaboratoryNotFoundException;
 use PharmaControl\Shared\Exception\DomainException as SharedDomainException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -21,26 +26,31 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'rbac2' => Rbac2Middleware::class,
         ]);
+        $middleware->redirectGuestsTo(fn (Request $request) => null);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(function (AuthenticationException $e, Request $request): JsonResponse {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        });
         $exceptions->render(function (AccountLockedException $e, Request $request): JsonResponse {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => 'ACCOUNT_LOCKED',
-            ], 423);
+            return response()->json(['message' => $e->getMessage(), 'error' => 'ACCOUNT_LOCKED'], 423);
         });
-
         $exceptions->render(function (InvalidCredentialsException $e, Request $request): JsonResponse {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => 'INVALID_CREDENTIALS',
-            ], 401);
+            return response()->json(['message' => $e->getMessage(), 'error' => 'INVALID_CREDENTIALS'], 401);
         });
-
+        $exceptions->render(function (LaboratoryNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateLaboratoryNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (ClassificationNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (ClassificationNotModifiableException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'NOT_MODIFIABLE'], 422);
+        });
         $exceptions->render(function (SharedDomainException $e, Request $request): JsonResponse {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => 'DOMAIN_ERROR',
-            ], 422);
+            return response()->json(['message' => $e->getMessage(), 'error' => 'DOMAIN_ERROR'], 422);
         });
     })->create();

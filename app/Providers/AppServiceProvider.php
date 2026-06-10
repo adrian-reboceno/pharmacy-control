@@ -28,6 +28,10 @@ use PharmaControl\Auth\Infrastructure\Service\OtphpTwoFactorService;
 use PharmaControl\Auth\Infrastructure\Service\RedisCacheService;
 use PharmaControl\Auth\Infrastructure\Service\RedisRateLimiterService;
 use PharmaControl\Auth\Infrastructure\Service\SanctumTokenService;
+use PharmaControl\Catalog\Classifications\Domain\Contract\Repository\ClassificationRepositoryContract;
+use PharmaControl\Catalog\Classifications\Infrastructure\Persistence\Eloquent\Repository\EloquentClassificationRepository;
+use PharmaControl\Catalog\Laboratories\Domain\Contract\Repository\LaboratoryRepositoryContract;
+use PharmaControl\Catalog\Laboratories\Infrastructure\Persistence\Eloquent\Repository\EloquentLaboratoryRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +51,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(RateLimiterServiceContract::class, RedisRateLimiterService::class);
         $this->app->bind(CacheServiceContract::class, RedisCacheService::class);
         $this->app->bind(EventPublisherContract::class, LaravelQueueEventPublisher::class);
+
+        // Catalog — Laboratories
+        $this->app->bind(LaboratoryRepositoryContract::class, EloquentLaboratoryRepository::class);
+
+        // Catalog — Classifications
+        $this->app->bind(ClassificationRepositoryContract::class, EloquentClassificationRepository::class);
     }
 
     public function boot(): void

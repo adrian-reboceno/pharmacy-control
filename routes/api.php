@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Auth\SwitchRoleController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Catalog\ClassificationController;
+use App\Http\Controllers\Catalog\LaboratoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/auth')->group(function (): void {
@@ -37,4 +39,19 @@ Route::prefix('v1/auth')->group(function (): void {
         Route::delete('/users/{userId}/roles/{roleId}', [RoleController::class, 'revoke']);
         Route::post('/users/{userId}/unlock', [UserController::class, 'unlock']);
     });
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.laboratories.manage'])->group(function (): void {
+    Route::get('/laboratories', [LaboratoryController::class, 'index']);
+    Route::post('/laboratories', [LaboratoryController::class, 'store']);
+    Route::get('/laboratories/{id}', [LaboratoryController::class, 'show']);
+    Route::put('/laboratories/{id}', [LaboratoryController::class, 'update']);
+    Route::delete('/laboratories/{id}', [LaboratoryController::class, 'destroy']);
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.classifications.manage'])->group(function (): void {
+    Route::get('/classifications', [ClassificationController::class, 'index']);
+    Route::get('/classifications/{id}', [ClassificationController::class, 'show']);
+    Route::put('/classifications/{id}', [ClassificationController::class, 'update']);
+    Route::delete('/classifications/{id}', [ClassificationController::class, 'destroy']);
 });
