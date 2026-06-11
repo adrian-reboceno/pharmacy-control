@@ -41,7 +41,7 @@ final class EloquentCategoryRepository implements CategoryRepositoryContract
 
     public function isAncestor(CategoryId $ancestorId, CategoryId $categoryId): bool
     {
-        $result = DB::select("
+        $result = DB::select('
             WITH RECURSIVE ancestors AS (
                 SELECT id, parent_id
                 FROM categories
@@ -56,8 +56,8 @@ final class EloquentCategoryRepository implements CategoryRepositoryContract
             SELECT COUNT(*) AS cnt
             FROM ancestors
             WHERE id = :ancestorId
-        ", [
-            'startId'    => $categoryId->value,
+        ', [
+            'startId' => $categoryId->value,
             'ancestorId' => $ancestorId->value,
         ]);
 

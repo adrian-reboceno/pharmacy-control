@@ -22,14 +22,16 @@ use PHPUnit\Framework\TestCase;
 final class DeactivateCategoryUseCaseTest extends TestCase
 {
     private CategoryRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject     $events;
-    private DeactivateCategoryUseCase             $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private DeactivateCategoryUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(CategoryRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new DeactivateCategoryUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new DeactivateCategoryUseCase($this->repository, $this->events);
     }
 
     private function actorId(): string
@@ -52,15 +54,15 @@ final class DeactivateCategoryUseCaseTest extends TestCase
     private function makeInactiveCategory(): Category
     {
         return Category::reconstitute(
-            id:          CategoryId::generate(),
-            parentId:    null,
-            name:        new CategoryName('Antibióticos'),
-            slug:        new CategorySlug('antibioticos'),
+            id: CategoryId::generate(),
+            parentId: null,
+            name: new CategoryName('Antibióticos'),
+            slug: new CategorySlug('antibioticos'),
             description: null,
-            isActive:    false,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable,
-            updatedAt:   new \DateTimeImmutable,
+            isActive: false,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
     }
 
@@ -97,7 +99,7 @@ final class DeactivateCategoryUseCaseTest extends TestCase
     public function test_does_not_deactivate_children(): void
     {
         $parent = $this->makeActiveCategory();
-        $child  = Category::create(
+        $child = Category::create(
             CategoryId::generate(),
             $parent->getId(),
             new CategoryName('Penicilinas'),

@@ -26,7 +26,7 @@ interface CategoryRepositoryContract
     /**
      * Devuelve TODOS los nodos del árbol como lista plana.
      *
-     * @param array{is_active?: bool} $filters
+     * @param  array{is_active?: bool}  $filters
      * @return Category[]
      */
     public function findAllFlat(array $filters = []): array;

@@ -24,14 +24,16 @@ use PHPUnit\Framework\TestCase;
 final class CreateCategoryUseCaseTest extends TestCase
 {
     private CategoryRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject     $events;
-    private CreateCategoryUseCase                 $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private CreateCategoryUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(CategoryRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new CreateCategoryUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new CreateCategoryUseCase($this->repository, $this->events);
     }
 
     private function actorId(): string
@@ -58,9 +60,9 @@ final class CreateCategoryUseCaseTest extends TestCase
         $this->repository->expects($this->once())->method('save');
 
         $dto = ($this->useCase)(new CreateCategoryCommand(
-            parentId:    null,
-            name:        'Medicamentos',
-            slug:        'medicamentos',
+            parentId: null,
+            name: 'Medicamentos',
+            slug: 'medicamentos',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -80,9 +82,9 @@ final class CreateCategoryUseCaseTest extends TestCase
         $this->repository->expects($this->once())->method('save');
 
         $dto = ($this->useCase)(new CreateCategoryCommand(
-            parentId:    $parent->getId()->value,
-            name:        'Penicilinas',
-            slug:        'penicilinas',
+            parentId: $parent->getId()->value,
+            name: 'Penicilinas',
+            slug: 'penicilinas',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -97,9 +99,9 @@ final class CreateCategoryUseCaseTest extends TestCase
 
         $this->expectException(CategoryNotFoundException::class);
         ($this->useCase)(new CreateCategoryCommand(
-            parentId:    CategoryId::generate()->value,
-            name:        'Penicilinas',
-            slug:        null,
+            parentId: CategoryId::generate()->value,
+            name: 'Penicilinas',
+            slug: null,
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -114,9 +116,9 @@ final class CreateCategoryUseCaseTest extends TestCase
 
         $this->expectException(DuplicateCategorySlugException::class);
         ($this->useCase)(new CreateCategoryCommand(
-            parentId:    null,
-            name:        'Antibióticos',
-            slug:        'antibioticos',
+            parentId: null,
+            name: 'Antibióticos',
+            slug: 'antibioticos',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -128,9 +130,9 @@ final class CreateCategoryUseCaseTest extends TestCase
         $this->repository->expects($this->once())->method('save');
 
         $dto = ($this->useCase)(new CreateCategoryCommand(
-            parentId:    null,
-            name:        'Analgésicos',
-            slug:        null,
+            parentId: null,
+            name: 'Analgésicos',
+            slug: null,
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -148,9 +150,9 @@ final class CreateCategoryUseCaseTest extends TestCase
             ->with($this->isInstanceOf(CategoryCreated::class));
 
         ($this->useCase)(new CreateCategoryCommand(
-            parentId:    null,
-            name:        'Suplementos',
-            slug:        'suplementos',
+            parentId: null,
+            name: 'Suplementos',
+            slug: 'suplementos',
             description: null,
             actorUserId: $this->actorId(),
         ));

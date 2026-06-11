@@ -20,13 +20,13 @@ final class UpdateCategoryUseCase
 {
     public function __construct(
         private readonly CategoryRepositoryContract $repository,
-        private readonly EventPublisherContract     $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(UpdateCategoryCommand $cmd): CategoryDTO
     {
         $categoryId = new CategoryId($cmd->id);
-        $category   = $this->repository->findById($categoryId);
+        $category = $this->repository->findById($categoryId);
         if ($category === null) {
             throw new CategoryNotFoundException($cmd->id);
         }
@@ -45,12 +45,12 @@ final class UpdateCategoryUseCase
             }
         }
 
-        $name        = new CategoryName($cmd->name);
+        $name = new CategoryName($cmd->name);
         $description = $cmd->description !== null ? new CategoryDescription($cmd->description) : null;
-        $slug        = $cmd->slug !== null ? new CategorySlug($cmd->slug) : CategorySlug::generate($name);
+        $slug = $cmd->slug !== null ? new CategorySlug($cmd->slug) : CategorySlug::generate($name);
 
         $existing = $this->repository->findBySlug($slug);
-        if ($existing !== null && !$existing->getId()->equals($categoryId)) {
+        if ($existing !== null && ! $existing->getId()->equals($categoryId)) {
             throw new DuplicateCategorySlugException($slug->value);
         }
 

@@ -26,10 +26,10 @@ final class CategoryTest extends TestCase
         Permission::findOrCreate('catalog.categories.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'password_hash'        => Hash::make('Secret123!'),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
             'must_change_password' => false,
-            'email_verified_at'    => now(),
+            'email_verified_at' => now(),
         ]);
 
         $this->user->givePermissionTo('catalog.categories.manage');
@@ -43,13 +43,13 @@ final class CategoryTest extends TestCase
     private function createCategory(array $overrides = []): EloquentCategory
     {
         return EloquentCategory::create(array_merge([
-            'id'          => Str::uuid()->toString(),
-            'parent_id'   => null,
-            'name'        => 'Medicamentos',
-            'slug'        => 'medicamentos',
+            'id' => Str::uuid()->toString(),
+            'parent_id' => null,
+            'name' => 'Medicamentos',
+            'slug' => 'medicamentos',
             'description' => null,
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ], $overrides));
     }
 
@@ -59,8 +59,8 @@ final class CategoryTest extends TestCase
     {
         $parent = $this->createCategory(['name' => 'Antibióticos', 'slug' => 'antibioticos']);
         $this->createCategory([
-            'name'      => 'Penicilinas',
-            'slug'      => 'penicilinas',
+            'name' => 'Penicilinas',
+            'slug' => 'penicilinas',
             'parent_id' => $parent->id,
         ]);
 
@@ -158,8 +158,8 @@ final class CategoryTest extends TestCase
 
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/categories', [
             'parent_id' => $parent->id,
-            'name'      => 'Penicilinas',
-            'slug'      => 'penicilinas',
+            'name' => 'Penicilinas',
+            'slug' => 'penicilinas',
         ]);
 
         $response->assertStatus(201)
@@ -171,7 +171,7 @@ final class CategoryTest extends TestCase
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/categories', [
             'parent_id' => '00000000-0000-4000-8000-000000000000',
-            'name'      => 'Penicilinas',
+            'name' => 'Penicilinas',
         ]);
 
         $response->assertStatus(404);
@@ -196,15 +196,15 @@ final class CategoryTest extends TestCase
     public function test_put_category_returns_422_when_update_would_create_cycle(): void
     {
         $parent = $this->createCategory(['name' => 'Padre', 'slug' => 'padre']);
-        $child  = $this->createCategory([
-            'name'      => 'Hijo',
-            'slug'      => 'hijo',
+        $child = $this->createCategory([
+            'name' => 'Hijo',
+            'slug' => 'hijo',
             'parent_id' => $parent->id,
         ]);
 
         $response = $this->actingAsUser()->putJson("/api/v1/catalog/categories/{$parent->id}", [
-            'name'      => 'Padre',
-            'slug'      => 'padre',
+            'name' => 'Padre',
+            'slug' => 'padre',
             'parent_id' => $child->id,
         ]);
 
@@ -217,8 +217,8 @@ final class CategoryTest extends TestCase
         $cat = $this->createCategory();
 
         $response = $this->actingAsUser()->putJson("/api/v1/catalog/categories/{$cat->id}", [
-            'name'      => 'Medicamentos',
-            'slug'      => 'medicamentos',
+            'name' => 'Medicamentos',
+            'slug' => 'medicamentos',
             'parent_id' => $cat->id,
         ]);
 
@@ -248,9 +248,9 @@ final class CategoryTest extends TestCase
     public function test_delete_category_does_not_deactivate_children(): void
     {
         $parent = $this->createCategory(['name' => 'Padre', 'slug' => 'padre']);
-        $child  = $this->createCategory([
-            'name'      => 'Hijo',
-            'slug'      => 'hijo',
+        $child = $this->createCategory([
+            'name' => 'Hijo',
+            'slug' => 'hijo',
             'parent_id' => $parent->id,
         ]);
 
@@ -276,8 +276,8 @@ final class CategoryTest extends TestCase
     public function test_all_endpoints_return_403_without_catalog_categories_manage_permission(): void
     {
         $userWithoutPermission = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'email_verified_at'    => now(),
+            'status' => 'ACTIVE',
+            'email_verified_at' => now(),
             'must_change_password' => false,
         ]);
 

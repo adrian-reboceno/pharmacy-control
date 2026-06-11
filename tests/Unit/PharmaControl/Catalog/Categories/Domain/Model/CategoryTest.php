@@ -48,7 +48,7 @@ final class CategoryTest extends TestCase
     public function test_create_emits_category_created_event(): void
     {
         $category = $this->makeCategory();
-        $events   = $category->releaseEvents();
+        $events = $category->releaseEvents();
 
         self::assertCount(1, $events);
         self::assertInstanceOf(CategoryCreated::class, $events[0]);
@@ -65,15 +65,15 @@ final class CategoryTest extends TestCase
     public function test_reconstitute_does_not_emit_events(): void
     {
         $category = Category::reconstitute(
-            id:          $this->makeId(),
-            parentId:    null,
-            name:        $this->makeName(),
-            slug:        $this->makeSlug(),
+            id: $this->makeId(),
+            parentId: null,
+            name: $this->makeName(),
+            slug: $this->makeSlug(),
             description: null,
-            isActive:    true,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable,
-            updatedAt:   new \DateTimeImmutable,
+            isActive: true,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         self::assertEmpty($category->releaseEvents());
@@ -98,9 +98,9 @@ final class CategoryTest extends TestCase
         $category = $this->makeCategory();
         $category->releaseEvents();
 
-        $newName  = new CategoryName('AINEs');
-        $newSlug  = new CategorySlug('aines');
-        $newDesc  = new CategoryDescription('Antiinflamatorios no esteroideos');
+        $newName = new CategoryName('AINEs');
+        $newSlug = new CategorySlug('aines');
+        $newDesc = new CategoryDescription('Antiinflamatorios no esteroideos');
 
         $category->update(null, $newName, $newSlug, $newDesc);
 
@@ -130,15 +130,15 @@ final class CategoryTest extends TestCase
     public function test_deactivate_throws_domain_exception_when_already_inactive(): void
     {
         $category = Category::reconstitute(
-            id:          $this->makeId(),
-            parentId:    null,
-            name:        $this->makeName(),
-            slug:        $this->makeSlug(),
+            id: $this->makeId(),
+            parentId: null,
+            name: $this->makeName(),
+            slug: $this->makeSlug(),
             description: null,
-            isActive:    false,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable,
-            updatedAt:   new \DateTimeImmutable,
+            isActive: false,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         $this->expectException(\DomainException::class);
@@ -149,7 +149,7 @@ final class CategoryTest extends TestCase
     {
         $category = $this->makeCategory();
 
-        $first  = $category->releaseEvents();
+        $first = $category->releaseEvents();
         $second = $category->releaseEvents();
 
         self::assertCount(1, $first);

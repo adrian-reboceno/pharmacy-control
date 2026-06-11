@@ -11,7 +11,7 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class CategoryDeactivated implements DomainEvent
 {
     public function __construct(
-        public readonly CategoryId         $id,
+        public readonly CategoryId $id,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

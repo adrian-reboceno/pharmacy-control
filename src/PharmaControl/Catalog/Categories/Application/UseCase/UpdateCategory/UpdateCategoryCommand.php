@@ -8,11 +8,11 @@ namespace PharmaControl\Catalog\Categories\Application\UseCase\UpdateCategory;
 final readonly class UpdateCategoryCommand
 {
     public function __construct(
-        public readonly string  $id,
+        public readonly string $id,
         public readonly ?string $parentId,
-        public readonly string  $name,
+        public readonly string $name,
         public readonly ?string $slug,
         public readonly ?string $description,
-        public readonly string  $actorUserId,
+        public readonly string $actorUserId,
     ) {}
 }

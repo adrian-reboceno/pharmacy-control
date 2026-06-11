@@ -55,10 +55,10 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.laboratories.manage'])->
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.categories.manage'])->group(function (): void {
-    Route::get('/categories/tree',   [CategoryController::class, 'tree']);
-    Route::get('/categories/{id}',   [CategoryController::class, 'show']);
-    Route::post('/categories',        [CategoryController::class, 'store']);
-    Route::put('/categories/{id}',   [CategoryController::class, 'update']);
+    Route::get('/categories/tree', [CategoryController::class, 'tree']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 });
 

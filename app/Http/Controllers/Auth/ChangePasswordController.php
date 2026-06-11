@@ -8,8 +8,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
+use OpenApi\Attributes as OA;
 use PharmaControl\Auth\Infrastructure\Controller\ChangePasswordController as AuthController;
 use PharmaControl\Auth\Infrastructure\Middleware\AuthenticatedUser;
 
@@ -32,7 +32,7 @@ class ChangePasswordController extends Controller
                 required: ['current_password', 'new_password'],
                 properties: [
                     new OA\Property(property: 'current_password', type: 'string', format: 'password'),
-                    new OA\Property(property: 'new_password',     type: 'string', format: 'password', minLength: 8),
+                    new OA\Property(property: 'new_password', type: 'string', format: 'password', minLength: 8),
                 ]
             )
         ),

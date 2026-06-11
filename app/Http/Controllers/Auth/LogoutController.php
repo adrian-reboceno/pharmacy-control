@@ -8,11 +8,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
+use OpenApi\Attributes as OA;
 use PharmaControl\Auth\Infrastructure\Controller\LogoutController as AuthController;
 use PharmaControl\Auth\Infrastructure\Middleware\AuthenticatedUser;
-
 
 class LogoutController extends Controller
 {

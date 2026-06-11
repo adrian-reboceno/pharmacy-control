@@ -14,7 +14,7 @@ final class DeactivateCategoryUseCase
 {
     public function __construct(
         private readonly CategoryRepositoryContract $repository,
-        private readonly EventPublisherContract     $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(DeactivateCategoryCommand $cmd): void

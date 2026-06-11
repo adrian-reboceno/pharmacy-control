@@ -11,8 +11,8 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class CategoryUpdated implements DomainEvent
 {
     public function __construct(
-        public readonly CategoryId         $id,
-        public readonly array              $changes,
+        public readonly CategoryId $id,
+        public readonly array $changes,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

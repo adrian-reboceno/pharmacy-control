@@ -17,48 +17,52 @@ use PharmaControl\Shared\Event\DomainEvent;
 
 final class Category
 {
-    private ?CategoryId          $parentId;
-    private CategoryName         $name;
-    private CategorySlug         $slug;
+    private ?CategoryId $parentId;
+
+    private CategoryName $name;
+
+    private CategorySlug $slug;
+
     private ?CategoryDescription $description;
-    private bool                 $isActive;
+
+    private bool $isActive;
 
     /** @var list<DomainEvent> */
     private array $domainEvents = [];
 
     private function __construct(
-        public readonly CategoryId         $id,
-        ?CategoryId                        $parentId,
-        CategoryName                       $name,
-        CategorySlug                       $slug,
-        ?CategoryDescription               $description,
-        bool                               $isActive,
-        public readonly ?UserId            $createdBy,
+        public readonly CategoryId $id,
+        ?CategoryId $parentId,
+        CategoryName $name,
+        CategorySlug $slug,
+        ?CategoryDescription $description,
+        bool $isActive,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $createdAt,
-        private \DateTimeImmutable         $updatedAt,
+        private \DateTimeImmutable $updatedAt,
     ) {
-        $this->parentId    = $parentId;
-        $this->name        = $name;
-        $this->slug        = $slug;
+        $this->parentId = $parentId;
+        $this->name = $name;
+        $this->slug = $slug;
         $this->description = $description;
-        $this->isActive    = $isActive;
+        $this->isActive = $isActive;
     }
 
     public static function create(
-        CategoryId         $id,
-        ?CategoryId        $parentId,
-        CategoryName       $name,
-        CategorySlug       $slug,
+        CategoryId $id,
+        ?CategoryId $parentId,
+        CategoryName $name,
+        CategorySlug $slug,
         ?CategoryDescription $description,
-        ?UserId            $createdBy,
+        ?UserId $createdBy,
     ): self {
-        $now      = new \DateTimeImmutable;
+        $now = new \DateTimeImmutable;
         $category = new self($id, $parentId, $name, $slug, $description, true, $createdBy, $now, $now);
         $category->recordEvent(new CategoryCreated(
-            id:        $id,
-            parentId:  $parentId,
-            name:      $name,
-            slug:      $slug,
+            id: $id,
+            parentId: $parentId,
+            name: $name,
+            slug: $slug,
             createdBy: $createdBy,
             occurredAt: $now,
         ));
@@ -67,13 +71,13 @@ final class Category
     }
 
     public static function reconstitute(
-        CategoryId         $id,
-        ?CategoryId        $parentId,
-        CategoryName       $name,
-        CategorySlug       $slug,
+        CategoryId $id,
+        ?CategoryId $parentId,
+        CategoryName $name,
+        CategorySlug $slug,
         ?CategoryDescription $description,
-        bool               $isActive,
-        ?UserId            $createdBy,
+        bool $isActive,
+        ?UserId $createdBy,
         \DateTimeImmutable $createdAt,
         \DateTimeImmutable $updatedAt,
     ): self {
@@ -81,9 +85,9 @@ final class Category
     }
 
     public function update(
-        ?CategoryId        $parentId,
-        CategoryName       $name,
-        CategorySlug       $slug,
+        ?CategoryId $parentId,
+        CategoryName $name,
+        CategorySlug $slug,
         ?CategoryDescription $description,
     ): void {
         $changes = [];
@@ -91,45 +95,45 @@ final class Category
         if ($this->parentId?->value !== $parentId?->value) {
             $changes['parentId'] = ['old' => $this->parentId?->value, 'new' => $parentId?->value];
         }
-        if (!$this->name->equals($name)) {
+        if (! $this->name->equals($name)) {
             $changes['name'] = ['old' => $this->name->value, 'new' => $name->value];
         }
-        if (!$this->slug->equals($slug)) {
+        if (! $this->slug->equals($slug)) {
             $changes['slug'] = ['old' => $this->slug->value, 'new' => $slug->value];
         }
         if ($this->description?->value !== $description?->value) {
             $changes['description'] = ['old' => $this->description?->value, 'new' => $description?->value];
         }
 
-        $this->parentId    = $parentId;
-        $this->name        = $name;
-        $this->slug        = $slug;
+        $this->parentId = $parentId;
+        $this->name = $name;
+        $this->slug = $slug;
         $this->description = $description;
-        $this->updatedAt   = new \DateTimeImmutable;
+        $this->updatedAt = new \DateTimeImmutable;
 
         $this->recordEvent(new CategoryUpdated(
-            id:         $this->id,
-            changes:    $changes,
+            id: $this->id,
+            changes: $changes,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function deactivate(): void
     {
-        if (!$this->isActive) {
+        if (! $this->isActive) {
             throw new \DomainException('La categoría ya está inactiva.');
         }
-        $this->isActive  = false;
+        $this->isActive = false;
         $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new CategoryDeactivated(
-            id:         $this->id,
+            id: $this->id,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function activate(): void
     {
-        $this->isActive  = true;
+        $this->isActive = true;
         $this->updatedAt = new \DateTimeImmutable;
     }
 
@@ -185,7 +189,7 @@ final class Category
 
     public function releaseEvents(): array
     {
-        $events           = $this->domainEvents;
+        $events = $this->domainEvents;
         $this->domainEvents = [];
 
         return $events;

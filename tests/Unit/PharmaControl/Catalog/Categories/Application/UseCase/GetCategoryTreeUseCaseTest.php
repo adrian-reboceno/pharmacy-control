@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\PharmaControl\Catalog\Categories\Application\UseCase;
 
-use PharmaControl\Catalog\Categories\Application\DTO\CategoryDTO;
 use PharmaControl\Catalog\Categories\Application\UseCase\GetCategoryTree\GetCategoryTreeQuery;
 use PharmaControl\Catalog\Categories\Application\UseCase\GetCategoryTree\GetCategoryTreeUseCase;
 use PharmaControl\Catalog\Categories\Domain\Contract\Repository\CategoryRepositoryContract;
@@ -19,26 +18,27 @@ use PHPUnit\Framework\TestCase;
 final class GetCategoryTreeUseCaseTest extends TestCase
 {
     private CategoryRepositoryContract&MockObject $repository;
-    private GetCategoryTreeUseCase                $useCase;
+
+    private GetCategoryTreeUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(CategoryRepositoryContract::class);
-        $this->useCase    = new GetCategoryTreeUseCase($this->repository);
+        $this->useCase = new GetCategoryTreeUseCase($this->repository);
     }
 
     private function makeCategory(?CategoryId $parentId = null, string $slug = 'cat'): Category
     {
         return Category::reconstitute(
-            id:          CategoryId::generate(),
-            parentId:    $parentId,
-            name:        new CategoryName('Cat'),
-            slug:        new CategorySlug($slug),
+            id: CategoryId::generate(),
+            parentId: $parentId,
+            name: new CategoryName('Cat'),
+            slug: new CategorySlug($slug),
             description: null,
-            isActive:    true,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable,
-            updatedAt:   new \DateTimeImmutable,
+            isActive: true,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
     }
 
@@ -70,16 +70,16 @@ final class GetCategoryTreeUseCaseTest extends TestCase
     public function test_returns_nested_tree_with_children_correctly_assigned(): void
     {
         $parent = $this->makeCategory(null, 'antibioticos');
-        $child  = Category::reconstitute(
-            id:          CategoryId::generate(),
-            parentId:    $parent->getId(),
-            name:        new CategoryName('Penicilinas'),
-            slug:        new CategorySlug('penicilinas'),
+        $child = Category::reconstitute(
+            id: CategoryId::generate(),
+            parentId: $parent->getId(),
+            name: new CategoryName('Penicilinas'),
+            slug: new CategorySlug('penicilinas'),
             description: null,
-            isActive:    true,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable,
-            updatedAt:   new \DateTimeImmutable,
+            isActive: true,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         $this->repository->method('findAllFlat')->willReturn([$parent, $child]);
@@ -116,15 +116,15 @@ final class GetCategoryTreeUseCaseTest extends TestCase
     public function test_orphaned_nodes_with_missing_parent_do_not_break_tree_build(): void
     {
         $orphan = Category::reconstitute(
-            id:          CategoryId::generate(),
-            parentId:    CategoryId::generate(),
-            name:        new CategoryName('Huerfano'),
-            slug:        new CategorySlug('huerfano'),
+            id: CategoryId::generate(),
+            parentId: CategoryId::generate(),
+            name: new CategoryName('Huerfano'),
+            slug: new CategorySlug('huerfano'),
             description: null,
-            isActive:    true,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable,
-            updatedAt:   new \DateTimeImmutable,
+            isActive: true,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         $this->repository->method('findAllFlat')->willReturn([$orphan]);

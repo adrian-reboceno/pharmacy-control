@@ -12,16 +12,18 @@ class EloquentCategory extends Model
 {
     use HasUuids;
 
-    protected $table        = 'categories';
-    protected $keyType      = 'string';
-    public    $incrementing = false;
+    protected $table = 'categories';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'parent_id', 'name', 'slug', 'description', 'is_active', 'created_by',
     ];
 
     protected $casts = [
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
         'created_at' => 'immutable_datetime',
         'updated_at' => 'immutable_datetime',
     ];

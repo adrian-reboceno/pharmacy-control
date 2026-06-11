@@ -21,10 +21,10 @@ use PharmaControl\Catalog\Categories\Domain\ValueObject\CategoryId;
 final class CategoryController
 {
     public function __construct(
-        private readonly CreateCategoryUseCase     $create,
-        private readonly UpdateCategoryUseCase     $update,
+        private readonly CreateCategoryUseCase $create,
+        private readonly UpdateCategoryUseCase $update,
         private readonly DeactivateCategoryUseCase $deactivate,
-        private readonly GetCategoryTreeUseCase    $getTree,
+        private readonly GetCategoryTreeUseCase $getTree,
         private readonly CategoryRepositoryContract $repository,
     ) {}
 
@@ -39,9 +39,9 @@ final class CategoryController
     public function store(array $data): CategoryDTO
     {
         return ($this->create)(new CreateCategoryCommand(
-            parentId:    $data['parent_id'] ?? null,
-            name:        $data['name'],
-            slug:        $data['slug'] ?? null,
+            parentId: $data['parent_id'] ?? null,
+            name: $data['name'],
+            slug: $data['slug'] ?? null,
             description: $data['description'] ?? null,
             actorUserId: $data['actor_user_id'],
         ));
@@ -60,10 +60,10 @@ final class CategoryController
     public function update(string $id, array $data): CategoryDTO
     {
         return ($this->update)(new UpdateCategoryCommand(
-            id:          $id,
-            parentId:    $data['parent_id'] ?? null,
-            name:        $data['name'],
-            slug:        $data['slug'] ?? null,
+            id: $id,
+            parentId: $data['parent_id'] ?? null,
+            name: $data['name'],
+            slug: $data['slug'] ?? null,
             description: $data['description'] ?? null,
             actorUserId: $data['actor_user_id'],
         ));

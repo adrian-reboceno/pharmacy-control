@@ -9,8 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\AuthTokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
+use OpenApi\Attributes as OA;
 use PharmaControl\Auth\Infrastructure\Controller\LoginController as AuthController;
 
 class LoginController extends Controller
@@ -31,8 +31,8 @@ class LoginController extends Controller
             content: new OA\JsonContent(
                 required: ['email', 'password', 'client_type'],
                 properties: [
-                    new OA\Property(property: 'email',       type: 'string', format: 'email',    example: 'admin@pharmaco.mx'),
-                    new OA\Property(property: 'password',    type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'admin@pharmaco.mx'),
+                    new OA\Property(property: 'password', type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
                     new OA\Property(property: 'client_type', type: 'string', enum: ['WEB', 'MOBILE'], example: 'WEB'),
                 ]
             )
@@ -42,10 +42,10 @@ class LoginController extends Controller
                 response: 200,
                 description: 'Login exitoso',
                 content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'access_token',             type: 'string'),
-                    new OA\Property(property: 'refresh_token',            type: 'string'),
-                    new OA\Property(property: 'expires_in',               type: 'integer', example: 900),
-                    new OA\Property(property: 'requires_role_selection',  type: 'boolean', example: false),
+                    new OA\Property(property: 'access_token', type: 'string'),
+                    new OA\Property(property: 'refresh_token', type: 'string'),
+                    new OA\Property(property: 'expires_in', type: 'integer', example: 900),
+                    new OA\Property(property: 'requires_role_selection', type: 'boolean', example: false),
                     new OA\Property(property: 'requires_password_change', type: 'boolean', example: false),
                 ])
             ),
@@ -57,7 +57,7 @@ class LoginController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: 'message', type: 'string', example: 'Cuenta bloqueada.'),
-                        new OA\Property(property: 'error',   type: 'string', example: 'ACCOUNT_LOCKED'),
+                        new OA\Property(property: 'error', type: 'string', example: 'ACCOUNT_LOCKED'),
                     ]
                 )
             ),

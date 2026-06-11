@@ -9,7 +9,7 @@ final readonly class CategorySlug
 {
     public function __construct(public readonly string $value)
     {
-        if (!preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value)) {
+        if (! preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value)) {
             throw new \InvalidArgumentException("Slug inválido: {$value}. Solo letras minúsculas, números y guiones.");
         }
         if (mb_strlen($value) > 160) {

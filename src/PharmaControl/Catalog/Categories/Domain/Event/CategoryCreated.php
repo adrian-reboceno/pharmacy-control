@@ -14,11 +14,11 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class CategoryCreated implements DomainEvent
 {
     public function __construct(
-        public readonly CategoryId         $id,
-        public readonly ?CategoryId        $parentId,
-        public readonly CategoryName       $name,
-        public readonly CategorySlug       $slug,
-        public readonly ?UserId            $createdBy,
+        public readonly CategoryId $id,
+        public readonly ?CategoryId $parentId,
+        public readonly CategoryName $name,
+        public readonly CategorySlug $slug,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

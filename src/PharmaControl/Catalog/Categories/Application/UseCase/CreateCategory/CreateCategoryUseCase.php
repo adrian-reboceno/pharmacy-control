@@ -21,7 +21,7 @@ final class CreateCategoryUseCase
 {
     public function __construct(
         private readonly CategoryRepositoryContract $repository,
-        private readonly EventPublisherContract     $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(CreateCategoryCommand $cmd): CategoryDTO
@@ -34,9 +34,9 @@ final class CreateCategoryUseCase
             }
         }
 
-        $name        = new CategoryName($cmd->name);
+        $name = new CategoryName($cmd->name);
         $description = $cmd->description !== null ? new CategoryDescription($cmd->description) : null;
-        $slug        = $cmd->slug !== null ? new CategorySlug($cmd->slug) : CategorySlug::generate($name);
+        $slug = $cmd->slug !== null ? new CategorySlug($cmd->slug) : CategorySlug::generate($name);
 
         if ($this->repository->findBySlug($slug) !== null) {
             throw new DuplicateCategorySlugException($slug->value);

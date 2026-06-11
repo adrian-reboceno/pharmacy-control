@@ -25,14 +25,16 @@ use PHPUnit\Framework\TestCase;
 final class UpdateCategoryUseCaseTest extends TestCase
 {
     private CategoryRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject     $events;
-    private UpdateCategoryUseCase                 $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private UpdateCategoryUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(CategoryRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new UpdateCategoryUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new UpdateCategoryUseCase($this->repository, $this->events);
     }
 
     private function actorId(): string
@@ -63,10 +65,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
         $this->repository->expects($this->once())->method('save');
 
         $dto = ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    null,
-            name:        'Penicilinas',
-            slug:        'penicilinas',
+            id: $category->getId()->value,
+            parentId: null,
+            name: 'Penicilinas',
+            slug: 'penicilinas',
             description: 'Grupo de antibióticos',
             actorUserId: $this->actorId(),
         ));
@@ -82,10 +84,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
 
         $this->expectException(CategoryNotFoundException::class);
         ($this->useCase)(new UpdateCategoryCommand(
-            id:          CategoryId::generate()->value,
-            parentId:    null,
-            name:        'X',
-            slug:        'x',
+            id: CategoryId::generate()->value,
+            parentId: null,
+            name: 'X',
+            slug: 'x',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -100,10 +102,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
 
         $this->expectException(CategoryNotFoundException::class);
         ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    CategoryId::generate()->value,
-            name:        'X',
-            slug:        'x',
+            id: $category->getId()->value,
+            parentId: CategoryId::generate()->value,
+            name: 'X',
+            slug: 'x',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -112,22 +114,22 @@ final class UpdateCategoryUseCaseTest extends TestCase
     public function test_throws_category_cycle_exception_when_new_parent_is_descendant(): void
     {
         $category = $this->makeCategory();
-        $child    = $this->makeCategory($category->getId(), 'hijo');
+        $child = $this->makeCategory($category->getId(), 'hijo');
 
         $this->repository->method('findById')
             ->willReturnCallback(fn (CategoryId $id) => match (true) {
                 $id->equals($category->getId()) => $category,
-                $id->equals($child->getId())    => $child,
+                $id->equals($child->getId()) => $child,
                 default => null,
             });
         $this->repository->method('isAncestor')->willReturn(true);
 
         $this->expectException(CategoryCycleException::class);
         ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    $child->getId()->value,
-            name:        'X',
-            slug:        'x',
+            id: $category->getId()->value,
+            parentId: $child->getId()->value,
+            name: 'X',
+            slug: 'x',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -141,10 +143,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
 
         $this->expectException(CategoryCycleException::class);
         ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    $category->getId()->value,
-            name:        'X',
-            slug:        'x',
+            id: $category->getId()->value,
+            parentId: $category->getId()->value,
+            name: 'X',
+            slug: 'x',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -152,8 +154,8 @@ final class UpdateCategoryUseCaseTest extends TestCase
 
     public function test_throws_duplicate_category_slug_exception_when_slug_belongs_to_different_category(): void
     {
-        $category  = $this->makeCategory();
-        $other     = $this->makeCategory(null, 'penicilinas');
+        $category = $this->makeCategory();
+        $other = $this->makeCategory(null, 'penicilinas');
 
         $this->repository->method('findById')->willReturn($category);
         $this->repository->method('isAncestor')->willReturn(false);
@@ -161,10 +163,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
 
         $this->expectException(DuplicateCategorySlugException::class);
         ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    null,
-            name:        'Penicilinas',
-            slug:        'penicilinas',
+            id: $category->getId()->value,
+            parentId: null,
+            name: 'Penicilinas',
+            slug: 'penicilinas',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -181,10 +183,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
         $this->repository->expects($this->once())->method('save');
 
         $dto = ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    null,
-            name:        'Antibióticos',
-            slug:        'antibioticos',
+            id: $category->getId()->value,
+            parentId: null,
+            name: 'Antibióticos',
+            slug: 'antibioticos',
             description: null,
             actorUserId: $this->actorId(),
         ));
@@ -206,10 +208,10 @@ final class UpdateCategoryUseCaseTest extends TestCase
             ->with($this->isInstanceOf(CategoryUpdated::class));
 
         ($this->useCase)(new UpdateCategoryCommand(
-            id:          $category->getId()->value,
-            parentId:    null,
-            name:        'AINEs',
-            slug:        'aines',
+            id: $category->getId()->value,
+            parentId: null,
+            name: 'AINEs',
+            slug: 'aines',
             description: null,
             actorUserId: $this->actorId(),
         ));

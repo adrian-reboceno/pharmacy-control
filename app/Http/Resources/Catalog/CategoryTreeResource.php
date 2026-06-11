@@ -22,17 +22,17 @@ class CategoryTreeResource extends JsonResource
         $dto = $this->resource;
 
         return [
-            'id'          => $dto->id,
-            'parent_id'   => $dto->parentId,
-            'name'        => $dto->name,
-            'slug'        => $dto->slug,
+            'id' => $dto->id,
+            'parent_id' => $dto->parentId,
+            'name' => $dto->name,
+            'slug' => $dto->slug,
             'description' => $dto->description,
-            'is_active'   => $dto->isActive,
-            'is_root'     => $dto->isRoot,
-            'children'    => CategoryTreeResource::collection($dto->getChildren()),
-            'created_by'  => $dto->createdBy,
-            'created_at'  => $dto->createdAt,
-            'updated_at'  => $dto->updatedAt,
+            'is_active' => $dto->isActive,
+            'is_root' => $dto->isRoot,
+            'children' => CategoryTreeResource::collection($dto->getChildren()),
+            'created_by' => $dto->createdBy,
+            'created_at' => $dto->createdAt,
+            'updated_at' => $dto->updatedAt,
         ];
     }
 }

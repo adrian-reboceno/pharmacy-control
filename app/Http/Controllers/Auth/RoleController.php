@@ -8,8 +8,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
+use OpenApi\Attributes as OA;
 use PharmaControl\Auth\Infrastructure\Controller\RoleController as AuthController;
 use PharmaControl\Auth\Infrastructure\Middleware\AuthenticatedUser;
 
@@ -34,7 +34,7 @@ class RoleController extends Controller
             content: new OA\JsonContent(
                 required: ['role_id'],
                 properties: [
-                    new OA\Property(property: 'role_id',   type: 'string', format: 'uuid'),
+                    new OA\Property(property: 'role_id', type: 'string', format: 'uuid'),
                     new OA\Property(property: 'branch_id', type: 'string', format: 'uuid', nullable: true),
                 ]
             )

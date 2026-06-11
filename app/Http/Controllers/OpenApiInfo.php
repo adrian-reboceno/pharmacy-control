@@ -1,4 +1,5 @@
 <?php
+
 // ── ARCHIVO: app/Http/Controllers/OpenApiInfo.php ──
 
 declare(strict_types=1);
@@ -26,17 +27,17 @@ Autenticación JWT propio (HS256). Todos los endpoints protegidos requieren Auth
 #[OA\Schema(
     schema: 'PaginationMeta',
     properties: [
-        new OA\Property(property: 'total',        type: 'integer', example: 20),
-        new OA\Property(property: 'per_page',     type: 'integer', example: 20),
+        new OA\Property(property: 'total', type: 'integer', example: 20),
+        new OA\Property(property: 'per_page', type: 'integer', example: 20),
         new OA\Property(property: 'current_page', type: 'integer', example: 1),
-        new OA\Property(property: 'last_page',    type: 'integer', example: 1),
+        new OA\Property(property: 'last_page', type: 'integer', example: 1),
     ]
 )]
 #[OA\Schema(
     schema: 'ErrorResponse',
     properties: [
         new OA\Property(property: 'message', type: 'string', example: 'Recurso no encontrado.'),
-        new OA\Property(property: 'error',   type: 'string', example: 'NOT_FOUND', nullable: true),
+        new OA\Property(property: 'error', type: 'string', example: 'NOT_FOUND', nullable: true),
     ]
 )]
 #[OA\Schema(

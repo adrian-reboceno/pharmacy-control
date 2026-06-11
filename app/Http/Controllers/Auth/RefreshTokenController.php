@@ -9,8 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\AuthTokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
+use OpenApi\Attributes as OA;
 use PharmaControl\Auth\Infrastructure\Controller\RefreshTokenController as AuthController;
 
 class RefreshTokenController extends Controller

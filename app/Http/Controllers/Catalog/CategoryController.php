@@ -18,16 +18,16 @@ use PharmaControl\Catalog\Categories\Infrastructure\Controller\CategoryControlle
 #[OA\Schema(
     schema: 'CategoryResponse',
     properties: [
-        new OA\Property(property: 'id',          type: 'string', format: 'uuid'),
-        new OA\Property(property: 'parent_id',   type: 'string', format: 'uuid', nullable: true),
-        new OA\Property(property: 'name',        type: 'string', example: 'Analgésicos'),
-        new OA\Property(property: 'slug',        type: 'string', example: 'analgesicos'),
+        new OA\Property(property: 'id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'parent_id', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'name', type: 'string', example: 'Analgésicos'),
+        new OA\Property(property: 'slug', type: 'string', example: 'analgesicos'),
         new OA\Property(property: 'description', type: 'string', nullable: true),
-        new OA\Property(property: 'is_active',   type: 'boolean', example: true),
-        new OA\Property(property: 'is_root',     type: 'boolean', example: false),
-        new OA\Property(property: 'created_by',  type: 'string', format: 'uuid', nullable: true),
-        new OA\Property(property: 'created_at',  type: 'string', format: 'date-time'),
-        new OA\Property(property: 'updated_at',  type: 'string', format: 'date-time'),
+        new OA\Property(property: 'is_active', type: 'boolean', example: true),
+        new OA\Property(property: 'is_root', type: 'boolean', example: false),
+        new OA\Property(property: 'created_by', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
 
@@ -51,7 +51,7 @@ class CategoryController extends Controller
         private readonly InfraCategoryController $controller,
     ) {}
 
-     #[OA\Get(
+    #[OA\Get(
         path: '/v1/catalog/categories/tree',
         summary: 'Árbol completo de categorías',
         description: 'Devuelve todas las categorías raíz con hijos anidados recursivamente.',
@@ -72,7 +72,6 @@ class CategoryController extends Controller
             new OA\Response(response: 403, ref: '#/components/responses/Forbidden'),
         ]
     )]
-
     public function tree(Request $request): JsonResponse
     {
         $isActive = null;
@@ -121,9 +120,9 @@ class CategoryController extends Controller
             content: new OA\JsonContent(
                 required: ['name'],
                 properties: [
-                    new OA\Property(property: 'parent_id',   type: 'string', format: 'uuid', nullable: true),
-                    new OA\Property(property: 'name',        type: 'string', maxLength: 120, example: 'Analgésicos'),
-                    new OA\Property(property: 'slug',        type: 'string', nullable: true, pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', example: 'analgesicos'),
+                    new OA\Property(property: 'parent_id', type: 'string', format: 'uuid', nullable: true),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 120, example: 'Analgésicos'),
+                    new OA\Property(property: 'slug', type: 'string', nullable: true, pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', example: 'analgesicos'),
                     new OA\Property(property: 'description', type: 'string', nullable: true, maxLength: 500),
                 ]
             )
@@ -137,13 +136,12 @@ class CategoryController extends Controller
             new OA\Response(response: 422, ref: '#/components/responses/UnprocessableEntity'),
         ]
     )]
-
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'parent_id'   => 'nullable|uuid',
-            'name'        => 'required|string|max:120',
-            'slug'        => ['nullable', 'string', 'max:160', 'regex:/^[a-z0-9]+(-[a-z0-9]+)*$/'],
+            'parent_id' => 'nullable|uuid',
+            'name' => 'required|string|max:120',
+            'slug' => ['nullable', 'string', 'max:160', 'regex:/^[a-z0-9]+(-[a-z0-9]+)*$/'],
             'description' => 'nullable|string|max:500',
         ]);
 
@@ -171,9 +169,9 @@ class CategoryController extends Controller
             content: new OA\JsonContent(
                 required: ['name'],
                 properties: [
-                    new OA\Property(property: 'parent_id',   type: 'string', format: 'uuid', nullable: true),
-                    new OA\Property(property: 'name',        type: 'string', maxLength: 120),
-                    new OA\Property(property: 'slug',        type: 'string', nullable: true, pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'),
+                    new OA\Property(property: 'parent_id', type: 'string', format: 'uuid', nullable: true),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 120),
+                    new OA\Property(property: 'slug', type: 'string', nullable: true, pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'),
                     new OA\Property(property: 'description', type: 'string', nullable: true, maxLength: 500),
                 ]
             )
@@ -190,19 +188,18 @@ class CategoryController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: 'message', type: 'string', example: 'No se puede asignar como padre porque crearía un ciclo.'),
-                        new OA\Property(property: 'error',   type: 'string', example: 'CYCLE_DETECTED'),
+                        new OA\Property(property: 'error', type: 'string', example: 'CYCLE_DETECTED'),
                     ]
                 )
             ),
         ]
     )]
-
     public function update(Request $request, string $id): JsonResponse
     {
         $validated = $request->validate([
-            'parent_id'   => 'nullable|uuid',
-            'name'        => 'required|string|max:120',
-            'slug'        => ['nullable', 'string', 'max:160', 'regex:/^[a-z0-9]+(-[a-z0-9]+)*$/'],
+            'parent_id' => 'nullable|uuid',
+            'name' => 'required|string|max:120',
+            'slug' => ['nullable', 'string', 'max:160', 'regex:/^[a-z0-9]+(-[a-z0-9]+)*$/'],
             'description' => 'nullable|string|max:500',
         ]);
 
@@ -216,7 +213,7 @@ class CategoryController extends Controller
         return (new CategoryResource($dto))->response()->setStatusCode(200);
     }
 
-     #[OA\Delete(
+    #[OA\Delete(
         path: '/v1/catalog/categories/{id}',
         summary: 'Desactivar categoría',
         description: 'Soft delete lógico. Los hijos NO se desactivan automáticamente.',
