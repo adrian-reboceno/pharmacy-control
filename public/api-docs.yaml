@@ -8,6 +8,40 @@ servers:
     url: 'http://localhost:8080/api/v1/'
     description: 'Local Docker'
 paths:
+  /v1/auth/password:
+    put:
+      tags:
+        - Auth
+      summary: 'Cambiar contraseña'
+      description: 'Cambia la contraseña. Invalida todas las sesiones. No reutiliza las últimas 5 contraseñas.'
+      operationId: a8b9ef1116acebbf1966515fdf5e0974
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - current_password
+                - new_password
+              properties:
+                current_password:
+                  type: string
+                  format: password
+                new_password:
+                  type: string
+                  format: password
+                  minLength: 8
+              type: object
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
   /api/v1/auth/login:
     post:
       tags:
@@ -65,8 +99,878 @@ paths:
                   error: { type: string, example: ACCOUNT_LOCKED }
                 type: object
       security: []
+  /v1/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: 'Cerrar sesión'
+      description: 'Revoca el token actual e invalida la sesión.'
+      operationId: aa947ef5386e68877a4da98bc98274e2
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        -
+          bearerAuth: []
+  /v1/auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: 'Renovar tokens'
+      description: 'Intercambia el refresh token por un nuevo par. El refresh token anterior queda invalidado.'
+      operationId: 8ec7f584cf069a47d99088337c63343c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - refresh_token
+              properties:
+                refresh_token:
+                  type: string
+                  example: a3f8c2...
+              type: object
+      responses:
+        '200':
+          description: 'Tokens renovados'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security: []
+  '/v1/auth/users/{userId}/roles':
+    post:
+      tags:
+        - Auth
+      summary: 'Asignar rol a usuario'
+      description: 'El actor solo puede asignar roles de nivel ≤ al suyo. Máximo 3 roles. Respeta SSoD.'
+      operationId: bc183875298bd4d815aa3ccc9d003ce1
+      parameters:
+        -
+          name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - role_id
+              properties:
+                role_id:
+                  type: string
+                  format: uuid
+                branch_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+              type: object
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Rol ya asignado / violación SSoD / super-admin exclusivo'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  /v1/auth/switch-role:
+    post:
+      tags:
+        - Auth
+      summary: 'Cambiar rol activo'
+      description: 'Emite nuevo token con el rol seleccionado. Para roles branch_scoped, branch_id es obligatorio.'
+      operationId: ac63a2896587a60955c497f073fdb4d2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - role_id
+              properties:
+                role_id:
+                  type: string
+                  format: uuid
+                branch_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: 'Rol cambiado'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/categories/tree:
+    get:
+      tags:
+        - 'Catalog · Categories'
+      summary: 'Árbol completo de categorías'
+      description: 'Devuelve todas las categorías raíz con hijos anidados recursivamente.'
+      operationId: 712f6eb70da2a4288a6c90373e50603f
+      parameters:
+        -
+          name: is_active
+          in: query
+          description: 'Filtrar nodos por estado'
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: 'Árbol de categorías'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CategoryTreeResponse' } }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/categories/{id}':
+    get:
+      tags:
+        - 'Catalog · Categories'
+      summary: 'Obtener categoría'
+      description: 'Devuelve el nodo sin hijos anidados.'
+      operationId: bb3e1d6738cfbbf952d7e7cbebfdd781
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Categoría encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Categories'
+      summary: 'Actualizar categoría'
+      description: 'Actualiza nombre, slug, descripción y/o padre. No permite ciclos en el árbol ni auto-referencia.'
+      operationId: 36a2c138e0e9af30d2b57ea5119b7bb4
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                parent_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                name:
+                  type: string
+                  maxLength: 120
+                slug:
+                  type: string
+                  pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '200':
+          description: 'Categoría actualizada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Slug duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: 'Ciclo detectado o validación fallida'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'No se puede asignar como padre porque crearía un ciclo.' }
+                  error: { type: string, example: CYCLE_DETECTED }
+                type: object
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Categories'
+      summary: 'Desactivar categoría'
+      description: 'Soft delete lógico. Los hijos NO se desactivan automáticamente.'
+      operationId: 46ea2016bd1f0996d9d7e4d1f67e7a46
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/categories:
+    post:
+      tags:
+        - 'Catalog · Categories'
+      summary: 'Crear categoría'
+      description: 'Crea una categoría. Si parent_id es null se crea como raíz. Si slug no se envía, se auto-genera desde el nombre.'
+      operationId: 3139b0e86fc223dfbf7bc1e2adc5ce8e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                parent_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                name:
+                  type: string
+                  example: Analgésicos
+                  maxLength: 120
+                slug:
+                  type: string
+                  pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+                  example: analgesicos
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '201':
+          description: 'Categoría creada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'parent_id no encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 'Slug duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/classifications:
+    get:
+      tags:
+        - 'Catalog · Classifications'
+      summary: 'Listar clasificaciones LGS'
+      description: 'Devuelve los 7 grupos del Art. 226 LGS ordenados I→II→III→IV_A→IV_B→V→VI. Los grupos son fijos por ley — no se crean nuevos.'
+      operationId: be69813c42d65477fd986935ab185796
+      parameters:
+        -
+          name: is_active
+          in: query
+          description: 'Filtrar por estado'
+          required: false
+          schema:
+            type: boolean
+        -
+          name: is_controlled
+          in: query
+          description: 'true = grupos I-IV, false = grupos V-VI'
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista de clasificaciones'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/ClassificationResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/classifications/{id}':
+    get:
+      tags:
+        - 'Catalog · Classifications'
+      summary: 'Obtener clasificación'
+      operationId: 4e6fa7c999a4558bc4e3cef20f0423c2
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Clasificación encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Classifications'
+      summary: 'Actualizar clasificación'
+      description: 'Solo modifica parámetros configurables. El campo lgs_group es inmutable por ley.'
+      operationId: 35d83c4057f1c181aaeea390c5c15da9
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - prescription_type
+              properties:
+                name:
+                  type: string
+                  example: 'Psicotrópicos — Grupo II'
+                  maxLength: 100
+                prescription_type:
+                  type: string
+                  example: NORMAL
+                  enum: [CON_CODIGO_BARRAS, NORMAL, SIN_RECETA]
+                validity_days:
+                  type: integer
+                  example: 30
+                  nullable: true
+                  maximum: 365
+                  minimum: 1
+                validity_note:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+              type: object
+      responses:
+        '200':
+          description: 'Clasificación actualizada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Classifications'
+      summary: 'Desactivar clasificación'
+      description: 'Soft delete lógico. No elimina el registro.'
+      operationId: e1d30faf9c59472d992dc92c0a9a5462
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/laboratories:
+    get:
+      tags:
+        - 'Catalog · Laboratories'
+      summary: 'Listar laboratorios'
+      description: 'Lista paginada con filtros opcionales por nombre, país y estado.'
+      operationId: 71c75e01451ce45dbdd92ce4ed383728
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Búsqueda parcial por nombre'
+          required: false
+          schema:
+            type: string
+        -
+          name: country_code
+          in: query
+          description: 'Código ISO 3166-1 alpha-2'
+          required: false
+          schema:
+            type: string
+            maxLength: 2
+            minLength: 2
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada de laboratorios'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/LaboratoryResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Laboratories'
+      summary: 'Crear laboratorio'
+      operationId: 35744fb3220dfd5e29f438b55feadebb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - country_code
+              properties:
+                name:
+                  type: string
+                  example: Pfizer
+                  maxLength: 120
+                country_code:
+                  type: string
+                  example: US
+                  maxLength: 2
+                  minLength: 2
+                website:
+                  type: string
+                  format: uri
+                  example: 'https://www.pfizer.com'
+                  nullable: true
+              type: object
+      responses:
+        '201':
+          description: 'Laboratorio creado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaboratoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/laboratories/{id}':
+    get:
+      tags:
+        - 'Catalog · Laboratories'
+      summary: 'Obtener laboratorio'
+      operationId: 46262779e32ac5e75e169005df2e072c
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Laboratorio encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaboratoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Laboratories'
+      summary: 'Actualizar laboratorio'
+      operationId: de778ebed2c909715fb0917be2784da9
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - country_code
+              properties:
+                name:
+                  type: string
+                  example: 'Pfizer Inc.'
+                  maxLength: 120
+                country_code:
+                  type: string
+                  example: US
+                  maxLength: 2
+                  minLength: 2
+                website:
+                  type: string
+                  format: uri
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: 'Laboratorio actualizado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaboratoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Laboratories'
+      summary: 'Desactivar laboratorio'
+      description: 'Soft delete lógico — establece is_active = false. No elimina el registro.'
+      operationId: 31118b86dbec44157fb95d9e2b025f37
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
 components:
   schemas:
+    CategoryResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+          example: Analgésicos
+        slug:
+          type: string
+          example: analgesicos
+        description:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        is_root:
+          type: boolean
+          example: false
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+    CategoryTreeResponse:
+      allOf:
+        -
+          $ref: '#/components/schemas/CategoryResponse'
+        -
+          properties:
+            children:
+              type: array
+              items:
+                $ref: '#/components/schemas/CategoryTreeResponse'
+          type: object
+    ClassificationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        lgs_group:
+          type: string
+          example: II
+          enum:
+            - I
+            - II
+            - III
+            - IV_A
+            - IV_B
+            - V
+            - VI
+        lgs_group_label:
+          type: string
+          example: 'Grupo II — Psicotrópicos'
+        name:
+          type: string
+          example: 'Psicotrópicos — Grupo II'
+        prescription_type:
+          type: string
+          example: NORMAL
+          enum:
+            - CON_CODIGO_BARRAS
+            - NORMAL
+            - SIN_RECETA
+        prescription_type_label:
+          type: string
+          example: 'Receta normal'
+        validity_days:
+          type: integer
+          example: 30
+          nullable: true
+        validity_note:
+          type: string
+          example: 'Máximo 2 presentaciones por receta.'
+          nullable: true
+        is_controlled:
+          type: boolean
+          example: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+    LaboratoryResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Pfizer
+        country_code:
+          type: string
+          example: US
+        website:
+          type: string
+          example: 'https://www.pfizer.com'
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     PaginationMeta:
       properties:
         total:
@@ -139,6 +1043,15 @@ components:
       bearerFormat: JWT
       scheme: bearer
 tags:
+  -
+    name: 'Catalog · Categories'
+    description: 'Categorías jerárquicas de productos (árbol libre con Adjacency List)'
+  -
+    name: 'Catalog · Classifications'
+    description: 'Grupos de medicamentos Art. 226 LGS — fijos por ley'
+  -
+    name: 'Catalog · Laboratories'
+    description: 'Catálogo de laboratorios fabricantes'
   -
     name: Auth
     description: Auth

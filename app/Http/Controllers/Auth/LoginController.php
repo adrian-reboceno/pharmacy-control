@@ -9,9 +9,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\AuthTokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
 use PharmaControl\Auth\Infrastructure\Controller\LoginController as AuthController;
-use OpenApi\Attributes as OA;
 
 class LoginController extends Controller
 {
