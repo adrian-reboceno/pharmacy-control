@@ -46,6 +46,23 @@ class UserController extends Controller
     }
 
     #[Route('POST', '/api/v1/users/{id}/unlock', middleware: ['auth:sanctum', 'rbac2:auth.users.unlock'])]
+    #[OA\Post(
+        path: '/v1/auth/users/{userId}/unlock',
+        summary: 'Desbloquear cuenta',
+        description: 'Desbloquea una cuenta bloqueada por intentos fallidos. Requiere privilegios de administrador.',
+        tags: ['Auth'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'userId', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, ref: '#/components/responses/NoContent'),
+            new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
+            new OA\Response(response: 403, ref: '#/components/responses/Forbidden'),
+            new OA\Response(response: 404, ref: '#/components/responses/NotFound'),
+            new OA\Response(response: 422, description: 'La cuenta no está bloqueada'),
+        ]
+    )]
     public function unlock(Request $request, string $id): JsonResponse
     {
         /** @var AuthenticatedUser $actor */

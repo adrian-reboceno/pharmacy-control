@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
 use PharmaControl\Auth\Infrastructure\Controller\RoleController as AuthController;
 use PharmaControl\Auth\Infrastructure\Middleware\AuthenticatedUser;
@@ -19,6 +20,33 @@ class RoleController extends Controller
     ) {}
 
     #[Route('POST', '/api/v1/users/{id}/roles', middleware: ['auth:sanctum', 'rbac2:auth.roles.assign'])]
+    #[OA\Post(
+        path: '/v1/auth/users/{userId}/roles',
+        summary: 'Asignar rol a usuario',
+        description: 'El actor solo puede asignar roles de nivel ≤ al suyo. Máximo 3 roles. Respeta SSoD.',
+        tags: ['Auth'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'userId', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['role_id'],
+                properties: [
+                    new OA\Property(property: 'role_id',   type: 'string', format: 'uuid'),
+                    new OA\Property(property: 'branch_id', type: 'string', format: 'uuid', nullable: true),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 204, ref: '#/components/responses/NoContent'),
+            new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
+            new OA\Response(response: 403, ref: '#/components/responses/Forbidden'),
+            new OA\Response(response: 409, description: 'Rol ya asignado / violación SSoD / super-admin exclusivo'),
+            new OA\Response(response: 422, ref: '#/components/responses/UnprocessableEntity'),
+        ]
+    )]
     public function assign(Request $request, string $id): JsonResponse
     {
         $request->validate([

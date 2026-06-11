@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\AuthTokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 use Illuminate\Routing\Attributes\Route;
 use PharmaControl\Auth\Infrastructure\Controller\SwitchRoleController as AuthController;
 use PharmaControl\Auth\Infrastructure\Middleware\AuthenticatedUser;
@@ -20,6 +21,29 @@ class SwitchRoleController extends Controller
     ) {}
 
     #[Route('POST', '/api/v1/auth/session/role', middleware: ['auth:sanctum'])]
+    #[OA\Post(
+        path: '/v1/auth/switch-role',
+        summary: 'Cambiar rol activo',
+        description: 'Emite nuevo token con el rol seleccionado. Para roles branch_scoped, branch_id es obligatorio.',
+        tags: ['Auth'],
+        security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['role_id'],
+                properties: [
+                    new OA\Property(property: 'role_id',   type: 'string', format: 'uuid'),
+                    new OA\Property(property: 'branch_id', type: 'string', format: 'uuid', nullable: true),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Rol cambiado'),
+            new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
+            new OA\Response(response: 403, ref: '#/components/responses/Forbidden'),
+            new OA\Response(response: 422, ref: '#/components/responses/UnprocessableEntity'),
+        ]
+    )]
     public function __invoke(Request $request): JsonResponse
     {
         $request->validate([
