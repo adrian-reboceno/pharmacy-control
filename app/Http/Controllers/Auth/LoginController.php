@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Route;
 use PharmaControl\Auth\Infrastructure\Controller\LoginController as AuthController;
+use OpenApi\Attributes as OA;
 
 class LoginController extends Controller
 {
@@ -19,6 +20,49 @@ class LoginController extends Controller
     ) {}
 
     #[Route('POST', '/api/v1/auth/login', middleware: ['throttle:5,1'])]
+    #[OA\Post(
+        path: '/api/v1/auth/login',
+        summary: 'Iniciar sesión',
+        description: 'Autentica al usuario y devuelve par de tokens JWT. Si el usuario tiene múltiples roles, requires_role_selection será true.',
+        tags: ['Auth'],
+        security: [],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['email', 'password', 'client_type'],
+                properties: [
+                    new OA\Property(property: 'email',       type: 'string', format: 'email',    example: 'admin@pharmaco.mx'),
+                    new OA\Property(property: 'password',    type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
+                    new OA\Property(property: 'client_type', type: 'string', enum: ['WEB', 'MOBILE'], example: 'WEB'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Login exitoso',
+                content: new OA\JsonContent(properties: [
+                    new OA\Property(property: 'access_token',             type: 'string'),
+                    new OA\Property(property: 'refresh_token',            type: 'string'),
+                    new OA\Property(property: 'expires_in',               type: 'integer', example: 900),
+                    new OA\Property(property: 'requires_role_selection',  type: 'boolean', example: false),
+                    new OA\Property(property: 'requires_password_change', type: 'boolean', example: false),
+                ])
+            ),
+            new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
+            new OA\Response(response: 422, ref: '#/components/responses/UnprocessableEntity'),
+            new OA\Response(
+                response: 423,
+                description: 'Cuenta bloqueada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Cuenta bloqueada.'),
+                        new OA\Property(property: 'error',   type: 'string', example: 'ACCOUNT_LOCKED'),
+                    ]
+                )
+            ),
+        ]
+    )]
     public function __invoke(Request $request): JsonResponse
     {
         $request->validate([
