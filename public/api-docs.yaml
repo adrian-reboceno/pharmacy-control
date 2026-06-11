@@ -837,6 +837,233 @@ paths:
       security:
         -
           bearerAuth: []
+  /v1/catalog/units:
+    get:
+      tags:
+        - 'Catalog · Units'
+      summary: 'Listar unidades de medida'
+      operationId: f5e6c8a4984bed4ff701bdfeb33f595e
+      parameters:
+        -
+          name: type
+          in: query
+          description: 'Filtrar por tipo'
+          required: false
+          schema:
+            type: string
+            enum:
+              - QUANTITY
+              - CONCENTRATION
+        -
+          name: search
+          in: query
+          description: 'Búsqueda en nombre o símbolo'
+          required: false
+          schema:
+            type: string
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada de unidades'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/UnitResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Units'
+      summary: 'Crear unidad de medida'
+      operationId: de4db75b259396d14ab30bcef9fcef39
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - symbol
+                - type
+              properties:
+                name:
+                  type: string
+                  example: Miligramo
+                  maxLength: 80
+                symbol:
+                  type: string
+                  example: mg
+                  maxLength: 20
+                type:
+                  type: string
+                  example: CONCENTRATION
+                  enum: [QUANTITY, CONCENTRATION]
+              type: object
+      responses:
+        '201':
+          description: 'Unidad creada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre o símbolo duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/units/{id}':
+    get:
+      tags:
+        - 'Catalog · Units'
+      summary: 'Obtener unidad de medida'
+      operationId: cb84fbb23f6c65cbf2915e528d008825
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Unidad encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Units'
+      summary: 'Actualizar unidad de medida'
+      operationId: 61b3ced63ee41cde1d49dc7723b3aeb3
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - symbol
+                - type
+              properties:
+                name:
+                  type: string
+                  example: Miligramo
+                  maxLength: 80
+                symbol:
+                  type: string
+                  example: mg
+                  maxLength: 20
+                type:
+                  type: string
+                  enum: [QUANTITY, CONCENTRATION]
+              type: object
+      responses:
+        '200':
+          description: 'Unidad actualizada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre o símbolo duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Units'
+      summary: 'Desactivar unidad de medida'
+      description: 'Soft delete lógico. No elimina el registro.'
+      operationId: d2aeb483cc337466cb1a942c8ca3f701
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
 components:
   schemas:
     CategoryResponse:
@@ -971,6 +1198,40 @@ components:
           type: string
           format: date-time
       type: object
+    UnitResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Miligramo
+        symbol:
+          type: string
+          example: mg
+        type:
+          type: string
+          example: CONCENTRATION
+          enum:
+            - QUANTITY
+            - CONCENTRATION
+        type_label:
+          type: string
+          example: 'Concentración / Dosis'
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     PaginationMeta:
       properties:
         total:
@@ -1052,6 +1313,9 @@ tags:
   -
     name: 'Catalog · Laboratories'
     description: 'Catálogo de laboratorios fabricantes'
+  -
+    name: 'Catalog · Units'
+    description: 'Unidades de medida farmacéuticas'
   -
     name: Auth
     description: Auth

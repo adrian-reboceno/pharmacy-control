@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,  // 6 roles + 62 permisos + role_metadata
             SoDExclusionsSeeder::class,         // 12 restricciones SSoD + usuario sistema
+            UnitsOfMeasurementSeeder::class,    // 20 unidades de medida predefinidas
         ]);
     }
 }

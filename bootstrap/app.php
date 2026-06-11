@@ -16,6 +16,9 @@ use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotFoun
 use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotModifiableException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\DuplicateLaboratoryNameException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\LaboratoryNotFoundException;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\DuplicateUnitNameException;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\DuplicateUnitSymbolException;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\UnitNotFoundException;
 use PharmaControl\Shared\Exception\DomainException as SharedDomainException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -61,6 +64,15 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(function (ClassificationNotModifiableException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage(), 'error' => 'NOT_MODIFIABLE'], 422);
+        });
+        $exceptions->render(function (UnitNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateUnitNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (DuplicateUnitSymbolException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (SharedDomainException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage(), 'error' => 'DOMAIN_ERROR'], 422);

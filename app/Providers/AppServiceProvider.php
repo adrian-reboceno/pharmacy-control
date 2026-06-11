@@ -34,6 +34,8 @@ use PharmaControl\Catalog\Classifications\Domain\Contract\Repository\Classificat
 use PharmaControl\Catalog\Classifications\Infrastructure\Persistence\Eloquent\Repository\EloquentClassificationRepository;
 use PharmaControl\Catalog\Laboratories\Domain\Contract\Repository\LaboratoryRepositoryContract;
 use PharmaControl\Catalog\Laboratories\Infrastructure\Persistence\Eloquent\Repository\EloquentLaboratoryRepository;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
+use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -62,6 +64,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalog — Categories
         $this->app->bind(CategoryRepositoryContract::class, EloquentCategoryRepository::class);
+
+        // Catalog — Units of Measurement
+        $this->app->bind(UnitRepositoryContract::class, EloquentUnitRepository::class);
     }
 
     public function boot(): void
