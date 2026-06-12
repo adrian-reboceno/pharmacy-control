@@ -15,14 +15,14 @@ use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Controller\Route
 #[OA\Schema(
     schema: 'RouteResponse',
     properties: [
-        new OA\Property(property: 'id',          type: 'string', format: 'uuid'),
-        new OA\Property(property: 'name',        type: 'string', example: 'Oral'),
-        new OA\Property(property: 'code',        type: 'string', example: 'VO'),
+        new OA\Property(property: 'id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'name', type: 'string', example: 'Oral'),
+        new OA\Property(property: 'code', type: 'string', example: 'VO'),
         new OA\Property(property: 'description', type: 'string', nullable: true, example: 'Administración por la boca.'),
-        new OA\Property(property: 'is_active',   type: 'boolean', example: true),
-        new OA\Property(property: 'created_by',  type: 'string', format: 'uuid', nullable: true),
-        new OA\Property(property: 'created_at',  type: 'string', format: 'date-time'),
-        new OA\Property(property: 'updated_at',  type: 'string', format: 'date-time'),
+        new OA\Property(property: 'is_active', type: 'boolean', example: true),
+        new OA\Property(property: 'created_by', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
 class RouteController extends Controller
@@ -38,10 +38,10 @@ class RouteController extends Controller
         tags: ['Catalog · Routes of Administration'],
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(name: 'search',    in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en nombre o código'),
+            new OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en nombre o código'),
             new OA\Parameter(name: 'is_active', in: 'query', required: false, schema: new OA\Schema(type: 'boolean')),
-            new OA\Parameter(name: 'per_page',  in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
-            new OA\Parameter(name: 'page',      in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
+            new OA\Parameter(name: 'page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
         ],
         responses: [
             new OA\Response(
@@ -64,19 +64,19 @@ class RouteController extends Controller
         }
 
         $result = $this->controller->index([
-            'search'    => $request->query('search'),
+            'search' => $request->query('search'),
             'is_active' => $isActive,
-            'per_page'  => $request->query('per_page', 20),
-            'page'      => $request->query('page', 1),
+            'per_page' => $request->query('per_page', 20),
+            'page' => $request->query('page', 1),
         ]);
 
         return response()->json([
             'data' => RouteResource::collection($result['data']),
             'meta' => [
-                'total'        => $result['total'],
-                'per_page'     => $result['per_page'],
+                'total' => $result['total'],
+                'per_page' => $result['per_page'],
                 'current_page' => $result['current_page'],
-                'last_page'    => $result['last_page'],
+                'last_page' => $result['last_page'],
             ],
         ]);
     }
@@ -113,8 +113,8 @@ class RouteController extends Controller
             content: new OA\JsonContent(
                 required: ['name', 'code'],
                 properties: [
-                    new OA\Property(property: 'name',        type: 'string', maxLength: 100, example: 'Oral'),
-                    new OA\Property(property: 'code',        type: 'string', maxLength: 10,  example: 'VO'),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 100, example: 'Oral'),
+                    new OA\Property(property: 'code', type: 'string', maxLength: 10, example: 'VO'),
                     new OA\Property(property: 'description', type: 'string', nullable: true, maxLength: 500),
                 ]
             )
@@ -129,13 +129,13 @@ class RouteController extends Controller
     )]
     public function store(Request $request): JsonResponse
     {
-        $validated   = $request->validate([
-            'name'        => 'required|string|max:100',
-            'code'        => 'required|string|max:10',
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:10',
             'description' => 'nullable|string|max:500',
         ]);
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new RouteResource($dto))->response()->setStatusCode(201);
     }
@@ -153,8 +153,8 @@ class RouteController extends Controller
             content: new OA\JsonContent(
                 required: ['name', 'code'],
                 properties: [
-                    new OA\Property(property: 'name',        type: 'string', maxLength: 100),
-                    new OA\Property(property: 'code',        type: 'string', maxLength: 10),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 100),
+                    new OA\Property(property: 'code', type: 'string', maxLength: 10),
                     new OA\Property(property: 'description', type: 'string', nullable: true, maxLength: 500),
                 ]
             )
@@ -170,13 +170,13 @@ class RouteController extends Controller
     )]
     public function update(Request $request, string $id): JsonResponse
     {
-        $validated   = $request->validate([
-            'name'        => 'required|string|max:100',
-            'code'        => 'required|string|max:10',
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:10',
             'description' => 'nullable|string|max:500',
         ]);
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new RouteResource($dto))->response()->setStatusCode(200);
     }

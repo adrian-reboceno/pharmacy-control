@@ -13,22 +13,23 @@ use PHPUnit\Framework\TestCase;
 final class GetUnitsUseCaseTest extends TestCase
 {
     private UnitRepositoryContract&MockObject $repository;
+
     private GetUnitsUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(UnitRepositoryContract::class);
-        $this->useCase    = new GetUnitsUseCase($this->repository);
+        $this->useCase = new GetUnitsUseCase($this->repository);
     }
 
     private function paginatedResult(array $data = []): array
     {
         return [
-            'data'         => $data,
-            'total'        => count($data),
-            'per_page'     => 20,
+            'data' => $data,
+            'total' => count($data),
+            'per_page' => 20,
             'current_page' => 1,
-            'last_page'    => 1,
+            'last_page' => 1,
         ];
     }
 
@@ -37,10 +38,10 @@ final class GetUnitsUseCaseTest extends TestCase
         $expected = $this->paginatedResult();
         $this->repository->expects($this->once())
             ->method('findAll')
-            ->with($this->callback(fn ($f) => !isset($f['type']) && !isset($f['search']) && !isset($f['is_active'])))
+            ->with($this->callback(fn ($f) => ! isset($f['type']) && ! isset($f['search']) && ! isset($f['is_active'])))
             ->willReturn($expected);
 
-        $result = ($this->useCase)(new GetUnitsQuery());
+        $result = ($this->useCase)(new GetUnitsQuery);
 
         self::assertSame($expected, $result);
     }
@@ -100,7 +101,7 @@ final class GetUnitsUseCaseTest extends TestCase
         $result = $this->paginatedResult();
         $this->repository->method('findAll')->willReturn($result);
 
-        $returned = ($this->useCase)(new GetUnitsQuery());
+        $returned = ($this->useCase)(new GetUnitsQuery);
 
         self::assertSame($result, $returned);
     }

@@ -26,7 +26,6 @@ interface PresentationRepositoryContract
      *   per_page?:  int,
      *   page?:      int,
      * } $filters
-     *
      * @return array{
      *   data:         Presentation[],
      *   total:        int,

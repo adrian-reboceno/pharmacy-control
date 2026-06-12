@@ -7,9 +7,9 @@ namespace PharmaControl\Catalog\Presentations\Application\UseCase\GetPresentatio
 final readonly class GetPresentationsQuery
 {
     public function __construct(
-        public readonly ?string $search   = null,
-        public readonly ?bool   $isActive = null,
-        public readonly int     $perPage  = 20,
-        public readonly int     $page     = 1,
+        public readonly ?string $search = null,
+        public readonly ?bool $isActive = null,
+        public readonly int $perPage = 20,
+        public readonly int $page = 1,
     ) {}
 }

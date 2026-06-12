@@ -18,12 +18,13 @@ use PHPUnit\Framework\TestCase;
 final class GetRoutesUseCaseTest extends TestCase
 {
     private RouteRepositoryContract&MockObject $repository;
-    private GetRoutesUseCase                   $useCase;
+
+    private GetRoutesUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(RouteRepositoryContract::class);
-        $this->useCase    = new GetRoutesUseCase($this->repository);
+        $this->useCase = new GetRoutesUseCase($this->repository);
     }
 
     private function makeRoute(string $name, string $code): RouteOfAdministration
@@ -40,11 +41,11 @@ final class GetRoutesUseCaseTest extends TestCase
     private function makePagedResult(array $routes): array
     {
         return [
-            'data'         => $routes,
-            'total'        => count($routes),
-            'per_page'     => 20,
+            'data' => $routes,
+            'total' => count($routes),
+            'per_page' => 20,
             'current_page' => 1,
-            'last_page'    => 1,
+            'last_page' => 1,
         ];
     }
 
@@ -56,7 +57,7 @@ final class GetRoutesUseCaseTest extends TestCase
         ];
         $this->repository->method('findAll')->willReturn($this->makePagedResult($routes));
 
-        $result = ($this->useCase)(new GetRoutesQuery());
+        $result = ($this->useCase)(new GetRoutesQuery);
 
         self::assertCount(2, $result['data']);
         self::assertContainsOnlyInstancesOf(RouteDTO::class, $result['data']);
@@ -111,11 +112,11 @@ final class GetRoutesUseCaseTest extends TestCase
     public function test_returns_results_ordered_by_name_asc(): void
     {
         $intra = $this->makeRoute('Intravenosa', 'IV');
-        $oral  = $this->makeRoute('Oral', 'VO');
+        $oral = $this->makeRoute('Oral', 'VO');
 
         $this->repository->method('findAll')->willReturn($this->makePagedResult([$intra, $oral]));
 
-        $result = ($this->useCase)(new GetRoutesQuery());
+        $result = ($this->useCase)(new GetRoutesQuery);
 
         self::assertSame('Intravenosa', $result['data'][0]->name);
         self::assertSame('Oral', $result['data'][1]->name);

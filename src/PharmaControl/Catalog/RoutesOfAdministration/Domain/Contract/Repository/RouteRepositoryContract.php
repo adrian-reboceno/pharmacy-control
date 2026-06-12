@@ -26,7 +26,6 @@ interface RouteRepositoryContract
      *   per_page?:  int,
      *   page?:      int,
      * } $filters
-     *
      * @return array{
      *   data:         RouteOfAdministration[],
      *   total:        int,

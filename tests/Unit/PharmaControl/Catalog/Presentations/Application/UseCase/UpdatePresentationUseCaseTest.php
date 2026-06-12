@@ -24,14 +24,16 @@ use PHPUnit\Framework\TestCase;
 final class UpdatePresentationUseCaseTest extends TestCase
 {
     private PresentationRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject         $events;
-    private UpdatePresentationUseCase                 $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private UpdatePresentationUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(PresentationRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new UpdatePresentationUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new UpdatePresentationUseCase($this->repository, $this->events);
     }
 
     private function makePresentation(string $name = 'Tableta', string $abbreviation = 'Tab'): Presentation
@@ -48,11 +50,11 @@ final class UpdatePresentationUseCaseTest extends TestCase
     private function makeCommand(string $id, string $name = 'Cápsula', string $abbreviation = 'Cap'): UpdatePresentationCommand
     {
         return new UpdatePresentationCommand(
-            id:           $id,
-            name:         $name,
+            id: $id,
+            name: $name,
             abbreviation: $abbreviation,
-            description:  null,
-            actorUserId:  (string) UserId::generate(),
+            description: null,
+            actorUserId: (string) UserId::generate(),
         );
     }
 
@@ -83,7 +85,7 @@ final class UpdatePresentationUseCaseTest extends TestCase
     public function test_throws_duplicate_presentation_name_exception_when_name_belongs_to_different_presentation(): void
     {
         $existing = $this->makePresentation('Tableta', 'Tab');
-        $other    = $this->makePresentation('Cápsula', 'Cap');
+        $other = $this->makePresentation('Cápsula', 'Cap');
 
         $this->repository->method('findById')->willReturn($existing);
         $this->repository->method('findByName')->willReturn($other);
@@ -111,7 +113,7 @@ final class UpdatePresentationUseCaseTest extends TestCase
     public function test_throws_duplicate_abbreviation_exception_when_abbreviation_belongs_to_different_presentation(): void
     {
         $existing = $this->makePresentation('Tableta', 'Tab');
-        $other    = $this->makePresentation('Cápsula', 'Cap');
+        $other = $this->makePresentation('Cápsula', 'Cap');
 
         $this->repository->method('findById')->willReturn($existing);
         $this->repository->method('findByName')->willReturn(null);

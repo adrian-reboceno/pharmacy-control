@@ -24,14 +24,16 @@ use PHPUnit\Framework\TestCase;
 final class UpdateRouteUseCaseTest extends TestCase
 {
     private RouteRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject  $events;
-    private UpdateRouteUseCase                 $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private UpdateRouteUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(RouteRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new UpdateRouteUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new UpdateRouteUseCase($this->repository, $this->events);
     }
 
     private function makeRoute(string $name = 'Oral', string $code = 'VO'): RouteOfAdministration
@@ -48,9 +50,9 @@ final class UpdateRouteUseCaseTest extends TestCase
     private function makeCommand(string $id, string $name = 'Sublingual', string $code = 'SL'): UpdateRouteCommand
     {
         return new UpdateRouteCommand(
-            id:          $id,
-            name:        $name,
-            code:        $code,
+            id: $id,
+            name: $name,
+            code: $code,
             description: null,
             actorUserId: (string) UserId::generate(),
         );
@@ -83,7 +85,7 @@ final class UpdateRouteUseCaseTest extends TestCase
     public function test_throws_duplicate_route_name_exception_when_name_belongs_to_different_route(): void
     {
         $existing = $this->makeRoute('Oral', 'VO');
-        $other    = $this->makeRoute('Sublingual', 'SL');
+        $other = $this->makeRoute('Sublingual', 'SL');
 
         $this->repository->method('findById')->willReturn($existing);
         $this->repository->method('findByName')->willReturn($other);
@@ -111,7 +113,7 @@ final class UpdateRouteUseCaseTest extends TestCase
     public function test_throws_duplicate_route_code_exception_when_code_belongs_to_different_route(): void
     {
         $existing = $this->makeRoute('Oral', 'VO');
-        $other    = $this->makeRoute('Sublingual', 'SL');
+        $other = $this->makeRoute('Sublingual', 'SL');
 
         $this->repository->method('findById')->willReturn($existing);
         $this->repository->method('findByName')->willReturn(null);

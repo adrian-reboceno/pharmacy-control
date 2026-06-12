@@ -22,14 +22,16 @@ use PHPUnit\Framework\TestCase;
 final class DeactivateUnitUseCaseTest extends TestCase
 {
     private UnitRepositoryContract&MockObject $repository;
+
     private EventPublisherContract&MockObject $events;
+
     private DeactivateUnitUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(UnitRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new DeactivateUnitUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new DeactivateUnitUseCase($this->repository, $this->events);
     }
 
     private function makeUnit(): UnitOfMeasurement

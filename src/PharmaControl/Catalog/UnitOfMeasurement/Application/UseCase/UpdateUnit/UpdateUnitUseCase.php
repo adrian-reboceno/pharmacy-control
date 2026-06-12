@@ -29,17 +29,17 @@ final class UpdateUnitUseCase
             throw new UnitNotFoundException($command->id);
         }
 
-        $name   = new UnitName($command->name);
+        $name = new UnitName($command->name);
         $symbol = new UnitSymbol($command->symbol);
-        $type   = UnitType::from($command->type);
+        $type = UnitType::from($command->type);
 
         $existingByName = $this->repository->findByName($name);
-        if ($existingByName !== null && !$existingByName->getId()->equals($unit->getId())) {
+        if ($existingByName !== null && ! $existingByName->getId()->equals($unit->getId())) {
             throw new DuplicateUnitNameException($command->name);
         }
 
         $existingBySymbol = $this->repository->findBySymbol($symbol);
-        if ($existingBySymbol !== null && !$existingBySymbol->getId()->equals($unit->getId())) {
+        if ($existingBySymbol !== null && ! $existingBySymbol->getId()->equals($unit->getId())) {
             throw new DuplicateUnitSymbolException($command->symbol);
         }
 

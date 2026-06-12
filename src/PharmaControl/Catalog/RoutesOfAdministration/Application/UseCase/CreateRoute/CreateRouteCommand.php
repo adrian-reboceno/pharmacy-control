@@ -7,9 +7,9 @@ namespace PharmaControl\Catalog\RoutesOfAdministration\Application\UseCase\Creat
 final readonly class CreateRouteCommand
 {
     public function __construct(
-        public readonly string  $name,
-        public readonly string  $code,
+        public readonly string $name,
+        public readonly string $code,
         public readonly ?string $description,
-        public readonly string  $actorUserId,
+        public readonly string $actorUserId,
     ) {}
 }

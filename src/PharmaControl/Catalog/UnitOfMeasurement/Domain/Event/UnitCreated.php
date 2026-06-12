@@ -14,11 +14,11 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class UnitCreated implements DomainEvent
 {
     public function __construct(
-        public readonly UnitId             $id,
-        public readonly UnitName           $name,
-        public readonly UnitSymbol         $symbol,
-        public readonly UnitType           $type,
-        public readonly ?UserId            $createdBy,
+        public readonly UnitId $id,
+        public readonly UnitName $name,
+        public readonly UnitSymbol $symbol,
+        public readonly UnitType $type,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

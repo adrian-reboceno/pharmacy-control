@@ -18,12 +18,13 @@ use PHPUnit\Framework\TestCase;
 final class GetPresentationsUseCaseTest extends TestCase
 {
     private PresentationRepositoryContract&MockObject $repository;
-    private GetPresentationsUseCase                   $useCase;
+
+    private GetPresentationsUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(PresentationRepositoryContract::class);
-        $this->useCase    = new GetPresentationsUseCase($this->repository);
+        $this->useCase = new GetPresentationsUseCase($this->repository);
     }
 
     private function makePresentation(string $name, string $abbreviation): Presentation
@@ -40,11 +41,11 @@ final class GetPresentationsUseCaseTest extends TestCase
     private function makePagedResult(array $presentations): array
     {
         return [
-            'data'         => $presentations,
-            'total'        => count($presentations),
-            'per_page'     => 20,
+            'data' => $presentations,
+            'total' => count($presentations),
+            'per_page' => 20,
             'current_page' => 1,
-            'last_page'    => 1,
+            'last_page' => 1,
         ];
     }
 
@@ -56,7 +57,7 @@ final class GetPresentationsUseCaseTest extends TestCase
         ];
         $this->repository->method('findAll')->willReturn($this->makePagedResult($presentations));
 
-        $result = ($this->useCase)(new GetPresentationsQuery());
+        $result = ($this->useCase)(new GetPresentationsQuery);
 
         self::assertCount(2, $result['data']);
         self::assertContainsOnlyInstancesOf(PresentationDTO::class, $result['data']);
@@ -115,7 +116,7 @@ final class GetPresentationsUseCaseTest extends TestCase
 
         $this->repository->method('findAll')->willReturn($this->makePagedResult([$cap, $tab]));
 
-        $result = ($this->useCase)(new GetPresentationsQuery());
+        $result = ($this->useCase)(new GetPresentationsQuery);
 
         self::assertSame('Cápsula', $result['data'][0]->name);
         self::assertSame('Tableta', $result['data'][1]->name);

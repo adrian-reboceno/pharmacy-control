@@ -16,26 +16,26 @@ final class RouteMapper
     public function toDomain(EloquentRoute $model): RouteOfAdministration
     {
         return RouteOfAdministration::reconstitute(
-            id:          new RouteId($model->id),
-            name:        new RouteName($model->name),
-            code:        new RouteCode($model->code),
+            id: new RouteId($model->id),
+            name: new RouteName($model->name),
+            code: new RouteCode($model->code),
             description: $model->description,
-            isActive:    $model->is_active,
-            createdBy:   $model->created_by ? new UserId($model->created_by) : null,
-            createdAt:   $model->created_at,
-            updatedAt:   $model->updated_at,
+            isActive: $model->is_active,
+            createdBy: $model->created_by ? new UserId($model->created_by) : null,
+            createdAt: $model->created_at,
+            updatedAt: $model->updated_at,
         );
     }
 
     public function toPersistence(RouteOfAdministration $r): array
     {
         return [
-            'id'          => $r->getId()->value,
-            'name'        => $r->getName()->value,
-            'code'        => $r->getCode()->value,
+            'id' => $r->getId()->value,
+            'name' => $r->getName()->value,
+            'code' => $r->getCode()->value,
             'description' => $r->getDescription(),
-            'is_active'   => $r->isActive(),
-            'created_by'  => $r->getCreatedBy()?->value,
+            'is_active' => $r->isActive(),
+            'created_by' => $r->getCreatedBy()?->value,
         ];
     }
 }

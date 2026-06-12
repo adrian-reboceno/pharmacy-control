@@ -32,8 +32,8 @@ return new class extends Migration
             ADD CONSTRAINT units_of_measurement_type_check
             CHECK (type IN ('QUANTITY','CONCENTRATION'))");
 
-        DB::statement("CREATE UNIQUE INDEX units_of_measurement_name_lower_unique
-            ON units_of_measurement (LOWER(name))");
+        DB::statement('CREATE UNIQUE INDEX units_of_measurement_name_lower_unique
+            ON units_of_measurement (LOWER(name))');
     }
 
     public function down(): void

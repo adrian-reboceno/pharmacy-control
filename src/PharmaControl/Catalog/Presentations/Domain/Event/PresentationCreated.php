@@ -13,10 +13,10 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class PresentationCreated implements DomainEvent
 {
     public function __construct(
-        public readonly PresentationId     $id,
-        public readonly PresentationName   $name,
-        public readonly Abbreviation       $abbreviation,
-        public readonly ?UserId            $createdBy,
+        public readonly PresentationId $id,
+        public readonly PresentationName $name,
+        public readonly Abbreviation $abbreviation,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

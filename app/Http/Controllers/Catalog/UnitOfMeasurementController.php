@@ -15,15 +15,15 @@ use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Controller\UnitContro
 #[OA\Schema(
     schema: 'UnitResponse',
     properties: [
-        new OA\Property(property: 'id',          type: 'string', format: 'uuid'),
-        new OA\Property(property: 'name',        type: 'string', example: 'Miligramo'),
-        new OA\Property(property: 'symbol',      type: 'string', example: 'mg'),
-        new OA\Property(property: 'type',        type: 'string', enum: ['QUANTITY', 'CONCENTRATION'], example: 'CONCENTRATION'),
-        new OA\Property(property: 'type_label',  type: 'string', example: 'Concentración / Dosis'),
-        new OA\Property(property: 'is_active',   type: 'boolean', example: true),
-        new OA\Property(property: 'created_by',  type: 'string', format: 'uuid', nullable: true),
-        new OA\Property(property: 'created_at',  type: 'string', format: 'date-time'),
-        new OA\Property(property: 'updated_at',  type: 'string', format: 'date-time'),
+        new OA\Property(property: 'id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'name', type: 'string', example: 'Miligramo'),
+        new OA\Property(property: 'symbol', type: 'string', example: 'mg'),
+        new OA\Property(property: 'type', type: 'string', enum: ['QUANTITY', 'CONCENTRATION'], example: 'CONCENTRATION'),
+        new OA\Property(property: 'type_label', type: 'string', example: 'Concentración / Dosis'),
+        new OA\Property(property: 'is_active', type: 'boolean', example: true),
+        new OA\Property(property: 'created_by', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
 class UnitOfMeasurementController extends Controller
@@ -38,11 +38,11 @@ class UnitOfMeasurementController extends Controller
         tags: ['Catalog · Units'],
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(name: 'type',      in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['QUANTITY', 'CONCENTRATION']), description: 'Filtrar por tipo'),
-            new OA\Parameter(name: 'search',    in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en nombre o símbolo'),
+            new OA\Parameter(name: 'type', in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['QUANTITY', 'CONCENTRATION']), description: 'Filtrar por tipo'),
+            new OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en nombre o símbolo'),
             new OA\Parameter(name: 'is_active', in: 'query', required: false, schema: new OA\Schema(type: 'boolean')),
-            new OA\Parameter(name: 'per_page',  in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
-            new OA\Parameter(name: 'page',      in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
+            new OA\Parameter(name: 'page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
         ],
         responses: [
             new OA\Response(
@@ -65,20 +65,20 @@ class UnitOfMeasurementController extends Controller
         }
 
         $result = $this->controller->index([
-            'type'      => $request->query('type'),
-            'search'    => $request->query('search'),
+            'type' => $request->query('type'),
+            'search' => $request->query('search'),
             'is_active' => $isActive,
-            'per_page'  => $request->query('per_page', 20),
-            'page'      => $request->query('page', 1),
+            'per_page' => $request->query('per_page', 20),
+            'page' => $request->query('page', 1),
         ]);
 
         return response()->json([
             'data' => UnitResource::collection($result['data']),
             'meta' => [
-                'total'        => $result['total'],
-                'per_page'     => $result['per_page'],
+                'total' => $result['total'],
+                'per_page' => $result['per_page'],
                 'current_page' => $result['current_page'],
-                'last_page'    => $result['last_page'],
+                'last_page' => $result['last_page'],
             ],
         ]);
     }
@@ -115,9 +115,9 @@ class UnitOfMeasurementController extends Controller
             content: new OA\JsonContent(
                 required: ['name', 'symbol', 'type'],
                 properties: [
-                    new OA\Property(property: 'name',   type: 'string', maxLength: 80, example: 'Miligramo'),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 80, example: 'Miligramo'),
                     new OA\Property(property: 'symbol', type: 'string', maxLength: 20, example: 'mg'),
-                    new OA\Property(property: 'type',   type: 'string', enum: ['QUANTITY', 'CONCENTRATION'], example: 'CONCENTRATION'),
+                    new OA\Property(property: 'type', type: 'string', enum: ['QUANTITY', 'CONCENTRATION'], example: 'CONCENTRATION'),
                 ]
             )
         ),
@@ -131,13 +131,13 @@ class UnitOfMeasurementController extends Controller
     )]
     public function store(Request $request): JsonResponse
     {
-        $validated   = $request->validate([
-            'name'   => 'required|string|max:80',
+        $validated = $request->validate([
+            'name' => 'required|string|max:80',
             'symbol' => 'required|string|max:20',
-            'type'   => 'required|string|in:QUANTITY,CONCENTRATION',
+            'type' => 'required|string|in:QUANTITY,CONCENTRATION',
         ]);
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new UnitResource($dto))->response()->setStatusCode(201);
     }
@@ -155,9 +155,9 @@ class UnitOfMeasurementController extends Controller
             content: new OA\JsonContent(
                 required: ['name', 'symbol', 'type'],
                 properties: [
-                    new OA\Property(property: 'name',   type: 'string', maxLength: 80, example: 'Miligramo'),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 80, example: 'Miligramo'),
                     new OA\Property(property: 'symbol', type: 'string', maxLength: 20, example: 'mg'),
-                    new OA\Property(property: 'type',   type: 'string', enum: ['QUANTITY', 'CONCENTRATION']),
+                    new OA\Property(property: 'type', type: 'string', enum: ['QUANTITY', 'CONCENTRATION']),
                 ]
             )
         ),
@@ -172,13 +172,13 @@ class UnitOfMeasurementController extends Controller
     )]
     public function update(Request $request, string $id): JsonResponse
     {
-        $validated   = $request->validate([
-            'name'   => 'required|string|max:80',
+        $validated = $request->validate([
+            'name' => 'required|string|max:80',
             'symbol' => 'required|string|max:20',
-            'type'   => 'required|string|in:QUANTITY,CONCENTRATION',
+            'type' => 'required|string|in:QUANTITY,CONCENTRATION',
         ]);
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new UnitResource($dto))->response()->setStatusCode(200);
     }

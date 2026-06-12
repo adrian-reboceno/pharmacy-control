@@ -16,42 +16,45 @@ use PharmaControl\Shared\Event\DomainEvent;
 final class RouteOfAdministration
 {
     private RouteName $name;
+
     private RouteCode $code;
-    private ?string   $description;
-    private bool      $isActive;
+
+    private ?string $description;
+
+    private bool $isActive;
 
     /** @var list<DomainEvent> */
     private array $domainEvents = [];
 
     private function __construct(
-        public readonly RouteId             $id,
-        RouteName                           $name,
-        RouteCode                           $code,
-        ?string                             $description,
-        bool                                $isActive,
-        public readonly ?UserId             $createdBy,
-        public readonly \DateTimeImmutable  $createdAt,
-        private \DateTimeImmutable          $updatedAt,
+        public readonly RouteId $id,
+        RouteName $name,
+        RouteCode $code,
+        ?string $description,
+        bool $isActive,
+        public readonly ?UserId $createdBy,
+        public readonly \DateTimeImmutable $createdAt,
+        private \DateTimeImmutable $updatedAt,
     ) {
-        $this->name        = $name;
-        $this->code        = $code;
+        $this->name = $name;
+        $this->code = $code;
         $this->description = $description;
-        $this->isActive    = $isActive;
+        $this->isActive = $isActive;
     }
 
     public static function create(
-        RouteId   $id,
+        RouteId $id,
         RouteName $name,
         RouteCode $code,
-        ?string   $description,
-        ?UserId   $createdBy,
+        ?string $description,
+        ?UserId $createdBy,
     ): self {
-        $now   = new \DateTimeImmutable();
+        $now = new \DateTimeImmutable;
         $route = new self($id, $name, $code, $description, true, $createdBy, $now, $now);
         $route->recordEvent(new RouteCreated(
-            id:        $id,
-            name:      $name,
-            code:      $code,
+            id: $id,
+            name: $name,
+            code: $code,
             createdBy: $createdBy,
             occurredAt: $now,
         ));
@@ -60,14 +63,14 @@ final class RouteOfAdministration
     }
 
     public static function reconstitute(
-        RouteId             $id,
-        RouteName           $name,
-        RouteCode           $code,
-        ?string             $description,
-        bool                $isActive,
-        ?UserId             $createdBy,
-        \DateTimeImmutable  $createdAt,
-        \DateTimeImmutable  $updatedAt,
+        RouteId $id,
+        RouteName $name,
+        RouteCode $code,
+        ?string $description,
+        bool $isActive,
+        ?UserId $createdBy,
+        \DateTimeImmutable $createdAt,
+        \DateTimeImmutable $updatedAt,
     ): self {
         return new self($id, $name, $code, $description, $isActive, $createdBy, $createdAt, $updatedAt);
     }
@@ -75,49 +78,49 @@ final class RouteOfAdministration
     public function update(
         RouteName $name,
         RouteCode $code,
-        ?string   $description,
+        ?string $description,
     ): void {
         $changes = [];
 
-        if (!$this->name->equals($name)) {
+        if (! $this->name->equals($name)) {
             $changes['name'] = ['old' => $this->name->value, 'new' => $name->value];
         }
-        if (!$this->code->equals($code)) {
+        if (! $this->code->equals($code)) {
             $changes['code'] = ['old' => $this->code->value, 'new' => $code->value];
         }
         if ($this->description !== $description) {
             $changes['description'] = ['old' => $this->description, 'new' => $description];
         }
 
-        $this->name        = $name;
-        $this->code        = $code;
+        $this->name = $name;
+        $this->code = $code;
         $this->description = $description;
-        $this->updatedAt   = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable;
 
         $this->recordEvent(new RouteUpdated(
-            id:         $this->id,
-            changes:    $changes,
+            id: $this->id,
+            changes: $changes,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function deactivate(): void
     {
-        if (!$this->isActive) {
+        if (! $this->isActive) {
             throw new \DomainException('La vía de administración ya está inactiva.');
         }
-        $this->isActive  = false;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->isActive = false;
+        $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new RouteDeactivated(
-            id:         $this->id,
+            id: $this->id,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function activate(): void
     {
-        $this->isActive  = true;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->isActive = true;
+        $this->updatedAt = new \DateTimeImmutable;
     }
 
     public function getId(): RouteId
@@ -162,7 +165,7 @@ final class RouteOfAdministration
 
     public function releaseEvents(): array
     {
-        $events           = $this->domainEvents;
+        $events = $this->domainEvents;
         $this->domainEvents = [];
 
         return $events;

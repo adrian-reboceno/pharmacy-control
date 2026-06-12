@@ -21,12 +21,12 @@ class UnitResource extends JsonResource
         $dto = $this->resource;
 
         return [
-            'id'         => $dto->id,
-            'name'       => $dto->name,
-            'symbol'     => $dto->symbol,
-            'type'       => $dto->type,
+            'id' => $dto->id,
+            'name' => $dto->name,
+            'symbol' => $dto->symbol,
+            'type' => $dto->type,
             'type_label' => $dto->typeLabel,
-            'is_active'  => $dto->isActive,
+            'is_active' => $dto->isActive,
             'created_by' => $dto->createdBy,
             'created_at' => $dto->createdAt,
             'updated_at' => $dto->updatedAt,

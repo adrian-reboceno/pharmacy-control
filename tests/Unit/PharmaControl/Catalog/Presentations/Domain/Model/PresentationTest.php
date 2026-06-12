@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 final class PresentationTest extends TestCase
 {
     private function makePresentation(
-        string $name         = 'Tableta',
+        string $name = 'Tableta',
         string $abbreviation = 'Tab',
     ): Presentation {
         return Presentation::create(
@@ -31,7 +31,7 @@ final class PresentationTest extends TestCase
 
     public function test_create_emits_presentation_created_event(): void
     {
-        $p      = $this->makePresentation();
+        $p = $this->makePresentation();
         $events = $p->releaseEvents();
 
         self::assertCount(1, $events);
@@ -41,14 +41,14 @@ final class PresentationTest extends TestCase
     public function test_reconstitute_does_not_emit_events(): void
     {
         $p = Presentation::reconstitute(
-            id:           PresentationId::generate(),
-            name:         new PresentationName('Tableta'),
+            id: PresentationId::generate(),
+            name: new PresentationName('Tableta'),
             abbreviation: new Abbreviation('Tab'),
-            description:  null,
-            isActive:     true,
-            createdBy:    null,
-            createdAt:    new \DateTimeImmutable(),
-            updatedAt:    new \DateTimeImmutable(),
+            description: null,
+            isActive: true,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         self::assertSame([], $p->releaseEvents());
@@ -71,8 +71,8 @@ final class PresentationTest extends TestCase
 
     public function test_update_sets_updated_at_to_current_time(): void
     {
-        $before = new \DateTimeImmutable();
-        $p      = $this->makePresentation();
+        $before = new \DateTimeImmutable;
+        $p = $this->makePresentation();
         $p->releaseEvents();
 
         $p->update(new PresentationName('Cápsula'), new Abbreviation('Cap'), null);
@@ -109,7 +109,7 @@ final class PresentationTest extends TestCase
     {
         $p = $this->makePresentation();
 
-        $first  = $p->releaseEvents();
+        $first = $p->releaseEvents();
         $second = $p->releaseEvents();
 
         self::assertCount(1, $first);

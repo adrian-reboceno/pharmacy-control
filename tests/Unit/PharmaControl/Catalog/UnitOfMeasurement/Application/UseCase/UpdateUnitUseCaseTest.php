@@ -25,14 +25,16 @@ use PHPUnit\Framework\TestCase;
 final class UpdateUnitUseCaseTest extends TestCase
 {
     private UnitRepositoryContract&MockObject $repository;
+
     private EventPublisherContract&MockObject $events;
+
     private UpdateUnitUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(UnitRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new UpdateUnitUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new UpdateUnitUseCase($this->repository, $this->events);
     }
 
     private function makeUnit(string $name = 'Miligramo', string $symbol = 'mg'): UnitOfMeasurement
@@ -52,10 +54,10 @@ final class UpdateUnitUseCaseTest extends TestCase
     private function makeCommand(string $id, string $name = 'Gramo', string $symbol = 'g', string $type = 'CONCENTRATION'): UpdateUnitCommand
     {
         return new UpdateUnitCommand(
-            id:          $id,
-            name:        $name,
-            symbol:      $symbol,
-            type:        $type,
+            id: $id,
+            name: $name,
+            symbol: $symbol,
+            type: $type,
             actorUserId: (string) UserId::generate(),
         );
     }
@@ -85,8 +87,8 @@ final class UpdateUnitUseCaseTest extends TestCase
 
     public function test_throws_duplicate_unit_name_exception_when_name_belongs_to_different_unit(): void
     {
-        $unit    = $this->makeUnit('Miligramo', 'mg');
-        $other   = $this->makeUnit('Gramo', 'g');
+        $unit = $this->makeUnit('Miligramo', 'mg');
+        $other = $this->makeUnit('Gramo', 'g');
 
         $this->repository->method('findById')->willReturn($unit);
         $this->repository->method('findByName')->willReturn($other);
@@ -113,7 +115,7 @@ final class UpdateUnitUseCaseTest extends TestCase
 
     public function test_throws_duplicate_unit_symbol_exception_when_symbol_belongs_to_different_unit(): void
     {
-        $unit  = $this->makeUnit('Miligramo', 'mg');
+        $unit = $this->makeUnit('Miligramo', 'mg');
         $other = $this->makeUnit('Gramo', 'g');
 
         $this->repository->method('findById')->willReturn($unit);

@@ -32,8 +32,8 @@ final class RoutesOfAdministrationSeeder extends Seeder
             DB::table('routes_of_administration')->updateOrInsert(
                 ['code' => $data['code']],
                 array_merge($data, [
-                    'id'         => (string) Str::uuid(),
-                    'is_active'  => true,
+                    'id' => (string) Str::uuid(),
+                    'is_active' => true,
                     'created_by' => null,
                     'created_at' => now(),
                     'updated_at' => now(),

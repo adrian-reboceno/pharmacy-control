@@ -25,10 +25,10 @@ final class PresentationTest extends TestCase
         Permission::findOrCreate('catalog.presentations.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'password_hash'        => Hash::make('Secret123!'),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
             'must_change_password' => false,
-            'email_verified_at'    => now(),
+            'email_verified_at' => now(),
         ]);
 
         $this->user->givePermissionTo('catalog.presentations.manage');
@@ -42,12 +42,12 @@ final class PresentationTest extends TestCase
     private function createPresentation(array $overrides = []): EloquentPresentation
     {
         return EloquentPresentation::create(array_merge([
-            'id'           => Str::uuid()->toString(),
-            'name'         => 'Tableta',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Tableta',
             'abbreviation' => 'Tab',
-            'description'  => 'Forma sólida oral.',
-            'is_active'    => true,
-            'created_by'   => null,
+            'description' => 'Forma sólida oral.',
+            'is_active' => true,
+            'created_by' => null,
         ], $overrides));
     }
 
@@ -101,9 +101,9 @@ final class PresentationTest extends TestCase
     public function test_post_presentations_returns_201_with_created_presentation(): void
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/presentations', [
-            'name'         => 'Jarabe',
+            'name' => 'Jarabe',
             'abbreviation' => 'Jar',
-            'description'  => 'Solución oral azucarada.',
+            'description' => 'Solución oral azucarada.',
         ]);
 
         $response->assertStatus(201)
@@ -117,7 +117,7 @@ final class PresentationTest extends TestCase
         $this->createPresentation(['name' => 'Tableta', 'abbreviation' => 'Tab']);
 
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/presentations', [
-            'name'         => 'TABLETA',
+            'name' => 'TABLETA',
             'abbreviation' => 'Tab2',
         ]);
 
@@ -129,7 +129,7 @@ final class PresentationTest extends TestCase
         $this->createPresentation(['name' => 'Tableta', 'abbreviation' => 'Tab']);
 
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/presentations', [
-            'name'         => 'Tableta nueva',
+            'name' => 'Tableta nueva',
             'abbreviation' => 'TAB',
         ]);
 
@@ -139,7 +139,7 @@ final class PresentationTest extends TestCase
     public function test_post_presentations_returns_422_when_validation_fails(): void
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/presentations', [
-            'name'         => '',
+            'name' => '',
             'abbreviation' => '',
         ]);
 
@@ -151,9 +151,9 @@ final class PresentationTest extends TestCase
         $presentation = $this->createPresentation(['name' => 'Tableta', 'abbreviation' => 'Tab']);
 
         $response = $this->actingAsUser()->putJson("/api/v1/catalog/presentations/{$presentation->id}", [
-            'name'         => 'Tableta recubierta',
+            'name' => 'Tableta recubierta',
             'abbreviation' => 'Tab.Rec',
-            'description'  => 'Tableta con cubierta.',
+            'description' => 'Tableta con cubierta.',
         ]);
 
         $response->assertStatus(200)
@@ -192,8 +192,8 @@ final class PresentationTest extends TestCase
     public function test_all_endpoints_return_403_without_catalog_presentations_manage_permission(): void
     {
         $userWithoutPermission = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'email_verified_at'    => now(),
+            'status' => 'ACTIVE',
+            'email_verified_at' => now(),
             'must_change_password' => false,
         ]);
 

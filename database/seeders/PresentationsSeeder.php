@@ -36,11 +36,11 @@ final class PresentationsSeeder extends Seeder
 
         foreach ($presentations as $data) {
             DB::table('presentations')->updateOrInsert(
-                //[DB::raw('LOWER(abbreviation)') => mb_strtolower($data['abbreviation'])],
+                // [DB::raw('LOWER(abbreviation)') => mb_strtolower($data['abbreviation'])],
                 ['abbreviation' => $data['abbreviation']],
                 array_merge($data, [
-                    'id'         => (string) Str::uuid(),
-                    'is_active'  => true,
+                    'id' => (string) Str::uuid(),
+                    'is_active' => true,
                     'created_by' => null,
                     'created_at' => now(),
                     'updated_at' => now(),

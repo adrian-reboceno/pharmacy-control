@@ -24,22 +24,24 @@ use PHPUnit\Framework\TestCase;
 final class CreateUnitUseCaseTest extends TestCase
 {
     private UnitRepositoryContract&MockObject $repository;
+
     private EventPublisherContract&MockObject $events;
+
     private CreateUnitUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(UnitRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new CreateUnitUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new CreateUnitUseCase($this->repository, $this->events);
     }
 
     private function makeCommand(string $name = 'Miligramo', string $symbol = 'mg', string $type = 'CONCENTRATION'): CreateUnitCommand
     {
         return new CreateUnitCommand(
-            name:        $name,
-            symbol:      $symbol,
-            type:        $type,
+            name: $name,
+            symbol: $symbol,
+            type: $type,
             actorUserId: (string) UserId::generate(),
         );
     }

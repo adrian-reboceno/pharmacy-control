@@ -10,8 +10,8 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class PresentationUpdated implements DomainEvent
 {
     public function __construct(
-        public readonly PresentationId     $id,
-        public readonly array              $changes,
+        public readonly PresentationId $id,
+        public readonly array $changes,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

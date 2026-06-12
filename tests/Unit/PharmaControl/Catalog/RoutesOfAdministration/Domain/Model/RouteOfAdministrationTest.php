@@ -29,7 +29,7 @@ final class RouteOfAdministrationTest extends TestCase
 
     public function test_create_emits_route_created_event(): void
     {
-        $route  = $this->makeRoute();
+        $route = $this->makeRoute();
         $events = $route->releaseEvents();
 
         self::assertCount(1, $events);
@@ -39,14 +39,14 @@ final class RouteOfAdministrationTest extends TestCase
     public function test_reconstitute_does_not_emit_events(): void
     {
         $route = RouteOfAdministration::reconstitute(
-            id:          RouteId::generate(),
-            name:        new RouteName('Oral'),
-            code:        new RouteCode('VO'),
+            id: RouteId::generate(),
+            name: new RouteName('Oral'),
+            code: new RouteCode('VO'),
             description: null,
-            isActive:    true,
-            createdBy:   null,
-            createdAt:   new \DateTimeImmutable(),
-            updatedAt:   new \DateTimeImmutable(),
+            isActive: true,
+            createdBy: null,
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         self::assertSame([], $route->releaseEvents());
@@ -69,8 +69,8 @@ final class RouteOfAdministrationTest extends TestCase
 
     public function test_update_sets_updated_at_to_current_time(): void
     {
-        $before = new \DateTimeImmutable();
-        $route  = $this->makeRoute();
+        $before = new \DateTimeImmutable;
+        $route = $this->makeRoute();
         $route->releaseEvents();
 
         $route->update(new RouteName('Sublingual'), new RouteCode('SL'), null);
@@ -107,7 +107,7 @@ final class RouteOfAdministrationTest extends TestCase
     {
         $route = $this->makeRoute();
 
-        $first  = $route->releaseEvents();
+        $first = $route->releaseEvents();
         $second = $route->releaseEvents();
 
         self::assertCount(1, $first);

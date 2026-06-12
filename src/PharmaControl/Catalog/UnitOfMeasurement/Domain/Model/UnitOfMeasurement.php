@@ -16,45 +16,48 @@ use PharmaControl\Shared\Event\DomainEvent;
 
 final class UnitOfMeasurement
 {
-    private UnitName   $name;
+    private UnitName $name;
+
     private UnitSymbol $symbol;
-    private UnitType   $type;
-    private bool       $isActive;
+
+    private UnitType $type;
+
+    private bool $isActive;
 
     /** @var list<DomainEvent> */
     private array $domainEvents = [];
 
     private function __construct(
-        public readonly UnitId              $id,
-        UnitName                            $name,
-        UnitSymbol                          $symbol,
-        UnitType                            $type,
-        bool                                $isActive,
-        public readonly ?UserId             $createdBy,
-        public readonly \DateTimeImmutable  $createdAt,
-        private \DateTimeImmutable          $updatedAt,
+        public readonly UnitId $id,
+        UnitName $name,
+        UnitSymbol $symbol,
+        UnitType $type,
+        bool $isActive,
+        public readonly ?UserId $createdBy,
+        public readonly \DateTimeImmutable $createdAt,
+        private \DateTimeImmutable $updatedAt,
     ) {
-        $this->name     = $name;
-        $this->symbol   = $symbol;
-        $this->type     = $type;
+        $this->name = $name;
+        $this->symbol = $symbol;
+        $this->type = $type;
         $this->isActive = $isActive;
     }
 
     public static function create(
-        UnitId     $id,
-        UnitName   $name,
+        UnitId $id,
+        UnitName $name,
         UnitSymbol $symbol,
-        UnitType   $type,
-        ?UserId    $createdBy,
+        UnitType $type,
+        ?UserId $createdBy,
     ): self {
-        $now  = new \DateTimeImmutable();
+        $now = new \DateTimeImmutable;
         $unit = new self($id, $name, $symbol, $type, true, $createdBy, $now, $now);
         $unit->recordEvent(new UnitCreated(
-            id:         $id,
-            name:       $name,
-            symbol:     $symbol,
-            type:       $type,
-            createdBy:  $createdBy,
+            id: $id,
+            name: $name,
+            symbol: $symbol,
+            type: $type,
+            createdBy: $createdBy,
             occurredAt: $now,
         ));
 
@@ -62,12 +65,12 @@ final class UnitOfMeasurement
     }
 
     public static function reconstitute(
-        UnitId             $id,
-        UnitName           $name,
-        UnitSymbol         $symbol,
-        UnitType           $type,
-        bool               $isActive,
-        ?UserId            $createdBy,
+        UnitId $id,
+        UnitName $name,
+        UnitSymbol $symbol,
+        UnitType $type,
+        bool $isActive,
+        ?UserId $createdBy,
         \DateTimeImmutable $createdAt,
         \DateTimeImmutable $updatedAt,
     ): self {
@@ -78,45 +81,45 @@ final class UnitOfMeasurement
     {
         $changes = [];
 
-        if (!$this->name->equals($name)) {
+        if (! $this->name->equals($name)) {
             $changes['name'] = ['old' => $this->name->value, 'new' => $name->value];
         }
-        if (!$this->symbol->equals($symbol)) {
+        if (! $this->symbol->equals($symbol)) {
             $changes['symbol'] = ['old' => $this->symbol->value, 'new' => $symbol->value];
         }
         if ($this->type !== $type) {
             $changes['type'] = ['old' => $this->type->value, 'new' => $type->value];
         }
 
-        $this->name     = $name;
-        $this->symbol   = $symbol;
-        $this->type     = $type;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->name = $name;
+        $this->symbol = $symbol;
+        $this->type = $type;
+        $this->updatedAt = new \DateTimeImmutable;
 
         $this->recordEvent(new UnitUpdated(
-            id:         $this->id,
-            changes:    $changes,
+            id: $this->id,
+            changes: $changes,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function deactivate(): void
     {
-        if (!$this->isActive) {
+        if (! $this->isActive) {
             throw new \DomainException('La unidad de medida ya está inactiva.');
         }
-        $this->isActive  = false;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->isActive = false;
+        $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new UnitDeactivated(
-            id:         $this->id,
+            id: $this->id,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function activate(): void
     {
-        $this->isActive  = true;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->isActive = true;
+        $this->updatedAt = new \DateTimeImmutable;
     }
 
     public function getId(): UnitId
@@ -161,7 +164,7 @@ final class UnitOfMeasurement
 
     public function releaseEvents(): array
     {
-        $events           = $this->domainEvents;
+        $events = $this->domainEvents;
         $this->domainEvents = [];
 
         return $events;

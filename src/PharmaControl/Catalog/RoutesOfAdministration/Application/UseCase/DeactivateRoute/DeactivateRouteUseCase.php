@@ -13,7 +13,7 @@ final class DeactivateRouteUseCase
 {
     public function __construct(
         private readonly RouteRepositoryContract $repository,
-        private readonly EventPublisherContract  $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(DeactivateRouteCommand $command): void

@@ -7,10 +7,10 @@ namespace PharmaControl\Catalog\Presentations\Application\UseCase\UpdatePresenta
 final readonly class UpdatePresentationCommand
 {
     public function __construct(
-        public readonly string  $id,
-        public readonly string  $name,
-        public readonly string  $abbreviation,
+        public readonly string $id,
+        public readonly string $name,
+        public readonly string $abbreviation,
         public readonly ?string $description,
-        public readonly string  $actorUserId,
+        public readonly string $actorUserId,
     ) {}
 }
