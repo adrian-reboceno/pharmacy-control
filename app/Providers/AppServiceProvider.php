@@ -36,6 +36,8 @@ use PharmaControl\Catalog\Laboratories\Domain\Contract\Repository\LaboratoryRepo
 use PharmaControl\Catalog\Laboratories\Infrastructure\Persistence\Eloquent\Repository\EloquentLaboratoryRepository;
 use PharmaControl\Catalog\Presentations\Domain\Contract\Repository\PresentationRepositoryContract;
 use PharmaControl\Catalog\Presentations\Infrastructure\Persistence\Eloquent\Repository\EloquentPresentationRepository;
+use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\RouteRepositoryContract;
+use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Persistence\Eloquent\Repository\EloquentRouteRepository;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
 
@@ -72,6 +74,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalog — Presentations
         $this->app->bind(PresentationRepositoryContract::class, EloquentPresentationRepository::class);
+
+        // Catalog — Routes of Administration
+        $this->app->bind(RouteRepositoryContract::class, EloquentRouteRepository::class);
     }
 
     public function boot(): void

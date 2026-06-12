@@ -11,10 +11,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RolesAndPermissionsSeeder::class,  // 6 roles + 62 permisos + role_metadata
-            SoDExclusionsSeeder::class,         // 12 restricciones SSoD + usuario sistema
-            UnitsOfMeasurementSeeder::class,    // 20 unidades de medida predefinidas
-            PresentationsSeeder::class,         // 19 formas farmacéuticas predefinidas
+            RolesAndPermissionsSeeder::class,       // 6 roles + 62 permisos + role_metadata
+            SoDExclusionsSeeder::class,              // 12 restricciones SSoD + usuario sistema
+            UnitsOfMeasurementSeeder::class,         // 20 unidades de medida predefinidas
+            PresentationsSeeder::class,              // 19 formas farmacéuticas predefinidas
+            RoutesOfAdministrationSeeder::class,     // 13 vías de administración predefinidas
         ]);
     }
 }
