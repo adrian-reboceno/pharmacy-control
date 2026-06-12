@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,  // 6 roles + 62 permisos + role_metadata
             SoDExclusionsSeeder::class,         // 12 restricciones SSoD + usuario sistema
             UnitsOfMeasurementSeeder::class,    // 20 unidades de medida predefinidas
+            PresentationsSeeder::class,         // 19 formas farmacéuticas predefinidas
         ]);
     }
 }
