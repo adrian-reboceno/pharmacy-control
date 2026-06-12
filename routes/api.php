@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\ClassificationController;
 use App\Http\Controllers\Catalog\LaboratoryController;
+use App\Http\Controllers\Catalog\PresentationController;
 use App\Http\Controllers\Catalog\UnitOfMeasurementController;
 use Illuminate\Support\Facades\Route;
 
@@ -76,4 +77,12 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.units.manage'])->group(f
     Route::get('/units/{id}',  [UnitOfMeasurementController::class, 'show']);
     Route::put('/units/{id}',  [UnitOfMeasurementController::class, 'update']);
     Route::delete('/units/{id}', [UnitOfMeasurementController::class, 'destroy']);
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.presentations.manage'])->group(function (): void {
+    Route::get('/presentations',      [PresentationController::class, 'index']);
+    Route::post('/presentations',     [PresentationController::class, 'store']);
+    Route::get('/presentations/{id}', [PresentationController::class, 'show']);
+    Route::put('/presentations/{id}', [PresentationController::class, 'update']);
+    Route::delete('/presentations/{id}', [PresentationController::class, 'destroy']);
 });

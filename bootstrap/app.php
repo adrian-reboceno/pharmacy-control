@@ -16,6 +16,9 @@ use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotFoun
 use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotModifiableException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\DuplicateLaboratoryNameException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\LaboratoryNotFoundException;
+use PharmaControl\Catalog\Presentations\Domain\Exception\DuplicateAbbreviationException;
+use PharmaControl\Catalog\Presentations\Domain\Exception\DuplicatePresentationNameException;
+use PharmaControl\Catalog\Presentations\Domain\Exception\PresentationNotFoundException;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\DuplicateUnitNameException;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\DuplicateUnitSymbolException;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\UnitNotFoundException;
@@ -72,6 +75,15 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (DuplicateUnitSymbolException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (PresentationNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicatePresentationNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (DuplicateAbbreviationException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (SharedDomainException $e, Request $request): JsonResponse {
