@@ -14,7 +14,7 @@ final class RoutePermissionsSeeder extends Seeder
     public function run(): void
     {
         $permission = Permission::firstOrCreate([
-            'name'       => 'catalog.routes-of-administration.manage',
+            'name' => 'catalog.routes-of-administration.manage',
             'guard_name' => 'api',
         ]);
 

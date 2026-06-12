@@ -21,14 +21,16 @@ use PHPUnit\Framework\TestCase;
 final class DeactivatePresentationUseCaseTest extends TestCase
 {
     private PresentationRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject         $events;
-    private DeactivatePresentationUseCase             $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private DeactivatePresentationUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(PresentationRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new DeactivatePresentationUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new DeactivatePresentationUseCase($this->repository, $this->events);
     }
 
     private function makePresentation(): Presentation

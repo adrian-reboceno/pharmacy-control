@@ -39,8 +39,8 @@ final class UnitsOfMeasurementSeeder extends Seeder
             DB::table('units_of_measurement')->updateOrInsert(
                 ['symbol' => $data['symbol']],
                 array_merge($data, [
-                    'id'         => (string) Str::uuid(),
-                    'is_active'  => true,
+                    'id' => (string) Str::uuid(),
+                    'is_active' => true,
                     'created_by' => null,
                     'created_at' => now(),
                     'updated_at' => now(),

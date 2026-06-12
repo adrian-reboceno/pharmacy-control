@@ -19,12 +19,12 @@ final class CreatePresentationUseCase
 {
     public function __construct(
         private readonly PresentationRepositoryContract $repository,
-        private readonly EventPublisherContract         $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(CreatePresentationCommand $command): PresentationDTO
     {
-        $name         = new PresentationName($command->name);
+        $name = new PresentationName($command->name);
         $abbreviation = new Abbreviation($command->abbreviation);
 
         if ($this->repository->findByName($name) !== null) {

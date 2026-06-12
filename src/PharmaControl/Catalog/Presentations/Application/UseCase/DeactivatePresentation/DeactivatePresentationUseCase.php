@@ -13,7 +13,7 @@ final class DeactivatePresentationUseCase
 {
     public function __construct(
         private readonly PresentationRepositoryContract $repository,
-        private readonly EventPublisherContract         $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(DeactivatePresentationCommand $command): void

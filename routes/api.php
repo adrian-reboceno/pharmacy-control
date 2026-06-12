@@ -73,25 +73,25 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.classifications.manage']
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.units.manage'])->group(function (): void {
-    Route::get('/units',       [UnitOfMeasurementController::class, 'index']);
-    Route::post('/units',      [UnitOfMeasurementController::class, 'store']);
-    Route::get('/units/{id}',  [UnitOfMeasurementController::class, 'show']);
-    Route::put('/units/{id}',  [UnitOfMeasurementController::class, 'update']);
+    Route::get('/units', [UnitOfMeasurementController::class, 'index']);
+    Route::post('/units', [UnitOfMeasurementController::class, 'store']);
+    Route::get('/units/{id}', [UnitOfMeasurementController::class, 'show']);
+    Route::put('/units/{id}', [UnitOfMeasurementController::class, 'update']);
     Route::delete('/units/{id}', [UnitOfMeasurementController::class, 'destroy']);
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.presentations.manage'])->group(function (): void {
-    Route::get('/presentations',      [PresentationController::class, 'index']);
-    Route::post('/presentations',     [PresentationController::class, 'store']);
+    Route::get('/presentations', [PresentationController::class, 'index']);
+    Route::post('/presentations', [PresentationController::class, 'store']);
     Route::get('/presentations/{id}', [PresentationController::class, 'show']);
     Route::put('/presentations/{id}', [PresentationController::class, 'update']);
     Route::delete('/presentations/{id}', [PresentationController::class, 'destroy']);
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.routes-of-administration.manage'])->group(function (): void {
-    Route::get('/routes-of-administration',       [RouteController::class, 'index']);
-    Route::post('/routes-of-administration',      [RouteController::class, 'store']);
-    Route::get('/routes-of-administration/{id}',  [RouteController::class, 'show']);
-    Route::put('/routes-of-administration/{id}',  [RouteController::class, 'update']);
+    Route::get('/routes-of-administration', [RouteController::class, 'index']);
+    Route::post('/routes-of-administration', [RouteController::class, 'store']);
+    Route::get('/routes-of-administration/{id}', [RouteController::class, 'show']);
+    Route::put('/routes-of-administration/{id}', [RouteController::class, 'update']);
     Route::delete('/routes-of-administration/{id}', [RouteController::class, 'destroy']);
 });

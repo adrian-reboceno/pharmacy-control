@@ -25,14 +25,14 @@ final class GetPresentationsUseCase
         }
 
         $filters['per_page'] = $query->perPage;
-        $filters['page']     = $query->page;
+        $filters['page'] = $query->page;
 
         $result = $this->repository->findAll($filters);
 
         return [
             ...$result,
             'data' => array_map(
-                fn($presentation) => PresentationDTO::fromDomain($presentation),
+                fn ($presentation) => PresentationDTO::fromDomain($presentation),
                 $result['data']
             ),
         ];

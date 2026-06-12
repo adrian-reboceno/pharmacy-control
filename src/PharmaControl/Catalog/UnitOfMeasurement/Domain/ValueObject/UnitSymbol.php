@@ -15,7 +15,7 @@ final readonly class UnitSymbol
         if (mb_strlen($trimmed) > 20) {
             throw new \InvalidArgumentException('El símbolo no puede exceder 20 caracteres.');
         }
-        if (!preg_match('/^[\p{L}\p{N}\/%.·²³µ\s]+$/u', $trimmed)) {
+        if (! preg_match('/^[\p{L}\p{N}\/%.·²³µ\s]+$/u', $trimmed)) {
             throw new \InvalidArgumentException("Símbolo inválido: {$trimmed}");
         }
     }

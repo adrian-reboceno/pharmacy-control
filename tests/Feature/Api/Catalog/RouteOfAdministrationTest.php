@@ -25,10 +25,10 @@ final class RouteOfAdministrationTest extends TestCase
         Permission::findOrCreate('catalog.routes-of-administration.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'password_hash'        => Hash::make('Secret123!'),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
             'must_change_password' => false,
-            'email_verified_at'    => now(),
+            'email_verified_at' => now(),
         ]);
 
         $this->user->givePermissionTo('catalog.routes-of-administration.manage');
@@ -42,12 +42,12 @@ final class RouteOfAdministrationTest extends TestCase
     private function createRoute(array $overrides = []): EloquentRoute
     {
         return EloquentRoute::create(array_merge([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Oral',
-            'code'        => 'VO',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Oral',
+            'code' => 'VO',
             'description' => 'Administración por la boca.',
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ], $overrides));
     }
 
@@ -101,8 +101,8 @@ final class RouteOfAdministrationTest extends TestCase
     public function test_post_routes_of_administration_returns_201_with_created_route(): void
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/routes-of-administration', [
-            'name'        => 'Sublingual',
-            'code'        => 'SL',
+            'name' => 'Sublingual',
+            'code' => 'SL',
             'description' => 'Administración bajo la lengua.',
         ]);
 
@@ -162,8 +162,8 @@ final class RouteOfAdministrationTest extends TestCase
         $route = $this->createRoute(['name' => 'Oral', 'code' => 'VO']);
 
         $response = $this->actingAsUser()->putJson("/api/v1/catalog/routes-of-administration/{$route->id}", [
-            'name'        => 'Sublingual',
-            'code'        => 'SL',
+            'name' => 'Sublingual',
+            'code' => 'SL',
             'description' => 'Bajo la lengua.',
         ]);
 
@@ -203,8 +203,8 @@ final class RouteOfAdministrationTest extends TestCase
     public function test_all_endpoints_return_403_without_catalog_routes_of_administration_manage_permission(): void
     {
         $userWithoutPermission = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'email_verified_at'    => now(),
+            'status' => 'ACTIVE',
+            'email_verified_at' => now(),
             'must_change_password' => false,
         ]);
 

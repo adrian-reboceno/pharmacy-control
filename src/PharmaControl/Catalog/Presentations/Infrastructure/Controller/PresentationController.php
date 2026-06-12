@@ -20,30 +20,30 @@ use PharmaControl\Catalog\Presentations\Domain\ValueObject\PresentationId;
 final class PresentationController
 {
     public function __construct(
-        private readonly CreatePresentationUseCase     $create,
-        private readonly UpdatePresentationUseCase     $update,
+        private readonly CreatePresentationUseCase $create,
+        private readonly UpdatePresentationUseCase $update,
         private readonly DeactivatePresentationUseCase $deactivate,
-        private readonly GetPresentationsUseCase       $get,
+        private readonly GetPresentationsUseCase $get,
         private readonly PresentationRepositoryContract $repository,
     ) {}
 
     public function index(array $data): array
     {
         return ($this->get)(new GetPresentationsQuery(
-            search:   $data['search'] ?? null,
+            search: $data['search'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
-            perPage:  (int) ($data['per_page'] ?? 20),
-            page:     (int) ($data['page'] ?? 1),
+            perPage: (int) ($data['per_page'] ?? 20),
+            page: (int) ($data['page'] ?? 1),
         ));
     }
 
     public function store(array $data): PresentationDTO
     {
         return ($this->create)(new CreatePresentationCommand(
-            name:         $data['name'],
+            name: $data['name'],
             abbreviation: $data['abbreviation'],
-            description:  $data['description'] ?? null,
-            actorUserId:  $data['actor_user_id'],
+            description: $data['description'] ?? null,
+            actorUserId: $data['actor_user_id'],
         ));
     }
 
@@ -60,11 +60,11 @@ final class PresentationController
     public function update(string $id, array $data): PresentationDTO
     {
         return ($this->update)(new UpdatePresentationCommand(
-            id:           $id,
-            name:         $data['name'],
+            id: $id,
+            name: $data['name'],
             abbreviation: $data['abbreviation'],
-            description:  $data['description'] ?? null,
-            actorUserId:  $data['actor_user_id'],
+            description: $data['description'] ?? null,
+            actorUserId: $data['actor_user_id'],
         ));
     }
 

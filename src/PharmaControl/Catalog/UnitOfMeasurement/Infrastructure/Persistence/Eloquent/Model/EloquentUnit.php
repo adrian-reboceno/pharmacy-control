@@ -11,16 +11,18 @@ class EloquentUnit extends Model
 {
     use HasUuids;
 
-    protected $table        = 'units_of_measurement';
-    protected $keyType      = 'string';
-    public    $incrementing = false;
+    protected $table = 'units_of_measurement';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'name', 'symbol', 'type', 'is_active', 'created_by',
     ];
 
     protected $casts = [
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
         'created_at' => 'immutable_datetime',
         'updated_at' => 'immutable_datetime',
     ];

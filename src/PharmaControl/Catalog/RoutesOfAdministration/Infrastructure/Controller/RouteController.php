@@ -20,28 +20,28 @@ use PharmaControl\Catalog\RoutesOfAdministration\Domain\ValueObject\RouteId;
 final class RouteController
 {
     public function __construct(
-        private readonly CreateRouteUseCase     $create,
-        private readonly UpdateRouteUseCase     $update,
+        private readonly CreateRouteUseCase $create,
+        private readonly UpdateRouteUseCase $update,
         private readonly DeactivateRouteUseCase $deactivate,
-        private readonly GetRoutesUseCase       $get,
+        private readonly GetRoutesUseCase $get,
         private readonly RouteRepositoryContract $repository,
     ) {}
 
     public function index(array $data): array
     {
         return ($this->get)(new GetRoutesQuery(
-            search:   $data['search'] ?? null,
+            search: $data['search'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
-            perPage:  (int) ($data['per_page'] ?? 20),
-            page:     (int) ($data['page'] ?? 1),
+            perPage: (int) ($data['per_page'] ?? 20),
+            page: (int) ($data['page'] ?? 1),
         ));
     }
 
     public function store(array $data): RouteDTO
     {
         return ($this->create)(new CreateRouteCommand(
-            name:        $data['name'],
-            code:        $data['code'],
+            name: $data['name'],
+            code: $data['code'],
             description: $data['description'] ?? null,
             actorUserId: $data['actor_user_id'],
         ));
@@ -60,9 +60,9 @@ final class RouteController
     public function update(string $id, array $data): RouteDTO
     {
         return ($this->update)(new UpdateRouteCommand(
-            id:          $id,
-            name:        $data['name'],
-            code:        $data['code'],
+            id: $id,
+            name: $data['name'],
+            code: $data['code'],
             description: $data['description'] ?? null,
             actorUserId: $data['actor_user_id'],
         ));

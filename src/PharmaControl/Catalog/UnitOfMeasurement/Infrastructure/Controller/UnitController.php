@@ -20,30 +20,30 @@ use PharmaControl\Catalog\UnitOfMeasurement\Domain\ValueObject\UnitId;
 final class UnitController
 {
     public function __construct(
-        private readonly CreateUnitUseCase     $create,
-        private readonly UpdateUnitUseCase     $update,
+        private readonly CreateUnitUseCase $create,
+        private readonly UpdateUnitUseCase $update,
         private readonly DeactivateUnitUseCase $deactivate,
-        private readonly GetUnitsUseCase       $get,
+        private readonly GetUnitsUseCase $get,
         private readonly UnitRepositoryContract $repository,
     ) {}
 
     public function index(array $data): array
     {
         return ($this->get)(new GetUnitsQuery(
-            type:     $data['type'] ?? null,
-            search:   $data['search'] ?? null,
+            type: $data['type'] ?? null,
+            search: $data['search'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
-            perPage:  (int) ($data['per_page'] ?? 20),
-            page:     (int) ($data['page'] ?? 1),
+            perPage: (int) ($data['per_page'] ?? 20),
+            page: (int) ($data['page'] ?? 1),
         ));
     }
 
     public function store(array $data): UnitDTO
     {
         return ($this->create)(new CreateUnitCommand(
-            name:        $data['name'],
-            symbol:      $data['symbol'],
-            type:        $data['type'],
+            name: $data['name'],
+            symbol: $data['symbol'],
+            type: $data['type'],
             actorUserId: $data['actor_user_id'],
         ));
     }
@@ -61,10 +61,10 @@ final class UnitController
     public function update(string $id, array $data): UnitDTO
     {
         return ($this->update)(new UpdateUnitCommand(
-            id:          $id,
-            name:        $data['name'],
-            symbol:      $data['symbol'],
-            type:        $data['type'],
+            id: $id,
+            name: $data['name'],
+            symbol: $data['symbol'],
+            type: $data['type'],
             actorUserId: $data['actor_user_id'],
         ));
     }

@@ -14,7 +14,7 @@ final class PresentationPermissionsSeeder extends Seeder
     public function run(): void
     {
         $permission = Permission::firstOrCreate([
-            'name'       => 'catalog.presentations.manage',
+            'name' => 'catalog.presentations.manage',
             'guard_name' => 'api',
         ]);
 

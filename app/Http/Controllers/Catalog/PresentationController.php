@@ -15,14 +15,14 @@ use PharmaControl\Catalog\Presentations\Infrastructure\Controller\PresentationCo
 #[OA\Schema(
     schema: 'PresentationResponse',
     properties: [
-        new OA\Property(property: 'id',           type: 'string', format: 'uuid'),
-        new OA\Property(property: 'name',         type: 'string', example: 'Tableta'),
+        new OA\Property(property: 'id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'name', type: 'string', example: 'Tableta'),
         new OA\Property(property: 'abbreviation', type: 'string', example: 'Tab'),
-        new OA\Property(property: 'description',  type: 'string', nullable: true, example: 'Forma sólida oral.'),
-        new OA\Property(property: 'is_active',    type: 'boolean', example: true),
-        new OA\Property(property: 'created_by',   type: 'string', format: 'uuid', nullable: true),
-        new OA\Property(property: 'created_at',   type: 'string', format: 'date-time'),
-        new OA\Property(property: 'updated_at',   type: 'string', format: 'date-time'),
+        new OA\Property(property: 'description', type: 'string', nullable: true, example: 'Forma sólida oral.'),
+        new OA\Property(property: 'is_active', type: 'boolean', example: true),
+        new OA\Property(property: 'created_by', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
 class PresentationController extends Controller
@@ -38,10 +38,10 @@ class PresentationController extends Controller
         tags: ['Catalog · Presentations'],
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(name: 'search',    in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en nombre o abreviatura'),
+            new OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en nombre o abreviatura'),
             new OA\Parameter(name: 'is_active', in: 'query', required: false, schema: new OA\Schema(type: 'boolean')),
-            new OA\Parameter(name: 'per_page',  in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
-            new OA\Parameter(name: 'page',      in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
+            new OA\Parameter(name: 'page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
         ],
         responses: [
             new OA\Response(
@@ -64,19 +64,19 @@ class PresentationController extends Controller
         }
 
         $result = $this->controller->index([
-            'search'    => $request->query('search'),
+            'search' => $request->query('search'),
             'is_active' => $isActive,
-            'per_page'  => $request->query('per_page', 20),
-            'page'      => $request->query('page', 1),
+            'per_page' => $request->query('per_page', 20),
+            'page' => $request->query('page', 1),
         ]);
 
         return response()->json([
             'data' => PresentationResource::collection($result['data']),
             'meta' => [
-                'total'        => $result['total'],
-                'per_page'     => $result['per_page'],
+                'total' => $result['total'],
+                'per_page' => $result['per_page'],
                 'current_page' => $result['current_page'],
-                'last_page'    => $result['last_page'],
+                'last_page' => $result['last_page'],
             ],
         ]);
     }
@@ -113,9 +113,9 @@ class PresentationController extends Controller
             content: new OA\JsonContent(
                 required: ['name', 'abbreviation'],
                 properties: [
-                    new OA\Property(property: 'name',         type: 'string', maxLength: 100, example: 'Tableta'),
-                    new OA\Property(property: 'abbreviation', type: 'string', maxLength: 20,  example: 'Tab'),
-                    new OA\Property(property: 'description',  type: 'string', nullable: true, maxLength: 500),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 100, example: 'Tableta'),
+                    new OA\Property(property: 'abbreviation', type: 'string', maxLength: 20, example: 'Tab'),
+                    new OA\Property(property: 'description', type: 'string', nullable: true, maxLength: 500),
                 ]
             )
         ),
@@ -129,13 +129,13 @@ class PresentationController extends Controller
     )]
     public function store(Request $request): JsonResponse
     {
-        $validated   = $request->validate([
-            'name'         => 'required|string|max:100',
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
             'abbreviation' => 'required|string|max:20',
-            'description'  => 'nullable|string|max:500',
+            'description' => 'nullable|string|max:500',
         ]);
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new PresentationResource($dto))->response()->setStatusCode(201);
     }
@@ -153,9 +153,9 @@ class PresentationController extends Controller
             content: new OA\JsonContent(
                 required: ['name', 'abbreviation'],
                 properties: [
-                    new OA\Property(property: 'name',         type: 'string', maxLength: 100),
+                    new OA\Property(property: 'name', type: 'string', maxLength: 100),
                     new OA\Property(property: 'abbreviation', type: 'string', maxLength: 20),
-                    new OA\Property(property: 'description',  type: 'string', nullable: true, maxLength: 500),
+                    new OA\Property(property: 'description', type: 'string', nullable: true, maxLength: 500),
                 ]
             )
         ),
@@ -170,13 +170,13 @@ class PresentationController extends Controller
     )]
     public function update(Request $request, string $id): JsonResponse
     {
-        $validated   = $request->validate([
-            'name'         => 'required|string|max:100',
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
             'abbreviation' => 'required|string|max:20',
-            'description'  => 'nullable|string|max:500',
+            'description' => 'nullable|string|max:500',
         ]);
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new PresentationResource($dto))->response()->setStatusCode(200);
     }

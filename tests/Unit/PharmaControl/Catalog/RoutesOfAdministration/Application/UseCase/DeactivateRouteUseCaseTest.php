@@ -21,14 +21,16 @@ use PHPUnit\Framework\TestCase;
 final class DeactivateRouteUseCaseTest extends TestCase
 {
     private RouteRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject  $events;
-    private DeactivateRouteUseCase             $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private DeactivateRouteUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(RouteRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new DeactivateRouteUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new DeactivateRouteUseCase($this->repository, $this->events);
     }
 
     private function makeRoute(): RouteOfAdministration

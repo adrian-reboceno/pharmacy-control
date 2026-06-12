@@ -25,10 +25,10 @@ final class UnitOfMeasurementTest extends TestCase
         Permission::findOrCreate('catalog.units.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'password_hash'        => Hash::make('Secret123!'),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
             'must_change_password' => false,
-            'email_verified_at'    => now(),
+            'email_verified_at' => now(),
         ]);
 
         $this->user->givePermissionTo('catalog.units.manage');
@@ -42,11 +42,11 @@ final class UnitOfMeasurementTest extends TestCase
     private function createUnit(array $overrides = []): EloquentUnit
     {
         return EloquentUnit::create(array_merge([
-            'id'         => Str::uuid()->toString(),
-            'name'       => 'Miligramo',
-            'symbol'     => 'mg',
-            'type'       => 'CONCENTRATION',
-            'is_active'  => true,
+            'id' => Str::uuid()->toString(),
+            'name' => 'Miligramo',
+            'symbol' => 'mg',
+            'type' => 'CONCENTRATION',
+            'is_active' => true,
             'created_by' => null,
         ], $overrides));
     }
@@ -124,9 +124,9 @@ final class UnitOfMeasurementTest extends TestCase
     public function test_post_units_returns_201_with_created_unit(): void
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/units', [
-            'name'   => 'Miligramo',
+            'name' => 'Miligramo',
             'symbol' => 'mg',
-            'type'   => 'CONCENTRATION',
+            'type' => 'CONCENTRATION',
         ]);
 
         $response->assertStatus(201)
@@ -141,9 +141,9 @@ final class UnitOfMeasurementTest extends TestCase
         $this->createUnit(['name' => 'Miligramo', 'symbol' => 'mg']);
 
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/units', [
-            'name'   => 'MILIGRAMO',
+            'name' => 'MILIGRAMO',
             'symbol' => 'MG',
-            'type'   => 'CONCENTRATION',
+            'type' => 'CONCENTRATION',
         ]);
 
         $response->assertStatus(409);
@@ -154,9 +154,9 @@ final class UnitOfMeasurementTest extends TestCase
         $this->createUnit(['name' => 'Miligramo', 'symbol' => 'mg']);
 
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/units', [
-            'name'   => 'Otro nombre',
+            'name' => 'Otro nombre',
             'symbol' => 'mg',
-            'type'   => 'CONCENTRATION',
+            'type' => 'CONCENTRATION',
         ]);
 
         $response->assertStatus(409);
@@ -165,9 +165,9 @@ final class UnitOfMeasurementTest extends TestCase
     public function test_post_units_returns_422_when_validation_fails(): void
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/units', [
-            'name'   => '',
+            'name' => '',
             'symbol' => '',
-            'type'   => 'INVALID_TYPE',
+            'type' => 'INVALID_TYPE',
         ]);
 
         $response->assertStatus(422);
@@ -178,9 +178,9 @@ final class UnitOfMeasurementTest extends TestCase
         $unit = $this->createUnit(['name' => 'Miligramo', 'symbol' => 'mg', 'type' => 'CONCENTRATION']);
 
         $response = $this->actingAsUser()->putJson("/api/v1/catalog/units/{$unit->id}", [
-            'name'   => 'Gramo',
+            'name' => 'Gramo',
             'symbol' => 'g',
-            'type'   => 'CONCENTRATION',
+            'type' => 'CONCENTRATION',
         ]);
 
         $response->assertStatus(200)
@@ -219,8 +219,8 @@ final class UnitOfMeasurementTest extends TestCase
     public function test_all_endpoints_return_403_without_catalog_units_manage_permission(): void
     {
         $userWithoutPermission = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'email_verified_at'    => now(),
+            'status' => 'ACTIVE',
+            'email_verified_at' => now(),
             'must_change_password' => false,
         ]);
 

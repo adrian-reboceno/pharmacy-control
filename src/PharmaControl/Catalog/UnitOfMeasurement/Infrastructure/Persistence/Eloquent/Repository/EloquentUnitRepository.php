@@ -49,14 +49,14 @@ final class EloquentUnitRepository implements UnitRepositoryContract
     {
         $query = EloquentUnit::query();
 
-        if (!empty($filters['type'])) {
+        if (! empty($filters['type'])) {
             $query->where('type', $filters['type']);
         }
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters): void {
                 $q->where('name', 'ilike', '%'.$filters['search'].'%')
-                  ->orWhere('symbol', 'ilike', '%'.$filters['search'].'%');
+                    ->orWhere('symbol', 'ilike', '%'.$filters['search'].'%');
             });
         }
 
@@ -66,19 +66,19 @@ final class EloquentUnitRepository implements UnitRepositoryContract
 
         $query->orderByRaw("CASE type WHEN 'CONCENTRATION' THEN 1 ELSE 2 END, name ASC");
 
-        $perPage   = min((int) ($filters['per_page'] ?? 20), 100);
-        $page      = max((int) ($filters['page'] ?? 1), 1);
+        $perPage = min((int) ($filters['per_page'] ?? 20), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'data'         => array_map(
+            'data' => array_map(
                 fn (EloquentUnit $m) => $this->mapper->toDomain($m),
                 $paginator->items(),
             ),
-            'total'        => $paginator->total(),
-            'per_page'     => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
             'current_page' => $paginator->currentPage(),
-            'last_page'    => $paginator->lastPage(),
+            'last_page' => $paginator->lastPage(),
         ];
     }
 }

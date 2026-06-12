@@ -23,21 +23,23 @@ use PHPUnit\Framework\TestCase;
 final class CreateRouteUseCaseTest extends TestCase
 {
     private RouteRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject  $events;
-    private CreateRouteUseCase                 $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private CreateRouteUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(RouteRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new CreateRouteUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new CreateRouteUseCase($this->repository, $this->events);
     }
 
     private function makeCommand(string $name = 'Oral', string $code = 'VO'): CreateRouteCommand
     {
         return new CreateRouteCommand(
-            name:        $name,
-            code:        $code,
+            name: $name,
+            code: $code,
             description: 'Administración por la boca.',
             actorUserId: (string) UserId::generate(),
         );

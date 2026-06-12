@@ -21,14 +21,14 @@ class RouteResource extends JsonResource
         $dto = $this->resource;
 
         return [
-            'id'          => $dto->id,
-            'name'        => $dto->name,
-            'code'        => $dto->code,
+            'id' => $dto->id,
+            'name' => $dto->name,
+            'code' => $dto->code,
             'description' => $dto->description,
-            'is_active'   => $dto->isActive,
-            'created_by'  => $dto->createdBy,
-            'created_at'  => $dto->createdAt,
-            'updated_at'  => $dto->updatedAt,
+            'is_active' => $dto->isActive,
+            'created_by' => $dto->createdBy,
+            'created_at' => $dto->createdAt,
+            'updated_at' => $dto->updatedAt,
         ];
     }
 }

@@ -14,7 +14,7 @@ final class UnitPermissionsSeeder extends Seeder
     public function run(): void
     {
         $permission = Permission::firstOrCreate([
-            'name'       => 'catalog.units.manage',
+            'name' => 'catalog.units.manage',
             'guard_name' => 'api',
         ]);
 

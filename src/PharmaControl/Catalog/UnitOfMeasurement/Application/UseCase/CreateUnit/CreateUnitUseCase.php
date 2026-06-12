@@ -25,9 +25,9 @@ final class CreateUnitUseCase
 
     public function __invoke(CreateUnitCommand $command): UnitDTO
     {
-        $name   = new UnitName($command->name);
+        $name = new UnitName($command->name);
         $symbol = new UnitSymbol($command->symbol);
-        $type   = UnitType::from($command->type);
+        $type = UnitType::from($command->type);
 
         if ($this->repository->findByName($name) !== null) {
             throw new DuplicateUnitNameException($command->name);

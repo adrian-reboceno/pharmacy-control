@@ -11,16 +11,18 @@ class EloquentRoute extends Model
 {
     use HasUuids;
 
-    protected $table        = 'routes_of_administration';
-    protected $keyType      = 'string';
-    public    $incrementing = false;
+    protected $table = 'routes_of_administration';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'name', 'code', 'description', 'is_active', 'created_by',
     ];
 
     protected $casts = [
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
         'created_at' => 'immutable_datetime',
         'updated_at' => 'immutable_datetime',
     ];

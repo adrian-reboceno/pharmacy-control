@@ -18,7 +18,7 @@ final class UpdatePresentationUseCase
 {
     public function __construct(
         private readonly PresentationRepositoryContract $repository,
-        private readonly EventPublisherContract         $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(UpdatePresentationCommand $command): PresentationDTO
@@ -28,16 +28,16 @@ final class UpdatePresentationUseCase
             throw new PresentationNotFoundException($command->id);
         }
 
-        $name         = new PresentationName($command->name);
+        $name = new PresentationName($command->name);
         $abbreviation = new Abbreviation($command->abbreviation);
 
         $existingByName = $this->repository->findByName($name);
-        if ($existingByName !== null && !$existingByName->getId()->equals($presentation->getId())) {
+        if ($existingByName !== null && ! $existingByName->getId()->equals($presentation->getId())) {
             throw new DuplicatePresentationNameException($command->name);
         }
 
         $existingByAbbreviation = $this->repository->findByAbbreviation($abbreviation);
-        if ($existingByAbbreviation !== null && !$existingByAbbreviation->getId()->equals($presentation->getId())) {
+        if ($existingByAbbreviation !== null && ! $existingByAbbreviation->getId()->equals($presentation->getId())) {
             throw new DuplicateAbbreviationException($command->abbreviation);
         }
 

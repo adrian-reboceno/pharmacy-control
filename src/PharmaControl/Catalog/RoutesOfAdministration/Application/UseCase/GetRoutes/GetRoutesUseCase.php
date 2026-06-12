@@ -25,7 +25,7 @@ final class GetRoutesUseCase
         }
 
         $filters['per_page'] = $query->perPage;
-        $filters['page']     = $query->page;
+        $filters['page'] = $query->page;
 
         $result = $this->repository->findAll($filters);
 

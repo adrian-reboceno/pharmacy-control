@@ -18,7 +18,7 @@ final readonly class RouteCode
         if (mb_strlen($normalized) > 10) {
             throw new \InvalidArgumentException('El código no puede exceder 10 caracteres.');
         }
-        if (!preg_match('/^[A-Z0-9]+$/', $normalized)) {
+        if (! preg_match('/^[A-Z0-9]+$/', $normalized)) {
             throw new \InvalidArgumentException("Código inválido: {$value}. Solo letras mayúsculas y números.");
         }
 

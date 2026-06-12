@@ -18,9 +18,9 @@ use PHPUnit\Framework\TestCase;
 final class UnitOfMeasurementTest extends TestCase
 {
     private function makeUnit(
-        string $name   = 'Miligramo',
+        string $name = 'Miligramo',
         string $symbol = 'mg',
-        string $type   = 'CONCENTRATION',
+        string $type = 'CONCENTRATION',
     ): UnitOfMeasurement {
         return UnitOfMeasurement::create(
             UnitId::generate(),
@@ -33,7 +33,7 @@ final class UnitOfMeasurementTest extends TestCase
 
     public function test_create_emits_unit_created_event(): void
     {
-        $unit   = $this->makeUnit();
+        $unit = $this->makeUnit();
         $events = $unit->releaseEvents();
 
         self::assertCount(1, $events);
@@ -43,14 +43,14 @@ final class UnitOfMeasurementTest extends TestCase
     public function test_reconstitute_does_not_emit_events(): void
     {
         $unit = UnitOfMeasurement::reconstitute(
-            id:        UnitId::generate(),
-            name:      new UnitName('Gramo'),
-            symbol:    new UnitSymbol('g'),
-            type:      UnitType::CONCENTRATION,
-            isActive:  true,
+            id: UnitId::generate(),
+            name: new UnitName('Gramo'),
+            symbol: new UnitSymbol('g'),
+            type: UnitType::CONCENTRATION,
+            isActive: true,
             createdBy: null,
-            createdAt: new \DateTimeImmutable(),
-            updatedAt: new \DateTimeImmutable(),
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
 
         self::assertSame([], $unit->releaseEvents());
@@ -73,8 +73,8 @@ final class UnitOfMeasurementTest extends TestCase
 
     public function test_update_sets_updated_at_to_current_time(): void
     {
-        $before = new \DateTimeImmutable();
-        $unit   = $this->makeUnit();
+        $before = new \DateTimeImmutable;
+        $unit = $this->makeUnit();
         $unit->releaseEvents();
 
         $unit->update(new UnitName('Gramo'), new UnitSymbol('g'), UnitType::CONCENTRATION);
@@ -111,7 +111,7 @@ final class UnitOfMeasurementTest extends TestCase
     {
         $unit = $this->makeUnit();
 
-        $first  = $unit->releaseEvents();
+        $first = $unit->releaseEvents();
         $second = $unit->releaseEvents();
 
         self::assertCount(1, $first);

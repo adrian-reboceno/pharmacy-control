@@ -18,7 +18,7 @@ final class UpdateRouteUseCase
 {
     public function __construct(
         private readonly RouteRepositoryContract $repository,
-        private readonly EventPublisherContract  $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(UpdateRouteCommand $command): RouteDTO
@@ -32,12 +32,12 @@ final class UpdateRouteUseCase
         $code = new RouteCode($command->code);
 
         $existingByName = $this->repository->findByName($name);
-        if ($existingByName !== null && !$existingByName->getId()->equals($route->getId())) {
+        if ($existingByName !== null && ! $existingByName->getId()->equals($route->getId())) {
             throw new DuplicateRouteNameException($command->name);
         }
 
         $existingByCode = $this->repository->findByCode($code);
-        if ($existingByCode !== null && !$existingByCode->getId()->equals($route->getId())) {
+        if ($existingByCode !== null && ! $existingByCode->getId()->equals($route->getId())) {
             throw new DuplicateRouteCodeException($command->code);
         }
 

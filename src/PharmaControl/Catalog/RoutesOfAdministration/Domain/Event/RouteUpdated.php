@@ -10,9 +10,9 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class RouteUpdated implements DomainEvent
 {
     public function __construct(
-        public readonly RouteId             $id,
-        public readonly array               $changes,
-        public readonly \DateTimeImmutable  $occurredAt,
+        public readonly RouteId $id,
+        public readonly array $changes,
+        public readonly \DateTimeImmutable $occurredAt,
     ) {}
 
     public function occurredAt(): \DateTimeImmutable

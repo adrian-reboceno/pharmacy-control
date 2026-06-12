@@ -23,23 +23,25 @@ use PHPUnit\Framework\TestCase;
 final class CreatePresentationUseCaseTest extends TestCase
 {
     private PresentationRepositoryContract&MockObject $repository;
-    private EventPublisherContract&MockObject         $events;
-    private CreatePresentationUseCase                 $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private CreatePresentationUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(PresentationRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new CreatePresentationUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new CreatePresentationUseCase($this->repository, $this->events);
     }
 
     private function makeCommand(string $name = 'Tableta', string $abbreviation = 'Tab'): CreatePresentationCommand
     {
         return new CreatePresentationCommand(
-            name:         $name,
+            name: $name,
             abbreviation: $abbreviation,
-            description:  'Forma sólida oral.',
-            actorUserId:  (string) UserId::generate(),
+            description: 'Forma sólida oral.',
+            actorUserId: (string) UserId::generate(),
         );
     }
 

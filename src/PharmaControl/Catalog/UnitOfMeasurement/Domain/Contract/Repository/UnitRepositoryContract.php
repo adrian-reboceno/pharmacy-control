@@ -27,7 +27,6 @@ interface UnitRepositoryContract
      *   per_page?:  int,
      *   page?:      int,
      * } $filters
-     *
      * @return array{
      *   data:         UnitOfMeasurement[],
      *   total:        int,
