@@ -1052,6 +1052,221 @@ paths:
       security:
         -
           bearerAuth: []
+  /v1/catalog/routes-of-administration:
+    get:
+      tags:
+        - 'Catalog · Routes of Administration'
+      summary: 'Listar vías de administración'
+      description: 'Lista paginada con filtros opcionales por nombre, código y estado.'
+      operationId: e8d6351b0139a519926c25e3ec585ea0
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Búsqueda en nombre o código'
+          required: false
+          schema:
+            type: string
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/RouteResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Routes of Administration'
+      summary: 'Crear vía de administración'
+      operationId: e4afa9b041125a0d6a907dc606a29bcb
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - code
+              properties:
+                name:
+                  type: string
+                  example: Oral
+                  maxLength: 100
+                code:
+                  type: string
+                  example: VO
+                  maxLength: 10
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '201':
+          description: 'Vía creada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre o código duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/routes-of-administration/{id}':
+    get:
+      tags:
+        - 'Catalog · Routes of Administration'
+      summary: 'Obtener vía de administración'
+      operationId: 6a926ab4c8e6aca6f0acc07a97d6b4f4
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Vía encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Routes of Administration'
+      summary: 'Actualizar vía de administración'
+      operationId: 722591d969da6d18fe6720b23bdc5873
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - code
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                code:
+                  type: string
+                  maxLength: 10
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '200':
+          description: 'Vía actualizada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre o código duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Routes of Administration'
+      summary: 'Desactivar vía de administración'
+      description: 'Soft delete lógico. No elimina el registro.'
+      operationId: 01006c70de60bf70e416469c8f63e1f9
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
   /v1/catalog/units:
     get:
       tags:
@@ -1442,6 +1657,35 @@ components:
           type: string
           format: date-time
       type: object
+    RouteResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Oral
+        code:
+          type: string
+          example: VO
+        description:
+          type: string
+          example: 'Administración por la boca.'
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     UnitResponse:
       properties:
         id:
@@ -1560,6 +1804,9 @@ tags:
   -
     name: 'Catalog · Presentations'
     description: 'Formas farmacéuticas de los productos'
+  -
+    name: 'Catalog · Routes of Administration'
+    description: 'Vías de administración de medicamentos'
   -
     name: 'Catalog · Units'
     description: 'Unidades de medida farmacéuticas'
