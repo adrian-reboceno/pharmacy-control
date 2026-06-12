@@ -15,6 +15,7 @@ use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\ClassificationController;
 use App\Http\Controllers\Catalog\LaboratoryController;
 use App\Http\Controllers\Catalog\PresentationController;
+use App\Http\Controllers\Catalog\RouteController;
 use App\Http\Controllers\Catalog\UnitOfMeasurementController;
 use Illuminate\Support\Facades\Route;
 
@@ -85,4 +86,12 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.presentations.manage'])-
     Route::get('/presentations/{id}', [PresentationController::class, 'show']);
     Route::put('/presentations/{id}', [PresentationController::class, 'update']);
     Route::delete('/presentations/{id}', [PresentationController::class, 'destroy']);
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.routes-of-administration.manage'])->group(function (): void {
+    Route::get('/routes-of-administration',       [RouteController::class, 'index']);
+    Route::post('/routes-of-administration',      [RouteController::class, 'store']);
+    Route::get('/routes-of-administration/{id}',  [RouteController::class, 'show']);
+    Route::put('/routes-of-administration/{id}',  [RouteController::class, 'update']);
+    Route::delete('/routes-of-administration/{id}', [RouteController::class, 'destroy']);
 });
