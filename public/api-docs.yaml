@@ -837,6 +837,221 @@ paths:
       security:
         -
           bearerAuth: []
+  /v1/catalog/presentations:
+    get:
+      tags:
+        - 'Catalog · Presentations'
+      summary: 'Listar presentaciones'
+      description: 'Lista paginada de formas farmacéuticas con filtros opcionales.'
+      operationId: 5ad1850dd1ee591639763b9f131701de
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Búsqueda en nombre o abreviatura'
+          required: false
+          schema:
+            type: string
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/PresentationResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Presentations'
+      summary: 'Crear presentación'
+      operationId: 5994c3ed2e1b0314d63f845ed4be777f
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - abbreviation
+              properties:
+                name:
+                  type: string
+                  example: Tableta
+                  maxLength: 100
+                abbreviation:
+                  type: string
+                  example: Tab
+                  maxLength: 20
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '201':
+          description: 'Presentación creada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresentationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre o abreviatura duplicada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/presentations/{id}':
+    get:
+      tags:
+        - 'Catalog · Presentations'
+      summary: 'Obtener presentación'
+      operationId: ba16513db645547569901799cc87fc9b
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Presentación encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresentationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Presentations'
+      summary: 'Actualizar presentación'
+      operationId: cbbd75e0728152bb58fa8ef964861262
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - abbreviation
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                abbreviation:
+                  type: string
+                  maxLength: 20
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '200':
+          description: 'Presentación actualizada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresentationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre o abreviatura duplicada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Presentations'
+      summary: 'Desactivar presentación'
+      description: 'Soft delete lógico. No elimina el registro.'
+      operationId: 0cb6fa4e07b69b4be2078b98a395d41b
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
   /v1/catalog/units:
     get:
       tags:
@@ -1198,6 +1413,35 @@ components:
           type: string
           format: date-time
       type: object
+    PresentationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Tableta
+        abbreviation:
+          type: string
+          example: Tab
+        description:
+          type: string
+          example: 'Forma sólida oral.'
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     UnitResponse:
       properties:
         id:
@@ -1313,6 +1557,9 @@ tags:
   -
     name: 'Catalog · Laboratories'
     description: 'Catálogo de laboratorios fabricantes'
+  -
+    name: 'Catalog · Presentations'
+    description: 'Formas farmacéuticas de los productos'
   -
     name: 'Catalog · Units'
     description: 'Unidades de medida farmacéuticas'
