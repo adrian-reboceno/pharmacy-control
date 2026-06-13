@@ -1494,6 +1494,250 @@ paths:
       security:
         -
           bearerAuth: []
+  /v1/suppliers:
+    get:
+      tags:
+        - Suppliers
+      summary: 'Listar proveedores'
+      description: 'Lista paginada con filtros opcionales por nombre, RFC, tipo y estado.'
+      operationId: c6db27bf0fcb9b36b9fa522087227b6a
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Búsqueda en razón social, nombre comercial o RFC'
+          required: false
+          schema:
+            type: string
+        -
+          name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - MORAL
+              - FISICA
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/SupplierResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - Suppliers
+      summary: 'Crear proveedor'
+      description: 'El RFC es opcional (proveedores extranjeros). Si se envía, debe coincidir con la longitud del type: MORAL=12, FISICA=13.'
+      operationId: 185af0373794b1967ba94bcbec6ffc72
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - type
+                - legal_name
+                - address
+              properties:
+                type:
+                  type: string
+                  example: MORAL
+                  enum: [MORAL, FISICA]
+                rfc:
+                  type: string
+                  example: ABC123456XYZ
+                  nullable: true
+                legal_name:
+                  type: string
+                  maxLength: 200
+                trade_name:
+                  type: string
+                  nullable: true
+                  maxLength: 150
+                address:
+                  $ref: '#/components/schemas/AddressRequest'
+                phone:
+                  type: string
+                  example: '2221234567'
+                  nullable: true
+                email:
+                  type: string
+                  format: email
+                  nullable: true
+              type: object
+      responses:
+        '201':
+          description: 'Proveedor creado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'RFC duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: 'Validación fallida o RFC con formato inválido para el type'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+      security:
+        -
+          bearerAuth: []
+  '/v1/suppliers/{id}':
+    get:
+      tags:
+        - Suppliers
+      summary: 'Obtener proveedor'
+      operationId: 938a2abf977efa68f207876a3b230185
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Proveedor encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - Suppliers
+      summary: 'Actualizar proveedor'
+      description: 'type y rfc son inmutables tras la creación — no se incluyen en este endpoint.'
+      operationId: 0767d321041d51277e0a6276f1bb5d86
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - legal_name
+                - address
+              properties:
+                legal_name:
+                  type: string
+                  maxLength: 200
+                trade_name:
+                  type: string
+                  nullable: true
+                  maxLength: 150
+                address:
+                  $ref: '#/components/schemas/AddressRequest'
+                phone:
+                  type: string
+                  nullable: true
+                email:
+                  type: string
+                  format: email
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: 'Proveedor actualizado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - Suppliers
+      summary: 'Desactivar proveedor'
+      description: 'Soft delete lógico. No elimina el registro.'
+      operationId: 5f66bda5bb9d95a694852c6ac981d82a
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
 components:
   schemas:
     CategoryResponse:
@@ -1757,6 +2001,128 @@ components:
             items:
               type: string
       type: object
+    AddressResponse:
+      properties:
+        street:
+          type: string
+          example: 'Av. Reforma'
+        ext_number:
+          type: string
+          example: '123'
+        int_number:
+          type: string
+          example: A
+          nullable: true
+        neighborhood:
+          type: string
+          example: Centro
+        municipality:
+          type: string
+          example: Puebla
+        state:
+          type: string
+          example: Puebla
+        postal_code:
+          type: string
+          example: '72000'
+        country:
+          type: string
+          example: MX
+        full_address:
+          type: string
+          example: 'Av. Reforma 123, Centro, Puebla, Puebla, CP 72000, MX'
+      type: object
+    SupplierResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          example: MORAL
+          enum:
+            - MORAL
+            - FISICA
+        type_label:
+          type: string
+          example: 'Persona Moral'
+        rfc:
+          type: string
+          example: ABC123456XYZ
+          nullable: true
+        legal_name:
+          type: string
+          example: 'Distribuidora Farmacéutica del Centro S.A. de C.V.'
+        trade_name:
+          type: string
+          example: DFC
+          nullable: true
+        address:
+          $ref: '#/components/schemas/AddressResponse'
+        phone:
+          type: string
+          example: '2221234567'
+          nullable: true
+        email:
+          type: string
+          example: contacto@dfc.mx
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+    AddressRequest:
+      required:
+        - street
+        - ext_number
+        - neighborhood
+        - municipality
+        - state
+        - postal_code
+      properties:
+        street:
+          type: string
+          example: 'Av. Reforma'
+          maxLength: 150
+        ext_number:
+          type: string
+          example: '123'
+          maxLength: 20
+        int_number:
+          type: string
+          example: A
+          nullable: true
+          maxLength: 20
+        neighborhood:
+          type: string
+          example: Centro
+          maxLength: 100
+        municipality:
+          type: string
+          example: Puebla
+          maxLength: 100
+        state:
+          type: string
+          example: Puebla
+        postal_code:
+          type: string
+          pattern: '^[0-9]{5}$'
+          example: '72000'
+        country:
+          type: string
+          example: MX
+          maxLength: 2
+      type: object
   responses:
     Unauthorized:
       description: 'Token ausente, inválido o expirado'
@@ -1810,6 +2176,9 @@ tags:
   -
     name: 'Catalog · Units'
     description: 'Unidades de medida farmacéuticas'
+  -
+    name: Suppliers
+    description: 'Proveedores — personas morales y físicas'
   -
     name: Auth
     description: Auth

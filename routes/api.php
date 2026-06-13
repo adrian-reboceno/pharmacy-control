@@ -17,6 +17,7 @@ use App\Http\Controllers\Catalog\LaboratoryController;
 use App\Http\Controllers\Catalog\PresentationController;
 use App\Http\Controllers\Catalog\RouteController;
 use App\Http\Controllers\Catalog\UnitOfMeasurementController;
+use App\Http\Controllers\Suppliers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/v1/docs', function () {
@@ -94,4 +95,12 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.routes-of-administration
     Route::get('/routes-of-administration/{id}', [RouteController::class, 'show']);
     Route::put('/routes-of-administration/{id}', [RouteController::class, 'update']);
     Route::delete('/routes-of-administration/{id}', [RouteController::class, 'destroy']);
+});
+
+Route::prefix('v1')->middleware(['rbac2:catalog.suppliers.manage'])->group(function (): void {
+    Route::get('/suppliers',      [SupplierController::class, 'index']);
+    Route::post('/suppliers',     [SupplierController::class, 'store']);
+    Route::get('/suppliers/{id}', [SupplierController::class, 'show']);
+    Route::put('/suppliers/{id}', [SupplierController::class, 'update']);
+    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy']);
 });
