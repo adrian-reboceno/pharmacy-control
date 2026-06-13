@@ -40,6 +40,8 @@ use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\Rout
 use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Persistence\Eloquent\Repository\EloquentRouteRepository;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
+use PharmaControl\Suppliers\Domain\Contract\Repository\SupplierRepositoryContract;
+use PharmaControl\Suppliers\Infrastructure\Persistence\Eloquent\Repository\EloquentSupplierRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -77,6 +79,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalog — Routes of Administration
         $this->app->bind(RouteRepositoryContract::class, EloquentRouteRepository::class);
+
+        // Suppliers
+        $this->app->bind(SupplierRepositoryContract::class, EloquentSupplierRepository::class);
     }
 
     public function boot(): void
