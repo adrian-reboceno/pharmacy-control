@@ -11,9 +11,11 @@ class EloquentSupplier extends Model
 {
     use HasUuids;
 
-    protected $table        = 'suppliers';
-    protected $keyType      = 'string';
-    public    $incrementing = false;
+    protected $table = 'suppliers';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'type', 'rfc', 'legal_name', 'trade_name',
@@ -24,7 +26,7 @@ class EloquentSupplier extends Model
     ];
 
     protected $casts = [
-        'is_active'  => 'boolean',
+        'is_active' => 'boolean',
         'created_at' => 'immutable_datetime',
         'updated_at' => 'immutable_datetime',
     ];

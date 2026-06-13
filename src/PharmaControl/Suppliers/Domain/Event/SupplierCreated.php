@@ -14,11 +14,11 @@ use PharmaControl\Suppliers\Domain\ValueObject\SupplierType;
 final readonly class SupplierCreated implements DomainEvent
 {
     public function __construct(
-        public readonly SupplierId         $id,
-        public readonly SupplierType       $type,
-        public readonly ?Rfc               $rfc,
-        public readonly LegalName          $legalName,
-        public readonly ?UserId            $createdBy,
+        public readonly SupplierId $id,
+        public readonly SupplierType $type,
+        public readonly ?Rfc $rfc,
+        public readonly LegalName $legalName,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

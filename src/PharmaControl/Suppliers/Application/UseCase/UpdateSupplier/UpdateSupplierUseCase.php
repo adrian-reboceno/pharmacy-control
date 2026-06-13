@@ -18,7 +18,7 @@ final class UpdateSupplierUseCase
 {
     public function __construct(
         private readonly SupplierRepositoryContract $repository,
-        private readonly EventPublisherContract      $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(UpdateSupplierCommand $command): SupplierDTO
@@ -29,15 +29,15 @@ final class UpdateSupplierUseCase
         }
 
         $legalName = new LegalName($command->legalName);
-        $address   = new Address(
-            street:       $command->address['street'],
-            extNumber:    $command->address['ext_number'],
-            intNumber:    $command->address['int_number'] ?? null,
+        $address = new Address(
+            street: $command->address['street'],
+            extNumber: $command->address['ext_number'],
+            intNumber: $command->address['int_number'] ?? null,
             neighborhood: $command->address['neighborhood'],
             municipality: $command->address['municipality'],
-            state:        $command->address['state'],
-            postalCode:   $command->address['postal_code'],
-            country:      $command->address['country'] ?? 'MX',
+            state: $command->address['state'],
+            postalCode: $command->address['postal_code'],
+            country: $command->address['country'] ?? 'MX',
         );
         $phone = $command->phone !== null ? new Phone($command->phone) : null;
         $email = $command->email !== null ? new Email($command->email) : null;

@@ -20,34 +20,34 @@ use PharmaControl\Suppliers\Domain\ValueObject\SupplierId;
 final class SupplierController
 {
     public function __construct(
-        private readonly CreateSupplierUseCase     $create,
-        private readonly UpdateSupplierUseCase     $update,
+        private readonly CreateSupplierUseCase $create,
+        private readonly UpdateSupplierUseCase $update,
         private readonly DeactivateSupplierUseCase $deactivate,
-        private readonly GetSuppliersUseCase       $get,
+        private readonly GetSuppliersUseCase $get,
         private readonly SupplierRepositoryContract $repository,
     ) {}
 
     public function index(array $data): array
     {
         return ($this->get)(new GetSuppliersQuery(
-            search:   $data['search'] ?? null,
-            type:     $data['type'] ?? null,
+            search: $data['search'] ?? null,
+            type: $data['type'] ?? null,
             isActive: isset($data['is_active']) ? (bool) $data['is_active'] : null,
-            perPage:  (int) ($data['per_page'] ?? 20),
-            page:     (int) ($data['page'] ?? 1),
+            perPage: (int) ($data['per_page'] ?? 20),
+            page: (int) ($data['page'] ?? 1),
         ));
     }
 
     public function store(array $data): SupplierDTO
     {
         return ($this->create)(new CreateSupplierCommand(
-            type:        $data['type'],
-            rfc:         $data['rfc'] ?? null,
-            legalName:   $data['legal_name'],
-            tradeName:   $data['trade_name'] ?? null,
-            address:     $data['address'],
-            phone:       $data['phone'] ?? null,
-            email:       $data['email'] ?? null,
+            type: $data['type'],
+            rfc: $data['rfc'] ?? null,
+            legalName: $data['legal_name'],
+            tradeName: $data['trade_name'] ?? null,
+            address: $data['address'],
+            phone: $data['phone'] ?? null,
+            email: $data['email'] ?? null,
             actorUserId: $data['actor_user_id'],
         ));
     }
@@ -65,12 +65,12 @@ final class SupplierController
     public function update(string $id, array $data): SupplierDTO
     {
         return ($this->update)(new UpdateSupplierCommand(
-            id:          $id,
-            legalName:   $data['legal_name'],
-            tradeName:   $data['trade_name'] ?? null,
-            address:     $data['address'],
-            phone:       $data['phone'] ?? null,
-            email:       $data['email'] ?? null,
+            id: $id,
+            legalName: $data['legal_name'],
+            tradeName: $data['trade_name'] ?? null,
+            address: $data['address'],
+            phone: $data['phone'] ?? null,
+            email: $data['email'] ?? null,
             actorUserId: $data['actor_user_id'],
         ));
     }

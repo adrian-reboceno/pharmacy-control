@@ -19,59 +19,65 @@ use PharmaControl\Suppliers\Domain\ValueObject\SupplierType;
 
 final class Supplier
 {
-    private ?Rfc      $rfc;
+    private ?Rfc $rfc;
+
     private LegalName $legalName;
-    private ?string   $tradeName;
-    private Address   $address;
-    private ?Phone    $phone;
-    private ?Email    $email;
-    private bool      $isActive;
+
+    private ?string $tradeName;
+
+    private Address $address;
+
+    private ?Phone $phone;
+
+    private ?Email $email;
+
+    private bool $isActive;
 
     /** @var list<DomainEvent> */
     private array $domainEvents = [];
 
     private function __construct(
-        public readonly SupplierId        $id,
-        public readonly SupplierType      $type,
-        ?Rfc                               $rfc,
-        LegalName                          $legalName,
-        ?string                            $tradeName,
-        Address                            $address,
-        ?Phone                             $phone,
-        ?Email                             $email,
-        bool                               $isActive,
-        public readonly ?UserId            $createdBy,
+        public readonly SupplierId $id,
+        public readonly SupplierType $type,
+        ?Rfc $rfc,
+        LegalName $legalName,
+        ?string $tradeName,
+        Address $address,
+        ?Phone $phone,
+        ?Email $email,
+        bool $isActive,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $createdAt,
-        private \DateTimeImmutable         $updatedAt,
+        private \DateTimeImmutable $updatedAt,
     ) {
-        $this->rfc       = $rfc;
+        $this->rfc = $rfc;
         $this->legalName = $legalName;
         $this->tradeName = $tradeName;
-        $this->address   = $address;
-        $this->phone     = $phone;
-        $this->email     = $email;
-        $this->isActive  = $isActive;
+        $this->address = $address;
+        $this->phone = $phone;
+        $this->email = $email;
+        $this->isActive = $isActive;
     }
 
     public static function create(
-        SupplierId   $id,
+        SupplierId $id,
         SupplierType $type,
-        ?Rfc         $rfc,
-        LegalName    $legalName,
-        ?string      $tradeName,
-        Address      $address,
-        ?Phone       $phone,
-        ?Email       $email,
-        ?UserId      $createdBy,
+        ?Rfc $rfc,
+        LegalName $legalName,
+        ?string $tradeName,
+        Address $address,
+        ?Phone $phone,
+        ?Email $email,
+        ?UserId $createdBy,
     ): self {
-        $now      = new \DateTimeImmutable;
+        $now = new \DateTimeImmutable;
         $supplier = new self($id, $type, $rfc, $legalName, $tradeName, $address, $phone, $email, true, $createdBy, $now, $now);
         $supplier->recordEvent(new SupplierCreated(
-            id:         $id,
-            type:       $type,
-            rfc:        $rfc,
-            legalName:  $legalName,
-            createdBy:  $createdBy,
+            id: $id,
+            type: $type,
+            rfc: $rfc,
+            legalName: $legalName,
+            createdBy: $createdBy,
             occurredAt: $now,
         ));
 
@@ -79,16 +85,16 @@ final class Supplier
     }
 
     public static function reconstitute(
-        SupplierId         $id,
-        SupplierType       $type,
-        ?Rfc               $rfc,
-        LegalName          $legalName,
-        ?string            $tradeName,
-        Address            $address,
-        ?Phone             $phone,
-        ?Email             $email,
-        bool               $isActive,
-        ?UserId            $createdBy,
+        SupplierId $id,
+        SupplierType $type,
+        ?Rfc $rfc,
+        LegalName $legalName,
+        ?string $tradeName,
+        Address $address,
+        ?Phone $phone,
+        ?Email $email,
+        bool $isActive,
+        ?UserId $createdBy,
         \DateTimeImmutable $createdAt,
         \DateTimeImmutable $updatedAt,
     ): self {
@@ -97,10 +103,10 @@ final class Supplier
 
     public function update(
         LegalName $legalName,
-        ?string   $tradeName,
-        Address   $address,
-        ?Phone    $phone,
-        ?Email    $email,
+        ?string $tradeName,
+        Address $address,
+        ?Phone $phone,
+        ?Email $email,
     ): void {
         $changes = [];
 
@@ -122,14 +128,14 @@ final class Supplier
 
         $this->legalName = $legalName;
         $this->tradeName = $tradeName;
-        $this->address   = $address;
-        $this->phone     = $phone;
-        $this->email     = $email;
+        $this->address = $address;
+        $this->phone = $phone;
+        $this->email = $email;
         $this->updatedAt = new \DateTimeImmutable;
 
         $this->recordEvent(new SupplierUpdated(
-            id:         $this->id,
-            changes:    $changes,
+            id: $this->id,
+            changes: $changes,
             occurredAt: $this->updatedAt,
         ));
     }
@@ -139,17 +145,17 @@ final class Supplier
         if (! $this->isActive) {
             throw new \DomainException('El proveedor ya está inactivo.');
         }
-        $this->isActive  = false;
+        $this->isActive = false;
         $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new SupplierDeactivated(
-            id:         $this->id,
+            id: $this->id,
             occurredAt: $this->updatedAt,
         ));
     }
 
     public function activate(): void
     {
-        $this->isActive  = true;
+        $this->isActive = true;
         $this->updatedAt = new \DateTimeImmutable;
     }
 
@@ -215,7 +221,7 @@ final class Supplier
 
     public function releaseEvents(): array
     {
-        $events             = $this->domainEvents;
+        $events = $this->domainEvents;
         $this->domainEvents = [];
 
         return $events;

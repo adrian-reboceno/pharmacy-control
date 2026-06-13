@@ -10,8 +10,8 @@ use PharmaControl\Suppliers\Domain\ValueObject\SupplierId;
 final readonly class SupplierUpdated implements DomainEvent
 {
     public function __construct(
-        public readonly SupplierId         $id,
-        public readonly array              $changes,
+        public readonly SupplierId $id,
+        public readonly array $changes,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

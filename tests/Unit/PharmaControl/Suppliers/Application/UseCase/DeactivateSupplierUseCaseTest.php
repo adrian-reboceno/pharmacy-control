@@ -31,21 +31,21 @@ final class DeactivateSupplierUseCaseTest extends TestCase
     protected function setUp(): void
     {
         $this->repository = $this->createMock(SupplierRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new DeactivateSupplierUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new DeactivateSupplierUseCase($this->repository, $this->events);
     }
 
     private function makeActiveSupplier(): Supplier
     {
         $supplier = Supplier::create(
-            id:        SupplierId::generate(),
-            type:      SupplierType::MORAL,
-            rfc:       new Rfc('ABC123456XYZ', SupplierType::MORAL),
+            id: SupplierId::generate(),
+            type: SupplierType::MORAL,
+            rfc: new Rfc('ABC123456XYZ', SupplierType::MORAL),
             legalName: new LegalName('Distribuidora S.A.'),
             tradeName: null,
-            address:   new Address('Av. Reforma', '1', null, 'Centro', 'Puebla', 'Puebla', '72000'),
-            phone:     null,
-            email:     null,
+            address: new Address('Av. Reforma', '1', null, 'Centro', 'Puebla', 'Puebla', '72000'),
+            phone: null,
+            email: null,
             createdBy: UserId::generate(),
         );
         $supplier->releaseEvents();
@@ -60,7 +60,7 @@ final class DeactivateSupplierUseCaseTest extends TestCase
         $this->repository->expects($this->once())->method('save');
 
         ($this->useCase)(new DeactivateSupplierCommand(
-            id:          (string) $supplier->id,
+            id: (string) $supplier->id,
             actorUserId: (string) UserId::generate(),
         ));
 
@@ -74,7 +74,7 @@ final class DeactivateSupplierUseCaseTest extends TestCase
         $this->expectException(SupplierNotFoundException::class);
 
         ($this->useCase)(new DeactivateSupplierCommand(
-            id:          '00000000-0000-4000-8000-000000000000',
+            id: '00000000-0000-4000-8000-000000000000',
             actorUserId: (string) UserId::generate(),
         ));
     }
@@ -90,7 +90,7 @@ final class DeactivateSupplierUseCaseTest extends TestCase
             ->with($this->isInstanceOf(SupplierDeactivated::class));
 
         ($this->useCase)(new DeactivateSupplierCommand(
-            id:          (string) $supplier->id,
+            id: (string) $supplier->id,
             actorUserId: (string) UserId::generate(),
         ));
     }
@@ -106,7 +106,7 @@ final class DeactivateSupplierUseCaseTest extends TestCase
         $this->expectException(\DomainException::class);
 
         ($this->useCase)(new DeactivateSupplierCommand(
-            id:          (string) $supplier->id,
+            id: (string) $supplier->id,
             actorUserId: (string) UserId::generate(),
         ));
     }
