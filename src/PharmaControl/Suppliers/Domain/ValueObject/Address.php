@@ -17,14 +17,14 @@ final readonly class Address
     ];
 
     public function __construct(
-        public readonly string  $street,
-        public readonly string  $extNumber,
+        public readonly string $street,
+        public readonly string $extNumber,
         public readonly ?string $intNumber,
-        public readonly string  $neighborhood,
-        public readonly string  $municipality,
-        public readonly string  $state,
-        public readonly string  $postalCode,
-        public readonly string  $country = 'MX',
+        public readonly string $neighborhood,
+        public readonly string $municipality,
+        public readonly string $state,
+        public readonly string $postalCode,
+        public readonly string $country = 'MX',
     ) {
         $this->validateRequired($street, 'calle', 150);
         $this->validateRequired($extNumber, 'número exterior', 20);

@@ -32,21 +32,21 @@ final class UpdateSupplierUseCaseTest extends TestCase
     protected function setUp(): void
     {
         $this->repository = $this->createMock(SupplierRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new UpdateSupplierUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new UpdateSupplierUseCase($this->repository, $this->events);
     }
 
     private function makeExistingSupplier(): Supplier
     {
         $supplier = Supplier::create(
-            id:        SupplierId::generate(),
-            type:      SupplierType::MORAL,
-            rfc:       new Rfc('ABC123456XYZ', SupplierType::MORAL),
+            id: SupplierId::generate(),
+            type: SupplierType::MORAL,
+            rfc: new Rfc('ABC123456XYZ', SupplierType::MORAL),
             legalName: new LegalName('Distribuidora Original S.A.'),
             tradeName: null,
-            address:   new Address('Av. Reforma', '1', null, 'Centro', 'Puebla', 'Puebla', '72000'),
-            phone:     null,
-            email:     null,
+            address: new Address('Av. Reforma', '1', null, 'Centro', 'Puebla', 'Puebla', '72000'),
+            phone: null,
+            email: null,
             createdBy: UserId::generate(),
         );
         $supplier->releaseEvents();
@@ -57,26 +57,26 @@ final class UpdateSupplierUseCaseTest extends TestCase
     private function makeAddress(): array
     {
         return [
-            'street'       => 'Calle Nueva',
-            'ext_number'   => '456',
-            'int_number'   => null,
+            'street' => 'Calle Nueva',
+            'ext_number' => '456',
+            'int_number' => null,
             'neighborhood' => 'Norte',
             'municipality' => 'Puebla',
-            'state'        => 'Puebla',
-            'postal_code'  => '72010',
-            'country'      => 'MX',
+            'state' => 'Puebla',
+            'postal_code' => '72010',
+            'country' => 'MX',
         ];
     }
 
     private function makeCommand(string $id, array $overrides = []): UpdateSupplierCommand
     {
         return new UpdateSupplierCommand(
-            id:          $id,
-            legalName:   $overrides['legalName']   ?? 'Distribuidora Actualizada S.A.',
-            tradeName:   $overrides['tradeName']   ?? null,
-            address:     $overrides['address']     ?? $this->makeAddress(),
-            phone:       $overrides['phone']       ?? null,
-            email:       $overrides['email']       ?? null,
+            id: $id,
+            legalName: $overrides['legalName'] ?? 'Distribuidora Actualizada S.A.',
+            tradeName: $overrides['tradeName'] ?? null,
+            address: $overrides['address'] ?? $this->makeAddress(),
+            phone: $overrides['phone'] ?? null,
+            email: $overrides['email'] ?? null,
             actorUserId: $overrides['actorUserId'] ?? (string) UserId::generate(),
         );
     }

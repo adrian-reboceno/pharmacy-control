@@ -12,14 +12,14 @@ final class AddressTest extends TestCase
     private function makeAddress(array $overrides = []): Address
     {
         return new Address(
-            street:       $overrides['street']       ?? 'Av. Reforma',
-            extNumber:    $overrides['extNumber']     ?? '123',
-            intNumber:    $overrides['intNumber']     ?? null,
-            neighborhood: $overrides['neighborhood']  ?? 'Centro',
-            municipality: $overrides['municipality']  ?? 'Puebla',
-            state:        $overrides['state']         ?? 'Puebla',
-            postalCode:   $overrides['postalCode']    ?? '72000',
-            country:      $overrides['country']       ?? 'MX',
+            street: $overrides['street'] ?? 'Av. Reforma',
+            extNumber: $overrides['extNumber'] ?? '123',
+            intNumber: $overrides['intNumber'] ?? null,
+            neighborhood: $overrides['neighborhood'] ?? 'Centro',
+            municipality: $overrides['municipality'] ?? 'Puebla',
+            state: $overrides['state'] ?? 'Puebla',
+            postalCode: $overrides['postalCode'] ?? '72000',
+            country: $overrides['country'] ?? 'MX',
         );
     }
 

@@ -25,10 +25,10 @@ final class SupplierTest extends TestCase
         Permission::findOrCreate('suppliers.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'password_hash'        => Hash::make('Secret123!'),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
             'must_change_password' => false,
-            'email_verified_at'    => now(),
+            'email_verified_at' => now(),
         ]);
 
         $this->user->givePermissionTo('suppliers.manage');
@@ -42,40 +42,40 @@ final class SupplierTest extends TestCase
     private function createSupplier(array $overrides = []): EloquentSupplier
     {
         return EloquentSupplier::create(array_merge([
-            'id'                   => Str::uuid()->toString(),
-            'type'                 => 'MORAL',
-            'rfc'                  => 'ABC123456XYZ',
-            'legal_name'           => 'Distribuidora Farmacéutica S.A. de C.V.',
-            'trade_name'           => null,
-            'address_street'       => 'Av. Reforma',
-            'address_ext_number'   => '123',
-            'address_int_number'   => null,
+            'id' => Str::uuid()->toString(),
+            'type' => 'MORAL',
+            'rfc' => 'ABC123456XYZ',
+            'legal_name' => 'Distribuidora Farmacéutica S.A. de C.V.',
+            'trade_name' => null,
+            'address_street' => 'Av. Reforma',
+            'address_ext_number' => '123',
+            'address_int_number' => null,
             'address_neighborhood' => 'Centro',
             'address_municipality' => 'Puebla',
-            'address_state'        => 'Puebla',
-            'address_postal_code'  => '72000',
-            'address_country'      => 'MX',
-            'phone'                => null,
-            'email'                => null,
-            'is_active'            => true,
-            'created_by'           => null,
+            'address_state' => 'Puebla',
+            'address_postal_code' => '72000',
+            'address_country' => 'MX',
+            'phone' => null,
+            'email' => null,
+            'is_active' => true,
+            'created_by' => null,
         ], $overrides));
     }
 
     private function validPayload(array $overrides = []): array
     {
         return array_merge([
-            'type'       => 'MORAL',
-            'rfc'        => 'XYZ987654ABC',
+            'type' => 'MORAL',
+            'rfc' => 'XYZ987654ABC',
             'legal_name' => 'Nueva Distribuidora S.A. de C.V.',
-            'address'    => [
-                'street'       => 'Calle 5',
-                'ext_number'   => '10',
+            'address' => [
+                'street' => 'Calle 5',
+                'ext_number' => '10',
                 'neighborhood' => 'Norte',
                 'municipality' => 'Puebla',
-                'state'        => 'Puebla',
-                'postal_code'  => '72010',
-                'country'      => 'MX',
+                'state' => 'Puebla',
+                'postal_code' => '72010',
+                'country' => 'MX',
             ],
         ], $overrides);
     }
@@ -178,7 +178,7 @@ final class SupplierTest extends TestCase
     {
         $response = $this->actingAsUser()->postJson('/api/v1/suppliers', $this->validPayload([
             'type' => 'FISICA',
-            'rfc'  => null,
+            'rfc' => null,
         ]));
 
         $response->assertStatus(201)
@@ -231,8 +231,8 @@ final class SupplierTest extends TestCase
 
     public function test_store_returns_422_when_address_state_is_missing(): void
     {
-        $payload                        = $this->validPayload();
-        $payload['address']['state']    = '';
+        $payload = $this->validPayload();
+        $payload['address']['state'] = '';
 
         $response = $this->actingAsUser()->postJson('/api/v1/suppliers', $payload);
 
@@ -241,8 +241,8 @@ final class SupplierTest extends TestCase
 
     public function test_store_returns_422_when_postal_code_has_wrong_format(): void
     {
-        $payload                             = $this->validPayload();
-        $payload['address']['postal_code']   = '7200X';
+        $payload = $this->validPayload();
+        $payload['address']['postal_code'] = '7200X';
 
         $response = $this->actingAsUser()->postJson('/api/v1/suppliers', $payload);
 
@@ -255,7 +255,7 @@ final class SupplierTest extends TestCase
         // MORAL needs 12 chars, giving 13
         $response = $this->actingAsUser()->postJson('/api/v1/suppliers', $this->validPayload([
             'type' => 'MORAL',
-            'rfc'  => 'ABCD12345678X', // 13 chars
+            'rfc' => 'ABCD12345678X', // 13 chars
         ]));
 
         $response->assertStatus(422);
@@ -265,8 +265,8 @@ final class SupplierTest extends TestCase
     {
         $this->actingAsUser()->postJson('/api/v1/suppliers', $this->validPayload(['type' => 'FISICA', 'rfc' => null]));
         $response = $this->actingAsUser()->postJson('/api/v1/suppliers', $this->validPayload([
-            'type'       => 'FISICA',
-            'rfc'        => null,
+            'type' => 'FISICA',
+            'rfc' => null,
             'legal_name' => 'Otro Proveedor Extranjero',
         ]));
 
@@ -282,14 +282,14 @@ final class SupplierTest extends TestCase
         $response = $this->actingAsUser()->putJson("/api/v1/suppliers/{$supplier->id}", [
             'legal_name' => 'Razón Social Actualizada S.A.',
             'trade_name' => 'RSA',
-            'address'    => [
-                'street'       => 'Calle Nueva',
-                'ext_number'   => '99',
+            'address' => [
+                'street' => 'Calle Nueva',
+                'ext_number' => '99',
                 'neighborhood' => 'Sur',
                 'municipality' => 'Puebla',
-                'state'        => 'Puebla',
-                'postal_code'  => '72020',
-                'country'      => 'MX',
+                'state' => 'Puebla',
+                'postal_code' => '72020',
+                'country' => 'MX',
             ],
         ]);
 
@@ -304,14 +304,14 @@ final class SupplierTest extends TestCase
 
         $this->actingAsUser()->putJson("/api/v1/suppliers/{$supplier->id}", [
             'legal_name' => 'Nombre Nuevo S.A.',
-            'address'    => [
-                'street'       => 'Calle',
-                'ext_number'   => '1',
+            'address' => [
+                'street' => 'Calle',
+                'ext_number' => '1',
                 'neighborhood' => 'Col',
                 'municipality' => 'Puebla',
-                'state'        => 'Puebla',
-                'postal_code'  => '72000',
-                'country'      => 'MX',
+                'state' => 'Puebla',
+                'postal_code' => '72000',
+                'country' => 'MX',
             ],
         ]);
 
@@ -324,13 +324,13 @@ final class SupplierTest extends TestCase
     {
         $response = $this->actingAsUser()->putJson('/api/v1/suppliers/00000000-0000-4000-8000-000000000000', [
             'legal_name' => 'Nombre',
-            'address'    => [
-                'street'       => 'Calle',
-                'ext_number'   => '1',
+            'address' => [
+                'street' => 'Calle',
+                'ext_number' => '1',
                 'neighborhood' => 'Col',
                 'municipality' => 'Mun',
-                'state'        => 'Puebla',
-                'postal_code'  => '72000',
+                'state' => 'Puebla',
+                'postal_code' => '72000',
             ],
         ]);
 
@@ -343,13 +343,13 @@ final class SupplierTest extends TestCase
 
         $response = $this->actingAsUser()->putJson("/api/v1/suppliers/{$supplier->id}", [
             'legal_name' => '',
-            'address'    => [
-                'street'       => 'Calle',
-                'ext_number'   => '1',
+            'address' => [
+                'street' => 'Calle',
+                'ext_number' => '1',
                 'neighborhood' => 'Col',
                 'municipality' => 'Mun',
-                'state'        => 'Puebla',
-                'postal_code'  => '72000',
+                'state' => 'Puebla',
+                'postal_code' => '72000',
             ],
         ]);
 
@@ -404,8 +404,8 @@ final class SupplierTest extends TestCase
     public function test_all_endpoints_return_403_without_suppliers_manage_permission(): void
     {
         $userWithoutPermission = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'email_verified_at'    => now(),
+            'status' => 'ACTIVE',
+            'email_verified_at' => now(),
             'must_change_password' => false,
         ]);
 

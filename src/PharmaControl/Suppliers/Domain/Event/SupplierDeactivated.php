@@ -10,7 +10,7 @@ use PharmaControl\Suppliers\Domain\ValueObject\SupplierId;
 final readonly class SupplierDeactivated implements DomainEvent
 {
     public function __construct(
-        public readonly SupplierId         $id,
+        public readonly SupplierId $id,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

@@ -33,34 +33,34 @@ final class CreateSupplierUseCaseTest extends TestCase
     protected function setUp(): void
     {
         $this->repository = $this->createMock(SupplierRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new CreateSupplierUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new CreateSupplierUseCase($this->repository, $this->events);
     }
 
     private function makeAddress(): array
     {
         return [
-            'street'       => 'Av. Reforma',
-            'ext_number'   => '123',
-            'int_number'   => null,
+            'street' => 'Av. Reforma',
+            'ext_number' => '123',
+            'int_number' => null,
             'neighborhood' => 'Centro',
             'municipality' => 'Puebla',
-            'state'        => 'Puebla',
-            'postal_code'  => '72000',
-            'country'      => 'MX',
+            'state' => 'Puebla',
+            'postal_code' => '72000',
+            'country' => 'MX',
         ];
     }
 
     private function makeCommand(array $overrides = []): CreateSupplierCommand
     {
         return new CreateSupplierCommand(
-            type:        $overrides['type']        ?? 'MORAL',
-            rfc:         array_key_exists('rfc', $overrides) ? $overrides['rfc'] : 'ABC123456XYZ',
-            legalName:   $overrides['legalName']   ?? 'Distribuidora Farmacéutica S.A.',
-            tradeName:   $overrides['tradeName']   ?? null,
-            address:     $overrides['address']     ?? $this->makeAddress(),
-            phone:       $overrides['phone']       ?? null,
-            email:       $overrides['email']       ?? null,
+            type: $overrides['type'] ?? 'MORAL',
+            rfc: array_key_exists('rfc', $overrides) ? $overrides['rfc'] : 'ABC123456XYZ',
+            legalName: $overrides['legalName'] ?? 'Distribuidora Farmacéutica S.A.',
+            tradeName: $overrides['tradeName'] ?? null,
+            address: $overrides['address'] ?? $this->makeAddress(),
+            phone: $overrides['phone'] ?? null,
+            email: $overrides['email'] ?? null,
             actorUserId: $overrides['actorUserId'] ?? (string) UserId::generate(),
         );
     }
@@ -92,14 +92,14 @@ final class CreateSupplierUseCaseTest extends TestCase
     public function test_throws_duplicate_rfc_exception_when_rfc_already_exists(): void
     {
         $existing = Supplier::create(
-            id:        SupplierId::generate(),
-            type:      SupplierType::MORAL,
-            rfc:       new Rfc('ABC123456XYZ', SupplierType::MORAL),
+            id: SupplierId::generate(),
+            type: SupplierType::MORAL,
+            rfc: new Rfc('ABC123456XYZ', SupplierType::MORAL),
             legalName: new LegalName('Otro Proveedor S.A.'),
             tradeName: null,
-            address:   new Address('Calle', '1', null, 'Col', 'Mun', 'Puebla', '72000'),
-            phone:     null,
-            email:     null,
+            address: new Address('Calle', '1', null, 'Col', 'Mun', 'Puebla', '72000'),
+            phone: null,
+            email: null,
             createdBy: null,
         );
 

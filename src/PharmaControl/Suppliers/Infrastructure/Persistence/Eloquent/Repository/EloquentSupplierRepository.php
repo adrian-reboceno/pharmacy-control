@@ -43,9 +43,9 @@ final class EloquentSupplierRepository implements SupplierRepositoryContract
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters): void {
-                $q->where('legal_name', 'ilike', '%' . $filters['search'] . '%')
-                    ->orWhere('trade_name', 'ilike', '%' . $filters['search'] . '%')
-                    ->orWhere('rfc', 'ilike', '%' . $filters['search'] . '%');
+                $q->where('legal_name', 'ilike', '%'.$filters['search'].'%')
+                    ->orWhere('trade_name', 'ilike', '%'.$filters['search'].'%')
+                    ->orWhere('rfc', 'ilike', '%'.$filters['search'].'%');
             });
         }
 
@@ -59,16 +59,16 @@ final class EloquentSupplierRepository implements SupplierRepositoryContract
 
         $query->orderBy('legal_name', 'asc');
 
-        $perPage   = min((int) ($filters['per_page'] ?? 20), 100);
-        $page      = max((int) ($filters['page'] ?? 1), 1);
+        $perPage = min((int) ($filters['per_page'] ?? 20), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'data'         => array_map(fn ($m) => $this->mapper->toDomain($m), $paginator->items()),
-            'total'        => $paginator->total(),
-            'per_page'     => $paginator->perPage(),
+            'data' => array_map(fn ($m) => $this->mapper->toDomain($m), $paginator->items()),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
             'current_page' => $paginator->currentPage(),
-            'last_page'    => $paginator->lastPage(),
+            'last_page' => $paginator->lastPage(),
         ];
     }
 }

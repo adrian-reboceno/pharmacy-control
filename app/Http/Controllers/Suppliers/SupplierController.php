@@ -15,30 +15,30 @@ use PharmaControl\Suppliers\Infrastructure\Controller\SupplierController as Infr
 #[OA\Schema(
     schema: 'AddressResponse',
     properties: [
-        new OA\Property(property: 'street',       type: 'string', example: 'Av. Reforma'),
-        new OA\Property(property: 'ext_number',   type: 'string', example: '123'),
-        new OA\Property(property: 'int_number',   type: 'string', nullable: true, example: 'A'),
+        new OA\Property(property: 'street', type: 'string', example: 'Av. Reforma'),
+        new OA\Property(property: 'ext_number', type: 'string', example: '123'),
+        new OA\Property(property: 'int_number', type: 'string', nullable: true, example: 'A'),
         new OA\Property(property: 'neighborhood', type: 'string', example: 'Centro'),
         new OA\Property(property: 'municipality', type: 'string', example: 'Puebla'),
-        new OA\Property(property: 'state',        type: 'string', example: 'Puebla'),
-        new OA\Property(property: 'postal_code',  type: 'string', example: '72000'),
-        new OA\Property(property: 'country',      type: 'string', example: 'MX'),
+        new OA\Property(property: 'state', type: 'string', example: 'Puebla'),
+        new OA\Property(property: 'postal_code', type: 'string', example: '72000'),
+        new OA\Property(property: 'country', type: 'string', example: 'MX'),
         new OA\Property(property: 'full_address', type: 'string', example: 'Av. Reforma 123, Centro, Puebla, Puebla, CP 72000, MX'),
     ]
 )]
 #[OA\Schema(
     schema: 'SupplierResponse',
     properties: [
-        new OA\Property(property: 'id',         type: 'string', format: 'uuid'),
-        new OA\Property(property: 'type',       type: 'string', enum: ['MORAL', 'FISICA'], example: 'MORAL'),
+        new OA\Property(property: 'id', type: 'string', format: 'uuid'),
+        new OA\Property(property: 'type', type: 'string', enum: ['MORAL', 'FISICA'], example: 'MORAL'),
         new OA\Property(property: 'type_label', type: 'string', example: 'Persona Moral'),
-        new OA\Property(property: 'rfc',        type: 'string', nullable: true, example: 'ABC123456XYZ'),
+        new OA\Property(property: 'rfc', type: 'string', nullable: true, example: 'ABC123456XYZ'),
         new OA\Property(property: 'legal_name', type: 'string', example: 'Distribuidora Farmacéutica del Centro S.A. de C.V.'),
         new OA\Property(property: 'trade_name', type: 'string', nullable: true, example: 'DFC'),
-        new OA\Property(property: 'address',    ref: '#/components/schemas/AddressResponse'),
-        new OA\Property(property: 'phone',      type: 'string', nullable: true, example: '2221234567'),
-        new OA\Property(property: 'email',      type: 'string', nullable: true, example: 'contacto@dfc.mx'),
-        new OA\Property(property: 'is_active',  type: 'boolean', example: true),
+        new OA\Property(property: 'address', ref: '#/components/schemas/AddressResponse'),
+        new OA\Property(property: 'phone', type: 'string', nullable: true, example: '2221234567'),
+        new OA\Property(property: 'email', type: 'string', nullable: true, example: 'contacto@dfc.mx'),
+        new OA\Property(property: 'is_active', type: 'boolean', example: true),
         new OA\Property(property: 'created_by', type: 'string', format: 'uuid', nullable: true),
         new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
         new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
@@ -48,14 +48,14 @@ use PharmaControl\Suppliers\Infrastructure\Controller\SupplierController as Infr
     schema: 'AddressRequest',
     required: ['street', 'ext_number', 'neighborhood', 'municipality', 'state', 'postal_code'],
     properties: [
-        new OA\Property(property: 'street',       type: 'string', maxLength: 150, example: 'Av. Reforma'),
-        new OA\Property(property: 'ext_number',   type: 'string', maxLength: 20,  example: '123'),
-        new OA\Property(property: 'int_number',   type: 'string', nullable: true, maxLength: 20, example: 'A'),
+        new OA\Property(property: 'street', type: 'string', maxLength: 150, example: 'Av. Reforma'),
+        new OA\Property(property: 'ext_number', type: 'string', maxLength: 20, example: '123'),
+        new OA\Property(property: 'int_number', type: 'string', nullable: true, maxLength: 20, example: 'A'),
         new OA\Property(property: 'neighborhood', type: 'string', maxLength: 100, example: 'Centro'),
         new OA\Property(property: 'municipality', type: 'string', maxLength: 100, example: 'Puebla'),
-        new OA\Property(property: 'state',        type: 'string', example: 'Puebla'),
-        new OA\Property(property: 'postal_code',  type: 'string', pattern: '^[0-9]{5}$', example: '72000'),
-        new OA\Property(property: 'country',      type: 'string', maxLength: 2, example: 'MX'),
+        new OA\Property(property: 'state', type: 'string', example: 'Puebla'),
+        new OA\Property(property: 'postal_code', type: 'string', pattern: '^[0-9]{5}$', example: '72000'),
+        new OA\Property(property: 'country', type: 'string', maxLength: 2, example: 'MX'),
     ]
 )]
 class SupplierController extends Controller
@@ -71,11 +71,11 @@ class SupplierController extends Controller
         tags: ['Suppliers'],
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(name: 'search',    in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en razón social, nombre comercial o RFC'),
-            new OA\Parameter(name: 'type',      in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['MORAL', 'FISICA'])),
+            new OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Búsqueda en razón social, nombre comercial o RFC'),
+            new OA\Parameter(name: 'type', in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['MORAL', 'FISICA'])),
             new OA\Parameter(name: 'is_active', in: 'query', required: false, schema: new OA\Schema(type: 'boolean')),
-            new OA\Parameter(name: 'per_page',  in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
-            new OA\Parameter(name: 'page',      in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20, maximum: 100)),
+            new OA\Parameter(name: 'page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1)),
         ],
         responses: [
             new OA\Response(
@@ -98,20 +98,20 @@ class SupplierController extends Controller
         }
 
         $result = $this->controller->index([
-            'search'    => $request->query('search'),
-            'type'      => $request->query('type'),
+            'search' => $request->query('search'),
+            'type' => $request->query('type'),
             'is_active' => $isActive,
-            'per_page'  => $request->query('per_page', 20),
-            'page'      => $request->query('page', 1),
+            'per_page' => $request->query('per_page', 20),
+            'page' => $request->query('page', 1),
         ]);
 
         return response()->json([
             'data' => SupplierResource::collection($result['data']),
             'meta' => [
-                'total'        => $result['total'],
-                'per_page'     => $result['per_page'],
+                'total' => $result['total'],
+                'per_page' => $result['per_page'],
                 'current_page' => $result['current_page'],
-                'last_page'    => $result['last_page'],
+                'last_page' => $result['last_page'],
             ],
         ]);
     }
@@ -149,13 +149,13 @@ class SupplierController extends Controller
             content: new OA\JsonContent(
                 required: ['type', 'legal_name', 'address'],
                 properties: [
-                    new OA\Property(property: 'type',       type: 'string', enum: ['MORAL', 'FISICA'], example: 'MORAL'),
-                    new OA\Property(property: 'rfc',        type: 'string', nullable: true, example: 'ABC123456XYZ'),
+                    new OA\Property(property: 'type', type: 'string', enum: ['MORAL', 'FISICA'], example: 'MORAL'),
+                    new OA\Property(property: 'rfc', type: 'string', nullable: true, example: 'ABC123456XYZ'),
                     new OA\Property(property: 'legal_name', type: 'string', maxLength: 200),
                     new OA\Property(property: 'trade_name', type: 'string', nullable: true, maxLength: 150),
-                    new OA\Property(property: 'address',    ref: '#/components/schemas/AddressRequest'),
-                    new OA\Property(property: 'phone',      type: 'string', nullable: true, example: '2221234567'),
-                    new OA\Property(property: 'email',      type: 'string', nullable: true, format: 'email'),
+                    new OA\Property(property: 'address', ref: '#/components/schemas/AddressRequest'),
+                    new OA\Property(property: 'phone', type: 'string', nullable: true, example: '2221234567'),
+                    new OA\Property(property: 'email', type: 'string', nullable: true, format: 'email'),
                 ]
             )
         ),
@@ -170,24 +170,24 @@ class SupplierController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'type'                 => 'required|string|in:MORAL,FISICA',
-            'rfc'                  => 'nullable|string|max:13',
-            'legal_name'           => 'required|string|max:200',
-            'trade_name'           => 'nullable|string|max:150',
-            'address.street'       => 'required|string|max:150',
-            'address.ext_number'   => 'required|string|max:20',
-            'address.int_number'   => 'nullable|string|max:20',
+            'type' => 'required|string|in:MORAL,FISICA',
+            'rfc' => 'nullable|string|max:13',
+            'legal_name' => 'required|string|max:200',
+            'trade_name' => 'nullable|string|max:150',
+            'address.street' => 'required|string|max:150',
+            'address.ext_number' => 'required|string|max:20',
+            'address.int_number' => 'nullable|string|max:20',
             'address.neighborhood' => 'required|string|max:100',
             'address.municipality' => 'required|string|max:100',
-            'address.state'        => 'required|string',
-            'address.postal_code'  => ['required', 'string', 'regex:/^[0-9]{5}$/'],
-            'address.country'      => 'nullable|string|max:2',
-            'phone'                => 'nullable|string',
-            'email'                => 'nullable|email',
+            'address.state' => 'required|string',
+            'address.postal_code' => ['required', 'string', 'regex:/^[0-9]{5}$/'],
+            'address.country' => 'nullable|string|max:2',
+            'phone' => 'nullable|string',
+            'email' => 'nullable|email',
         ]);
 
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new SupplierResource($dto))->response()->setStatusCode(201);
     }
@@ -208,9 +208,9 @@ class SupplierController extends Controller
                 properties: [
                     new OA\Property(property: 'legal_name', type: 'string', maxLength: 200),
                     new OA\Property(property: 'trade_name', type: 'string', nullable: true, maxLength: 150),
-                    new OA\Property(property: 'address',    ref: '#/components/schemas/AddressRequest'),
-                    new OA\Property(property: 'phone',      type: 'string', nullable: true),
-                    new OA\Property(property: 'email',      type: 'string', nullable: true, format: 'email'),
+                    new OA\Property(property: 'address', ref: '#/components/schemas/AddressRequest'),
+                    new OA\Property(property: 'phone', type: 'string', nullable: true),
+                    new OA\Property(property: 'email', type: 'string', nullable: true, format: 'email'),
                 ]
             )
         ),
@@ -225,22 +225,22 @@ class SupplierController extends Controller
     public function update(Request $request, string $id): JsonResponse
     {
         $validated = $request->validate([
-            'legal_name'           => 'required|string|max:200',
-            'trade_name'           => 'nullable|string|max:150',
-            'address.street'       => 'required|string|max:150',
-            'address.ext_number'   => 'required|string|max:20',
-            'address.int_number'   => 'nullable|string|max:20',
+            'legal_name' => 'required|string|max:200',
+            'trade_name' => 'nullable|string|max:150',
+            'address.street' => 'required|string|max:150',
+            'address.ext_number' => 'required|string|max:20',
+            'address.int_number' => 'nullable|string|max:20',
             'address.neighborhood' => 'required|string|max:100',
             'address.municipality' => 'required|string|max:100',
-            'address.state'        => 'required|string',
-            'address.postal_code'  => ['required', 'string', 'regex:/^[0-9]{5}$/'],
-            'address.country'      => 'nullable|string|max:2',
-            'phone'                => 'nullable|string',
-            'email'                => 'nullable|email',
+            'address.state' => 'required|string',
+            'address.postal_code' => ['required', 'string', 'regex:/^[0-9]{5}$/'],
+            'address.country' => 'nullable|string|max:2',
+            'phone' => 'nullable|string',
+            'email' => 'nullable|email',
         ]);
 
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new SupplierResource($dto))->response()->setStatusCode(200);
     }

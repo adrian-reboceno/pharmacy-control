@@ -98,8 +98,8 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.routes-of-administration
 });
 
 Route::prefix('v1')->middleware(['rbac2:catalog.suppliers.manage'])->group(function (): void {
-    Route::get('/suppliers',      [SupplierController::class, 'index']);
-    Route::post('/suppliers',     [SupplierController::class, 'store']);
+    Route::get('/suppliers', [SupplierController::class, 'index']);
+    Route::post('/suppliers', [SupplierController::class, 'store']);
     Route::get('/suppliers/{id}', [SupplierController::class, 'show']);
     Route::put('/suppliers/{id}', [SupplierController::class, 'update']);
     Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy']);

@@ -22,22 +22,22 @@ final class CreateSupplierUseCase
 {
     public function __construct(
         private readonly SupplierRepositoryContract $repository,
-        private readonly EventPublisherContract      $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(CreateSupplierCommand $command): SupplierDTO
     {
-        $type      = SupplierType::from($command->type);
+        $type = SupplierType::from($command->type);
         $legalName = new LegalName($command->legalName);
-        $address   = new Address(
-            street:       $command->address['street'],
-            extNumber:    $command->address['ext_number'],
-            intNumber:    $command->address['int_number'] ?? null,
+        $address = new Address(
+            street: $command->address['street'],
+            extNumber: $command->address['ext_number'],
+            intNumber: $command->address['int_number'] ?? null,
             neighborhood: $command->address['neighborhood'],
             municipality: $command->address['municipality'],
-            state:        $command->address['state'],
-            postalCode:   $command->address['postal_code'],
-            country:      $command->address['country'] ?? 'MX',
+            state: $command->address['state'],
+            postalCode: $command->address['postal_code'],
+            country: $command->address['country'] ?? 'MX',
         );
         $phone = $command->phone !== null ? new Phone($command->phone) : null;
         $email = $command->email !== null ? new Email($command->email) : null;
@@ -51,14 +51,14 @@ final class CreateSupplierUseCase
         }
 
         $supplier = Supplier::create(
-            id:        SupplierId::generate(),
-            type:      $type,
-            rfc:       $rfc,
+            id: SupplierId::generate(),
+            type: $type,
+            rfc: $rfc,
             legalName: $legalName,
             tradeName: $command->tradeName,
-            address:   $address,
-            phone:     $phone,
-            email:     $email,
+            address: $address,
+            phone: $phone,
+            email: $email,
             createdBy: new UserId($command->actorUserId),
         );
 

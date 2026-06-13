@@ -22,7 +22,7 @@ final readonly class Rfc
         }
 
         $letterCount = $type === SupplierType::MORAL ? 3 : 4;
-        $pattern = '/^[A-ZÑ&]{' . $letterCount . '}\d{6}[A-Z0-9]{3}$/';
+        $pattern = '/^[A-ZÑ&]{'.$letterCount.'}\d{6}[A-Z0-9]{3}$/';
 
         if (! preg_match($pattern, $normalized)) {
             throw new InvalidRfcException("Formato de RFC inválido para {$type->label()}: {$value}");

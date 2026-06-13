@@ -24,7 +24,6 @@ interface SupplierRepositoryContract
      *   per_page?:  int,
      *   page?:      int,
      * } $filters
-     *
      * @return array{
      *   data:         Supplier[],
      *   total:        int,

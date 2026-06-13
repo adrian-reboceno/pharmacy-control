@@ -23,28 +23,28 @@ final class SupplierTest extends TestCase
     private function makeAddress(): Address
     {
         return new Address(
-            street:       'Av. Reforma',
-            extNumber:    '123',
-            intNumber:    null,
+            street: 'Av. Reforma',
+            extNumber: '123',
+            intNumber: null,
             neighborhood: 'Centro',
             municipality: 'Puebla',
-            state:        'Puebla',
-            postalCode:   '72000',
-            country:      'MX',
+            state: 'Puebla',
+            postalCode: '72000',
+            country: 'MX',
         );
     }
 
     private function makeSupplier(?Rfc $rfc = null): Supplier
     {
         return Supplier::create(
-            id:        SupplierId::generate(),
-            type:      SupplierType::MORAL,
-            rfc:       $rfc ?? new Rfc('ABC123456XYZ', SupplierType::MORAL),
+            id: SupplierId::generate(),
+            type: SupplierType::MORAL,
+            rfc: $rfc ?? new Rfc('ABC123456XYZ', SupplierType::MORAL),
             legalName: new LegalName('Distribuidora Farmacéutica S.A. de C.V.'),
             tradeName: 'DFC',
-            address:   $this->makeAddress(),
-            phone:     new Phone('2221234567'),
-            email:     new Email('contacto@dfc.mx'),
+            address: $this->makeAddress(),
+            phone: new Phone('2221234567'),
+            email: new Email('contacto@dfc.mx'),
             createdBy: UserId::generate(),
         );
     }
@@ -63,14 +63,14 @@ final class SupplierTest extends TestCase
     public function test_create_without_rfc_emits_supplier_created(): void
     {
         $supplier = Supplier::create(
-            id:        SupplierId::generate(),
-            type:      SupplierType::FISICA,
-            rfc:       null,
+            id: SupplierId::generate(),
+            type: SupplierType::FISICA,
+            rfc: null,
             legalName: new LegalName('Proveedor Extranjero'),
             tradeName: null,
-            address:   $this->makeAddress(),
-            phone:     null,
-            email:     null,
+            address: $this->makeAddress(),
+            phone: null,
+            email: null,
             createdBy: null,
         );
 
@@ -83,15 +83,15 @@ final class SupplierTest extends TestCase
     public function test_reconstitute_does_not_emit_events(): void
     {
         $supplier = Supplier::reconstitute(
-            id:        SupplierId::generate(),
-            type:      SupplierType::MORAL,
-            rfc:       new Rfc('ABC123456XYZ', SupplierType::MORAL),
+            id: SupplierId::generate(),
+            type: SupplierType::MORAL,
+            rfc: new Rfc('ABC123456XYZ', SupplierType::MORAL),
             legalName: new LegalName('Distribuidora S.A.'),
             tradeName: null,
-            address:   $this->makeAddress(),
-            phone:     null,
-            email:     null,
-            isActive:  true,
+            address: $this->makeAddress(),
+            phone: null,
+            email: null,
+            isActive: true,
             createdBy: null,
             createdAt: new \DateTimeImmutable,
             updatedAt: new \DateTimeImmutable,
@@ -114,9 +114,9 @@ final class SupplierTest extends TestCase
         $supplier->update(
             legalName: new LegalName('Nueva Distribuidora S.A.'),
             tradeName: 'ND',
-            address:   $this->makeAddress(),
-            phone:     null,
-            email:     null,
+            address: $this->makeAddress(),
+            phone: null,
+            email: null,
         );
 
         self::assertSame('Nueva Distribuidora S.A.', $supplier->getLegalName()->value);
@@ -135,9 +135,9 @@ final class SupplierTest extends TestCase
         $supplier->update(
             legalName: new LegalName('Distribuidora Farmacéutica S.A. de C.V.'),
             tradeName: 'DFC',
-            address:   $this->makeAddress(),
-            phone:     new Phone('2221234567'),
-            email:     new Email('contacto@dfc.mx'),
+            address: $this->makeAddress(),
+            phone: new Phone('2221234567'),
+            email: new Email('contacto@dfc.mx'),
         );
 
         $events = $supplier->releaseEvents();
@@ -153,9 +153,9 @@ final class SupplierTest extends TestCase
         $supplier->update(
             legalName: new LegalName('Nueva Razón Social S.A.'),
             tradeName: 'DFC',
-            address:   $this->makeAddress(),
-            phone:     new Phone('2221234567'),
-            email:     new Email('contacto@dfc.mx'),
+            address: $this->makeAddress(),
+            phone: new Phone('2221234567'),
+            email: new Email('contacto@dfc.mx'),
         );
 
         /** @var SupplierUpdated $event */
@@ -195,7 +195,7 @@ final class SupplierTest extends TestCase
     {
         $supplier = $this->makeSupplier();
 
-        $first  = $supplier->releaseEvents();
+        $first = $supplier->releaseEvents();
         $second = $supplier->releaseEvents();
 
         self::assertCount(1, $first);
