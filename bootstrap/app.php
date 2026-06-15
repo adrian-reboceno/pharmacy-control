@@ -22,6 +22,9 @@ use PharmaControl\Catalog\Presentations\Domain\Exception\PresentationNotFoundExc
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Exception\DuplicateRouteCodeException;
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Exception\DuplicateRouteNameException;
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Exception\RouteNotFoundException;
+use PharmaControl\Catalog\Status\Domain\Exception\DuplicateStatusCodeException;
+use PharmaControl\Catalog\Status\Domain\Exception\DuplicateStatusNameException;
+use PharmaControl\Catalog\Status\Domain\Exception\StatusNotFoundException;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\DuplicateUnitNameException;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\DuplicateUnitSymbolException;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Exception\UnitNotFoundException;
@@ -96,6 +99,15 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (DuplicateRouteCodeException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (StatusNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateStatusNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (DuplicateStatusCodeException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (SharedDomainException $e, Request $request): JsonResponse {
