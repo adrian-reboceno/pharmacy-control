@@ -22,14 +22,16 @@ use PHPUnit\Framework\TestCase;
 final class UpdateStatusUseCaseTest extends TestCase
 {
     private StatusRepositoryContract&MockObject $repository;
+
     private EventPublisherContract&MockObject $events;
+
     private UpdateStatusUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(StatusRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new UpdateStatusUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new UpdateStatusUseCase($this->repository, $this->events);
     }
 
     private function makeStatus(string $name = 'Activo', string $code = 'ACTIVO', ?string $id = null): ProductStatus
@@ -41,8 +43,8 @@ final class UpdateStatusUseCaseTest extends TestCase
             description: null,
             isActive: true,
             createdBy: null,
-            createdAt: new \DateTimeImmutable(),
-            updatedAt: new \DateTimeImmutable(),
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
     }
 
@@ -83,7 +85,7 @@ final class UpdateStatusUseCaseTest extends TestCase
 
     public function test_throws_duplicate_status_name_exception_when_name_belongs_to_different_status(): void
     {
-        $target  = $this->makeStatus('Activo', 'ACTIVO', '00000000-0000-4000-8000-000000000001');
+        $target = $this->makeStatus('Activo', 'ACTIVO', '00000000-0000-4000-8000-000000000001');
         $another = $this->makeStatus('Descontinuado', 'DESCONTINUADO', '00000000-0000-4000-8000-000000000002');
 
         $this->repository->method('findById')->willReturn($target);
@@ -109,7 +111,7 @@ final class UpdateStatusUseCaseTest extends TestCase
 
     public function test_throws_duplicate_status_code_exception_when_code_belongs_to_different_status(): void
     {
-        $target  = $this->makeStatus('Activo', 'ACTIVO', '00000000-0000-4000-8000-000000000001');
+        $target = $this->makeStatus('Activo', 'ACTIVO', '00000000-0000-4000-8000-000000000001');
         $another = $this->makeStatus('Descontinuado', 'DESCONTINUADO', '00000000-0000-4000-8000-000000000002');
 
         $this->repository->method('findById')->willReturn($target);

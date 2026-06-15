@@ -61,8 +61,8 @@ final class ProductStatusTest extends TestCase
             null,
             true,
             null,
-            new \DateTimeImmutable(),
-            new \DateTimeImmutable(),
+            new \DateTimeImmutable,
+            new \DateTimeImmutable,
         );
 
         $events = $status->releaseEvents();
@@ -98,7 +98,7 @@ final class ProductStatusTest extends TestCase
 
     public function test_update_sets_updated_at_to_current_time(): void
     {
-        $before = new \DateTimeImmutable();
+        $before = new \DateTimeImmutable;
 
         $status = ProductStatus::create(
             $this->makeId(),
@@ -143,8 +143,8 @@ final class ProductStatusTest extends TestCase
             null,
             false,
             null,
-            new \DateTimeImmutable(),
-            new \DateTimeImmutable(),
+            new \DateTimeImmutable,
+            new \DateTimeImmutable,
         );
 
         $this->expectException(\DomainException::class);
@@ -162,7 +162,7 @@ final class ProductStatusTest extends TestCase
             $this->makeUserId(),
         );
 
-        $first  = $status->releaseEvents();
+        $first = $status->releaseEvents();
         $second = $status->releaseEvents();
 
         $this->assertCount(1, $first);

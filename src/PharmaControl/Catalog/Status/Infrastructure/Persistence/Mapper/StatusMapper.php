@@ -30,12 +30,12 @@ final class StatusMapper
     public function toPersistence(ProductStatus $s): array
     {
         return [
-            'id'          => $s->getId()->value,
-            'name'        => $s->getName()->value,
-            'code'        => $s->getCode()->value,
+            'id' => $s->getId()->value,
+            'name' => $s->getName()->value,
+            'code' => $s->getCode()->value,
             'description' => $s->getDescription(),
-            'is_active'   => $s->isActive(),
-            'created_by'  => $s->getCreatedBy()?->value,
+            'is_active' => $s->isActive(),
+            'created_by' => $s->getCreatedBy()?->value,
         ];
     }
 }

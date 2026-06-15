@@ -25,10 +25,10 @@ final class ProductStatusTest extends TestCase
         Permission::findOrCreate('catalog.statuses.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'password_hash'        => Hash::make('Secret123!'),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
             'must_change_password' => false,
-            'email_verified_at'    => now(),
+            'email_verified_at' => now(),
         ]);
 
         $this->user->givePermissionTo('catalog.statuses.manage');
@@ -42,12 +42,12 @@ final class ProductStatusTest extends TestCase
     private function createStatus(array $overrides = []): EloquentStatus
     {
         return EloquentStatus::create(array_merge([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Activo',
-            'code'        => 'ACTIVO',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Activo',
+            'code' => 'ACTIVO',
             'description' => 'El producto está disponible para venta.',
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ], $overrides));
     }
 
@@ -118,8 +118,8 @@ final class ProductStatusTest extends TestCase
     public function test_post_statuses_returns_201_with_created_status(): void
     {
         $response = $this->actingAsUser()->postJson('/api/v1/catalog/statuses', [
-            'name'        => 'En revisión',
-            'code'        => 'EN_REVISION',
+            'name' => 'En revisión',
+            'code' => 'EN_REVISION',
             'description' => 'Pendiente de revisión regulatoria.',
         ]);
 
@@ -179,8 +179,8 @@ final class ProductStatusTest extends TestCase
         $status = $this->createStatus(['name' => 'Activo', 'code' => 'ACTIVO']);
 
         $response = $this->actingAsUser()->putJson("/api/v1/catalog/statuses/{$status->id}", [
-            'name'        => 'Activo Modificado',
-            'code'        => 'ACTIVO_MOD',
+            'name' => 'Activo Modificado',
+            'code' => 'ACTIVO_MOD',
             'description' => 'Descripción actualizada.',
         ]);
 
@@ -219,8 +219,8 @@ final class ProductStatusTest extends TestCase
     public function test_all_endpoints_return_403_without_catalog_statuses_manage_permission(): void
     {
         $userWithoutPermission = EloquentUser::factory()->create([
-            'status'               => 'ACTIVE',
-            'email_verified_at'    => now(),
+            'status' => 'ACTIVE',
+            'email_verified_at' => now(),
             'must_change_password' => false,
         ]);
 

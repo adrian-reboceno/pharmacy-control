@@ -49,10 +49,10 @@ final class EloquentStatusRepository implements StatusRepositoryContract
     {
         $query = EloquentStatus::query();
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters): void {
-                $q->where('name', 'ilike', '%' . $filters['search'] . '%')
-                  ->orWhere('code', 'ilike', '%' . $filters['search'] . '%');
+                $q->where('name', 'ilike', '%'.$filters['search'].'%')
+                    ->orWhere('code', 'ilike', '%'.$filters['search'].'%');
             });
         }
 
@@ -62,16 +62,16 @@ final class EloquentStatusRepository implements StatusRepositoryContract
 
         $query->orderBy('name', 'asc');
 
-        $perPage   = min((int) ($filters['per_page'] ?? 20), 100);
-        $page      = max((int) ($filters['page'] ?? 1), 1);
+        $perPage = min((int) ($filters['per_page'] ?? 20), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'data'         => array_map(fn ($m) => $this->mapper->toDomain($m), $paginator->items()),
-            'total'        => $paginator->total(),
-            'per_page'     => $paginator->perPage(),
+            'data' => array_map(fn ($m) => $this->mapper->toDomain($m), $paginator->items()),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
             'current_page' => $paginator->currentPage(),
-            'last_page'    => $paginator->lastPage(),
+            'last_page' => $paginator->lastPage(),
         ];
     }
 }

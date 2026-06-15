@@ -38,10 +38,10 @@ use PharmaControl\Catalog\Presentations\Domain\Contract\Repository\PresentationR
 use PharmaControl\Catalog\Presentations\Infrastructure\Persistence\Eloquent\Repository\EloquentPresentationRepository;
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\RouteRepositoryContract;
 use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Persistence\Eloquent\Repository\EloquentRouteRepository;
-use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
-use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
 use PharmaControl\Catalog\Status\Domain\Contract\Repository\StatusRepositoryContract;
 use PharmaControl\Catalog\Status\Infrastructure\Persistence\Eloquent\Repository\EloquentStatusRepository;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
+use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
 use PharmaControl\Suppliers\Domain\Contract\Repository\SupplierRepositoryContract;
 use PharmaControl\Suppliers\Infrastructure\Persistence\Eloquent\Repository\EloquentSupplierRepository;
 

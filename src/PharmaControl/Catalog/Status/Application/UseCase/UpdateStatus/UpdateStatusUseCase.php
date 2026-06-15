@@ -32,12 +32,12 @@ final class UpdateStatusUseCase
         $code = new StatusCode($command->code);
 
         $existingByName = $this->repository->findByName($name);
-        if ($existingByName !== null && !$existingByName->getId()->equals($status->getId())) {
+        if ($existingByName !== null && ! $existingByName->getId()->equals($status->getId())) {
             throw new DuplicateStatusNameException($command->name);
         }
 
         $existingByCode = $this->repository->findByCode($code);
-        if ($existingByCode !== null && !$existingByCode->getId()->equals($status->getId())) {
+        if ($existingByCode !== null && ! $existingByCode->getId()->equals($status->getId())) {
             throw new DuplicateStatusCodeException($command->code);
         }
 
