@@ -168,6 +168,9 @@ final class LoginUseCase
             $permissions,
             $clientType,
             $sessionId,
+            $user->getFirstName(),
+            $user->getLastName(),
+            $user->email->value
         );
 
         $accessHash = hash('sha256', $tokenData['accessToken']);

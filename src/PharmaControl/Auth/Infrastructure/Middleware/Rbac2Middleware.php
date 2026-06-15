@@ -51,6 +51,8 @@ final class Rbac2Middleware
         $authenticated = new AuthenticatedUser(
             userId: $payload->sub,
             email: $claims['email'] ?? '',
+            firstName: $claims['first_name'] ?? '',
+            lastName: $claims['last_name'] ?? '',
             activeRoleId: $payload->roleId,
             activeRoleName: $payload->roleName,
             activeBranchId: $payload->branchId,

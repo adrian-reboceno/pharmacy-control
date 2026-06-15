@@ -85,6 +85,8 @@ class UserController extends Controller
         return response()->json(['data' => [
             'user_id' => $user->userId,
             'email' => $user->email,
+            'first_name' => $user->firstName,
+            'last_name' => $user->lastName,
             'active_role_id' => $user->activeRoleId,
             'active_role' => $user->activeRoleName,
             'active_branch_id' => $user->activeBranchId,
