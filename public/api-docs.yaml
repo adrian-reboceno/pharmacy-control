@@ -1267,6 +1267,222 @@ paths:
       security:
         -
           bearerAuth: []
+  /v1/catalog/statuses:
+    get:
+      tags:
+        - 'Catalog · Status'
+      summary: 'Listar estados de producto'
+      description: 'Lista paginada con filtros opcionales por nombre, código y estado del catálogo.'
+      operationId: 92a4ce388a3af9d3ba16d159608327c1
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Búsqueda en nombre o código'
+          required: false
+          schema:
+            type: string
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/StatusResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Status'
+      summary: 'Crear estado de producto'
+      description: 'Permite agregar nuevos estados al catálogo además de los precargados (ACTIVO, DESCONTINUADO, ELIMINADO).'
+      operationId: b0fdb4c137f480a663f820aa28f49abd
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - code
+              properties:
+                name:
+                  type: string
+                  example: 'En revisión'
+                  maxLength: 50
+                code:
+                  type: string
+                  example: EN_REVISION
+                  maxLength: 20
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+              type: object
+      responses:
+        '201':
+          description: 'Estado creado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre o código duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/statuses/{id}':
+    get:
+      tags:
+        - 'Catalog · Status'
+      summary: 'Obtener estado de producto'
+      operationId: dcb5afaa77c6a22459b9065430fbdef3
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Estado encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Status'
+      summary: 'Actualizar estado de producto'
+      operationId: 9e6b1cfe0d8304d8688d73662a6a596d
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - code
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+                code:
+                  type: string
+                  maxLength: 20
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+              type: object
+      responses:
+        '200':
+          description: 'Estado actualizado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre o código duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Status'
+      summary: 'Desactivar estado de producto'
+      description: 'Soft delete lógico del catálogo. No elimina el registro.'
+      operationId: 1803dac16ce3d58b3bd25fa78be6e7b0
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
   /v1/catalog/units:
     get:
       tags:
@@ -1930,6 +2146,35 @@ components:
           type: string
           format: date-time
       type: object
+    StatusResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Activo
+        code:
+          type: string
+          example: ACTIVO
+        description:
+          type: string
+          example: 'El producto está disponible para venta.'
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     UnitResponse:
       properties:
         id:
@@ -2173,6 +2418,9 @@ tags:
   -
     name: 'Catalog · Routes of Administration'
     description: 'Vías de administración de medicamentos'
+  -
+    name: 'Catalog · Status'
+    description: 'Estados de productos/medicamentos'
   -
     name: 'Catalog · Units'
     description: 'Unidades de medida farmacéuticas'
