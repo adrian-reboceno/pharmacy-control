@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Auth\SwitchRoleController;
 use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Catalog\ActiveIngredientController;
 use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\ClassificationController;
 use App\Http\Controllers\Catalog\LaboratoryController;
@@ -49,6 +50,14 @@ Route::prefix('v1/auth')->group(function (): void {
         Route::delete('/users/{userId}/roles/{roleId}', [RoleController::class, 'revoke']);
         Route::post('/users/{userId}/unlock', [UserController::class, 'unlock']);
     });
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.active-ingredients.manage'])->group(function (): void {
+    Route::get('/active-ingredients', [ActiveIngredientController::class, 'index']);
+    Route::post('/active-ingredients', [ActiveIngredientController::class, 'store']);
+    Route::get('/active-ingredients/{id}', [ActiveIngredientController::class, 'show']);
+    Route::put('/active-ingredients/{id}', [ActiveIngredientController::class, 'update']);
+    Route::delete('/active-ingredients/{id}', [ActiveIngredientController::class, 'destroy']);
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.laboratories.manage'])->group(function (): void {
