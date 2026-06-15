@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UnitsOfMeasurementSeeder::class,         // 20 unidades de medida predefinidas
             PresentationsSeeder::class,              // 19 formas farmacéuticas predefinidas
             RoutesOfAdministrationSeeder::class,     // 13 vías de administración predefinidas
+            ProductStatusesSeeder::class,            // 3 estados de producto predefinidos
         ]);
     }
 }

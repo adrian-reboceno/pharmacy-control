@@ -40,6 +40,8 @@ use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\Rout
 use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Persistence\Eloquent\Repository\EloquentRouteRepository;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
+use PharmaControl\Catalog\Status\Domain\Contract\Repository\StatusRepositoryContract;
+use PharmaControl\Catalog\Status\Infrastructure\Persistence\Eloquent\Repository\EloquentStatusRepository;
 use PharmaControl\Suppliers\Domain\Contract\Repository\SupplierRepositoryContract;
 use PharmaControl\Suppliers\Infrastructure\Persistence\Eloquent\Repository\EloquentSupplierRepository;
 
@@ -79,6 +81,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalog — Routes of Administration
         $this->app->bind(RouteRepositoryContract::class, EloquentRouteRepository::class);
+
+        // Catalog — Status
+        $this->app->bind(StatusRepositoryContract::class, EloquentStatusRepository::class);
 
         // Suppliers
         $this->app->bind(SupplierRepositoryContract::class, EloquentSupplierRepository::class);
