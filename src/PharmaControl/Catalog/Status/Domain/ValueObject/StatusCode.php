@@ -18,7 +18,7 @@ final readonly class StatusCode
         if (mb_strlen($normalized) > 20) {
             throw new \InvalidArgumentException('El código no puede exceder 20 caracteres.');
         }
-        if (!preg_match('/^[A-Z0-9_]+$/', $normalized)) {
+        if (! preg_match('/^[A-Z0-9_]+$/', $normalized)) {
             throw new \InvalidArgumentException("Código inválido: {$value}. Solo letras mayúsculas, números y guion bajo.");
         }
 

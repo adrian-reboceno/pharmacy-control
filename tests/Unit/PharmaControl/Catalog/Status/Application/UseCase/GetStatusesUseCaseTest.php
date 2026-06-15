@@ -18,12 +18,13 @@ use PHPUnit\Framework\TestCase;
 final class GetStatusesUseCaseTest extends TestCase
 {
     private StatusRepositoryContract&MockObject $repository;
+
     private GetStatusesUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(StatusRepositoryContract::class);
-        $this->useCase    = new GetStatusesUseCase($this->repository);
+        $this->useCase = new GetStatusesUseCase($this->repository);
     }
 
     private function makeStatus(string $name, string $code): ProductStatus
@@ -35,19 +36,19 @@ final class GetStatusesUseCaseTest extends TestCase
             description: null,
             isActive: true,
             createdBy: null,
-            createdAt: new \DateTimeImmutable(),
-            updatedAt: new \DateTimeImmutable(),
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
     }
 
     private function paginatedResult(array $statuses): array
     {
         return [
-            'data'         => $statuses,
-            'total'        => count($statuses),
-            'per_page'     => 20,
+            'data' => $statuses,
+            'total' => count($statuses),
+            'per_page' => 20,
             'current_page' => 1,
-            'last_page'    => 1,
+            'last_page' => 1,
         ];
     }
 
@@ -63,7 +64,7 @@ final class GetStatusesUseCaseTest extends TestCase
             ->with($this->arrayHasKey('search'))
             ->willReturn($this->paginatedResult($statuses));
 
-        $result = ($this->useCase)(new GetStatusesQuery());
+        $result = ($this->useCase)(new GetStatusesQuery);
 
         $this->assertCount(2, $result['data']);
         $this->assertContainsOnlyInstancesOf(StatusDTO::class, $result['data']);
@@ -123,7 +124,7 @@ final class GetStatusesUseCaseTest extends TestCase
             ->method('findAll')
             ->willReturn($this->paginatedResult($statuses));
 
-        $result = ($this->useCase)(new GetStatusesQuery());
+        $result = ($this->useCase)(new GetStatusesQuery);
 
         $this->assertSame('Activo', $result['data'][0]->name);
         $this->assertSame('Descontinuado', $result['data'][1]->name);
@@ -142,7 +143,7 @@ final class GetStatusesUseCaseTest extends TestCase
             ->method('findAll')
             ->willReturn($this->paginatedResult($statuses));
 
-        $result = ($this->useCase)(new GetStatusesQuery());
+        $result = ($this->useCase)(new GetStatusesQuery);
 
         $codes = array_map(fn ($d) => $d->code, $result['data']);
         $this->assertContains('ACTIVO', $codes);

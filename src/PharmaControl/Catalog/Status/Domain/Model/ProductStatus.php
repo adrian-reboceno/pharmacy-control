@@ -49,7 +49,7 @@ final class ProductStatus
         ?string $description,
         ?UserId $createdBy,
     ): self {
-        $now = new \DateTimeImmutable();
+        $now = new \DateTimeImmutable;
         $status = new self($id, $name, $code, $description, true, $createdBy, $now, $now);
         $status->recordEvent(new StatusCreated(
             id: $id,
@@ -82,10 +82,10 @@ final class ProductStatus
     ): void {
         $changes = [];
 
-        if (!$this->name->equals($name)) {
+        if (! $this->name->equals($name)) {
             $changes['name'] = ['old' => $this->name->value, 'new' => $name->value];
         }
-        if (!$this->code->equals($code)) {
+        if (! $this->code->equals($code)) {
             $changes['code'] = ['old' => $this->code->value, 'new' => $code->value];
         }
         if ($this->description !== $description) {
@@ -95,7 +95,7 @@ final class ProductStatus
         $this->name = $name;
         $this->code = $code;
         $this->description = $description;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable;
 
         $this->recordEvent(new StatusUpdated(
             id: $this->id,
@@ -106,11 +106,11 @@ final class ProductStatus
 
     public function deactivate(): void
     {
-        if (!$this->isActive) {
+        if (! $this->isActive) {
             throw new \DomainException('El estado de producto ya está inactivo.');
         }
         $this->isActive = false;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new StatusDeactivated(
             id: $this->id,
             occurredAt: $this->updatedAt,
@@ -120,7 +120,7 @@ final class ProductStatus
     public function activate(): void
     {
         $this->isActive = true;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable;
     }
 
     public function getId(): StatusId

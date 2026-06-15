@@ -16,21 +16,21 @@ final class GetStatusesUseCase
     public function __invoke(GetStatusesQuery $query): array
     {
         $result = $this->repository->findAll([
-            'search'    => $query->search,
+            'search' => $query->search,
             'is_active' => $query->isActive,
-            'per_page'  => $query->perPage,
-            'page'      => $query->page,
+            'per_page' => $query->perPage,
+            'page' => $query->page,
         ]);
 
         return [
-            'data'         => array_map(
+            'data' => array_map(
                 fn ($status) => StatusDTO::fromDomain($status),
                 $result['data']
             ),
-            'total'        => $result['total'],
-            'per_page'     => $result['per_page'],
+            'total' => $result['total'],
+            'per_page' => $result['per_page'],
             'current_page' => $result['current_page'],
-            'last_page'    => $result['last_page'],
+            'last_page' => $result['last_page'],
         ];
     }
 }

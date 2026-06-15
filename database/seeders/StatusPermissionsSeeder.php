@@ -14,7 +14,7 @@ final class StatusPermissionsSeeder extends Seeder
     public function run(): void
     {
         $permission = Permission::firstOrCreate([
-            'name'       => 'catalog.statuses.manage',
+            'name' => 'catalog.statuses.manage',
             'guard_name' => 'api',
         ]);
 

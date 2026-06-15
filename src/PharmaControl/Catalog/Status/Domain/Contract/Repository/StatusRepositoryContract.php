@@ -26,7 +26,6 @@ interface StatusRepositoryContract
      *   per_page?:  int,
      *   page?:      int,
      * } $filters
-     *
      * @return array{
      *   data:         ProductStatus[],
      *   total:        int,

@@ -21,14 +21,16 @@ use PHPUnit\Framework\TestCase;
 final class CreateStatusUseCaseTest extends TestCase
 {
     private StatusRepositoryContract&MockObject $repository;
+
     private EventPublisherContract&MockObject $events;
+
     private CreateStatusUseCase $useCase;
 
     protected function setUp(): void
     {
         $this->repository = $this->createMock(StatusRepositoryContract::class);
-        $this->events     = $this->createMock(EventPublisherContract::class);
-        $this->useCase    = new CreateStatusUseCase($this->repository, $this->events);
+        $this->events = $this->createMock(EventPublisherContract::class);
+        $this->useCase = new CreateStatusUseCase($this->repository, $this->events);
     }
 
     private function command(array $overrides = []): CreateStatusCommand
@@ -62,8 +64,8 @@ final class CreateStatusUseCaseTest extends TestCase
             null,
             true,
             null,
-            new \DateTimeImmutable(),
-            new \DateTimeImmutable(),
+            new \DateTimeImmutable,
+            new \DateTimeImmutable,
         );
 
         $this->repository->method('findByName')->willReturn($existing);
@@ -82,8 +84,8 @@ final class CreateStatusUseCaseTest extends TestCase
             null,
             true,
             null,
-            new \DateTimeImmutable(),
-            new \DateTimeImmutable(),
+            new \DateTimeImmutable,
+            new \DateTimeImmutable,
         );
 
         $this->repository->method('findByName')->willReturn(null);
