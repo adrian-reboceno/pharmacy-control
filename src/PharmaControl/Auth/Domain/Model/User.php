@@ -248,6 +248,16 @@ final class User
         $this->mustChangePassword = true;
     }
 
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
     public function getStatus(): UserStatus
     {
         return $this->status;

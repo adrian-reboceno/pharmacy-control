@@ -11,6 +11,8 @@ final readonly class AuthenticatedUser
     public function __construct(
         public readonly string $userId,
         public readonly string $email,
+        public readonly string $firstName,
+        public readonly string $lastName,
         public readonly string $activeRoleId,
         public readonly string $activeRoleName,
         public readonly ?string $activeBranchId,

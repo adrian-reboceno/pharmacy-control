@@ -25,6 +25,8 @@ interface TokenServiceContract
         array $permissions,
         ClientType $clientType,
         SessionId $sessionId,
+        string $firstName = '',
+        string $lastName = '',
     ): array;
 
     /**

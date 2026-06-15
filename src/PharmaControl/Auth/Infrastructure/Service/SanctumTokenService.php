@@ -40,6 +40,9 @@ final class SanctumTokenService implements TokenServiceContract
         array $permissions,
         ClientType $clientType,
         SessionId $sessionId,
+        string $firstName = '',
+        string $lastName = '',
+        string $email = '',
     ): array {
         $now = time();
         $jti = bin2hex(random_bytes(16));
@@ -49,12 +52,15 @@ final class SanctumTokenService implements TokenServiceContract
         $payload = [
             'sub' => $userId->value,
             'jti' => $jti,
+            'email' => $email,
             'role_id' => $activeRoleId->value,
             'role' => $roleName,
             'branch_id' => $branchId?->value,
             'permissions' => array_map(fn (PermissionName $p) => $p->value, $permissions),
             'session_id' => $sessionId->value,
             'client_type' => $clientType->value,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'iat' => $now,
             'exp' => $now + self::ACCESS_TTL,
         ];
