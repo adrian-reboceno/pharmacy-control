@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use PharmaControl\Auth\Domain\Exception\AccountLockedException;
 use PharmaControl\Auth\Domain\Exception\InvalidCredentialsException;
 use PharmaControl\Auth\Infrastructure\Middleware\Rbac2Middleware;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Exception\DuplicateCasNumberException;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Exception\DuplicateDciCodeException;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Exception\DuplicateIngredientNameException;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Exception\IngredientNotFoundException;
 use PharmaControl\Catalog\Categories\Domain\Exception\CategoryCycleException;
 use PharmaControl\Catalog\Categories\Domain\Exception\CategoryNotFoundException;
 use PharmaControl\Catalog\Categories\Domain\Exception\DuplicateCategorySlugException;
@@ -108,6 +112,18 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (DuplicateStatusCodeException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (IngredientNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateIngredientNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (DuplicateDciCodeException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (DuplicateCasNumberException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage()], 409);
         });
         $exceptions->render(function (SharedDomainException $e, Request $request): JsonResponse {

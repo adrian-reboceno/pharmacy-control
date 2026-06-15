@@ -28,6 +28,8 @@ use PharmaControl\Auth\Infrastructure\Service\OtphpTwoFactorService;
 use PharmaControl\Auth\Infrastructure\Service\RedisCacheService;
 use PharmaControl\Auth\Infrastructure\Service\RedisRateLimiterService;
 use PharmaControl\Auth\Infrastructure\Service\SanctumTokenService;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Contract\Repository\IngredientRepositoryContract;
+use PharmaControl\Catalog\ActiveIngredient\Infrastructure\Persistence\Eloquent\Repository\EloquentIngredientRepository;
 use PharmaControl\Catalog\Categories\Domain\Contract\Repository\CategoryRepositoryContract;
 use PharmaControl\Catalog\Categories\Infrastructure\Persistence\Eloquent\Repository\EloquentCategoryRepository;
 use PharmaControl\Catalog\Classifications\Domain\Contract\Repository\ClassificationRepositoryContract;
@@ -84,6 +86,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalog — Status
         $this->app->bind(StatusRepositoryContract::class, EloquentStatusRepository::class);
+
+        // Catalog — Active Ingredients
+        $this->app->bind(IngredientRepositoryContract::class, EloquentIngredientRepository::class);
 
         // Suppliers
         $this->app->bind(SupplierRepositoryContract::class, EloquentSupplierRepository::class);

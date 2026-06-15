@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             PresentationsSeeder::class,              // 19 formas farmacéuticas predefinidas
             RoutesOfAdministrationSeeder::class,     // 13 vías de administración predefinidas
             ProductStatusesSeeder::class,            // 3 estados de producto predefinidos
+            ActiveIngredientsSeeder::class,          // 24 ingredientes activos predefinidos
         ]);
     }
 }
