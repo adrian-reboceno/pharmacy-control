@@ -44,6 +44,7 @@ use PharmaControl\Catalog\Status\Domain\Contract\Repository\StatusRepositoryCont
 use PharmaControl\Catalog\Status\Infrastructure\Persistence\Eloquent\Repository\EloquentStatusRepository;
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
+use PharmaControl\Shared\Infrastructure\Mongo\MongoCatalogSyncService;
 use PharmaControl\Suppliers\Domain\Contract\Repository\SupplierRepositoryContract;
 use PharmaControl\Suppliers\Infrastructure\Persistence\Eloquent\Repository\EloquentSupplierRepository;
 
@@ -51,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(MongoCatalogSyncService::class);
         // Repository bindings
         $this->app->bind(UserRepositoryContract::class, EloquentUserRepository::class);
         $this->app->bind(SessionRepositoryContract::class, EloquentSessionRepository::class);
