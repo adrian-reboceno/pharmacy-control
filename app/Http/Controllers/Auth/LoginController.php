@@ -1,12 +1,10 @@
 <?php
 
-// ── ARCHIVO: app/Http/Controllers/Auth/LoginController.php ──
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Auth\AuthTokenResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Route;
@@ -15,6 +13,9 @@ use PharmaControl\Auth\Infrastructure\Controller\LoginController as AuthControll
 
 class LoginController extends Controller
 {
+    private const ACCESS_TTL  = 900;
+    private const REFRESH_TTL = 604_800;
+
     public function __construct(
         private readonly AuthController $controller,
     ) {}
@@ -23,7 +24,7 @@ class LoginController extends Controller
     #[OA\Post(
         path: '/api/v1/auth/login',
         summary: 'Iniciar sesión',
-        description: 'Autentica al usuario y devuelve par de tokens JWT. Si el usuario tiene múltiples roles, requires_role_selection será true.',
+        description: 'WEB: tokens en cookies HttpOnly. MOBILE: tokens en body JSON.',
         tags: ['Auth'],
         security: [],
         requestBody: new OA\RequestBody(
@@ -31,56 +32,94 @@ class LoginController extends Controller
             content: new OA\JsonContent(
                 required: ['email', 'password', 'client_type'],
                 properties: [
-                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'admin@pharmaco.mx'),
-                    new OA\Property(property: 'password', type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
+                    new OA\Property(property: 'email',       type: 'string', format: 'email',    example: 'admin@pharmaco.mx'),
+                    new OA\Property(property: 'password',    type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
                     new OA\Property(property: 'client_type', type: 'string', enum: ['WEB', 'MOBILE'], example: 'WEB'),
                 ]
             )
         ),
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Login exitoso',
-                content: new OA\JsonContent(properties: [
-                    new OA\Property(property: 'access_token', type: 'string'),
-                    new OA\Property(property: 'refresh_token', type: 'string'),
-                    new OA\Property(property: 'expires_in', type: 'integer', example: 900),
-                    new OA\Property(property: 'requires_role_selection', type: 'boolean', example: false),
-                    new OA\Property(property: 'requires_password_change', type: 'boolean', example: false),
-                ])
-            ),
+            new OA\Response(response: 200, description: 'Login exitoso'),
             new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
             new OA\Response(response: 422, ref: '#/components/responses/UnprocessableEntity'),
-            new OA\Response(
-                response: 423,
-                description: 'Cuenta bloqueada',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Cuenta bloqueada.'),
-                        new OA\Property(property: 'error', type: 'string', example: 'ACCOUNT_LOCKED'),
-                    ]
-                )
-            ),
+            new OA\Response(response: 423, description: 'Cuenta bloqueada'),
         ]
     )]
     public function __invoke(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'email'       => ['required', 'email'],
+            'password'    => ['required', 'string'],
             'client_type' => ['sometimes', 'string', 'in:WEB,MOBILE'],
         ]);
 
+        $clientType = strtoupper($request->string('client_type', 'WEB')->toString());
+
+        /** @var \PharmaControl\Auth\Application\DTO\AuthTokenDTO $result */
         $result = ($this->controller)([
-            'email' => $request->string('email')->toString(),
-            'password' => $request->string('password')->toString(),
-            'client_type' => strtoupper($request->string('client_type', 'WEB')->toString()),
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
+            'email'       => $request->string('email')->toString(),
+            'password'    => $request->string('password')->toString(),
+            'client_type' => $clientType,
+            'ip_address'  => $request->ip(),
+            'user_agent'  => $request->userAgent(),
         ]);
 
-        return (new AuthTokenResource($result))
-            ->response()
-            ->setStatusCode(200);
+        // MOBILE — tokens en el body JSON (comportamiento original)
+        if ($clientType === 'MOBILE') {
+            return response()->json([
+                'data' => [
+                    'access_token'              => $result->accessToken,
+                    'refresh_token'             => $result->refreshToken,
+                    'expires_in'                => $result->expiresIn,
+                    'requires_role_selection'   => $result->requiresRoleSelection,
+                    'requires_password_change'  => $result->requiresPasswordChange,
+                    'available_roles'           => $result->availableRoles,
+                    'active_role_id'            => $result->activeRoleId,
+                    'active_branch_id'          => $result->activeBranchId,
+                ],
+            ], 200);
+        }
+
+        // WEB — tokens en cookies HttpOnly, JavaScript nunca los ve
+        $secure   = config('app.env') === 'production';
+        $sameSite = $secure ? 'Strict' : 'Lax';
+
+        $accessCookie = cookie(
+            name:     'access_token',
+            value:    $result->accessToken,
+            minutes:  self::ACCESS_TTL / 60,
+            path:     '/',
+            domain:   null,
+            secure:   $secure,
+            httpOnly: true,
+            raw:      false,
+            sameSite: $sameSite,
+        );
+
+        $refreshCookie = cookie(
+            name:     'refresh_token',
+            value:    $result->refreshToken,
+            minutes:  self::REFRESH_TTL / 60,
+            path:     '/api/v1/auth/refresh',
+            domain:   null,
+            secure:   $secure,
+            httpOnly: true,
+            raw:      false,
+            sameSite: $sameSite,
+        );
+
+        return response()
+            ->json([
+                'data' => [
+                    'expires_in'                => $result->expiresIn,
+                    'requires_role_selection'   => $result->requiresRoleSelection,
+                    'requires_password_change'  => $result->requiresPasswordChange,
+                    'available_roles'           => $result->availableRoles,
+                    'active_role_id'            => $result->activeRoleId,
+                    'active_branch_id'          => $result->activeBranchId,
+                ],
+            ], 200)
+            ->withCookie($accessCookie)
+            ->withCookie($refreshCookie);
     }
 }

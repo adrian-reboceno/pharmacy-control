@@ -13,7 +13,7 @@ use PharmaControl\Auth\Domain\Contract\Service\TokenServiceContract;
 
 final class Rbac2Middleware
 {
-    private const INACTIVITY_THRESHOLD = 3600; // 1 hour in seconds
+    private const INACTIVITY_THRESHOLD = 3600;
 
     public function __construct(
         private readonly TokenServiceContract $tokenService,
@@ -21,12 +21,11 @@ final class Rbac2Middleware
 
     public function handle(Request $request, Closure $next, string $requiredPermission = ''): mixed
     {
-        $authHeader = $request->header('Authorization', '');
-        if (! str_starts_with($authHeader, 'Bearer ')) {
+        $rawToken = $this->extractToken($request);
+
+        if ($rawToken === null) {
             return $this->unauthorized('Token de autorización requerido.');
         }
-
-        $rawToken = substr($authHeader, 7);
 
         try {
             $claims = $this->tokenService->verify($rawToken);
@@ -44,27 +43,53 @@ final class Rbac2Middleware
             return $this->unauthorized('Token expirado.');
         }
 
-        if (! empty($requiredPermission) && ! $payload->hasPermission($requiredPermission)) {
+        if (!empty($requiredPermission) && !$payload->hasPermission($requiredPermission)) {
             return $this->forbidden("Permiso requerido: {$requiredPermission}");
         }
 
         $authenticated = new AuthenticatedUser(
-            userId: $payload->sub,
-            email: $claims['email'] ?? '',
-            firstName: $claims['first_name'] ?? '',
-            lastName: $claims['last_name'] ?? '',
-            activeRoleId: $payload->roleId,
+            userId:         $payload->sub,
+            email:          $claims['email']      ?? '',
+            firstName:      $claims['first_name'] ?? '',
+            lastName:       $claims['last_name']  ?? '',
+            activeRoleId:   $payload->roleId,
             activeRoleName: $payload->roleName,
             activeBranchId: $payload->branchId,
-            permissions: $payload->permissions,
-            sessionId: $payload->sessionId,
-            jti: $payload->jti,
-            tokenExp: $payload->exp,
+            permissions:    $payload->permissions,
+            sessionId:      $payload->sessionId,
+            jti:            $payload->jti,
+            tokenExp:       $payload->exp,
         );
 
         $request->attributes->set('authenticated_user', $authenticated);
 
         return $next($request);
+    }
+
+    /**
+     * Estrategia de extracción del token — orden de prioridad:
+     *
+     * 1. Header Authorization: Bearer ... (MOBILE y Postman/Swagger)
+     * 2. Cookie HttpOnly 'access_token' (WEB — el browser la adjunta automáticamente)
+     *
+     * Esto permite que el mismo middleware sirva a ambos tipos de cliente
+     * sin configuración adicional.
+     */
+    private function extractToken(Request $request): ?string
+    {
+        // 1. Header Bearer — prioridad para clientes móviles y herramientas API
+        $authHeader = $request->header('Authorization', '');
+        if (str_starts_with($authHeader, 'Bearer ')) {
+            return substr($authHeader, 7);
+        }
+
+        // 2. Cookie HttpOnly — clientes web Angular
+        $cookieToken = $request->cookie('access_token');
+        if (!empty($cookieToken)) {
+            return $cookieToken;
+        }
+
+        return null;
     }
 
     private function unauthorized(string $message): JsonResponse
