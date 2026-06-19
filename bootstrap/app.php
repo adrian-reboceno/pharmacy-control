@@ -41,12 +41,33 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withEvents(discover: false) 
+    ->withEvents(discover: false)
     ->withMiddleware(function (Middleware $middleware): void {
+
         $middleware->alias([
             'rbac2' => Rbac2Middleware::class,
         ]);
+
         $middleware->redirectGuestsTo(fn (Request $request) => null);
+
+        // ── COOKIES ──────────────────────────────────────────────────────────
+        // Excluir las cookies de token del encriptado automático de Laravel.
+        // El backend las emite como JWTs firmados — si Laravel las encriptara,
+        // el Rbac2Middleware no podría leer el valor real al verificar la firma.
+        $middleware->encryptCookies([
+            'access_token',
+            'refresh_token',
+        ]);
+
+        // ── CORS ─────────────────────────────────────────────────────────────
+        // withCredentials: true en Angular requiere:
+        //   1. Access-Control-Allow-Origin con origen exacto (no *)
+        //   2. Access-Control-Allow-Credentials: true
+        // Esto se configura en config/cors.php (ver abajo).
+        // Aquí solo aseguramos que el middleware HandleCors esté en el grupo api.
+        $middleware->api(prepend: [
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (AuthenticationException $e, Request $request): JsonResponse {

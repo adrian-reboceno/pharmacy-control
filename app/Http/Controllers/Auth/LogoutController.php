@@ -23,11 +23,11 @@ class LogoutController extends Controller
     #[OA\Post(
         path: '/v1/auth/logout',
         summary: 'Cerrar sesión',
-        description: 'Revoca el token actual e invalida la sesión.',
+        description: 'Revoca el token actual, invalida la sesión y borra las cookies HttpOnly.',
         tags: ['Auth'],
         security: [['bearerAuth' => []]],
         responses: [
-            new OA\Response(response: 204, ref: '#/components/responses/NoContent'),
+            new OA\Response(response: 200, description: 'Sesión cerrada'),
             new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
         ]
     )]
@@ -37,12 +37,39 @@ class LogoutController extends Controller
         $user = $request->attributes->get('authenticated_user');
 
         ($this->controller)([
-            'user_id' => $user->userId,
-            'session_id' => $user->sessionId,
-            'jti' => $user->jti,
+            'user_id'             => $user->userId,
+            'session_id'          => $user->sessionId,
+            'jti'                 => $user->jti,
             'token_ttl_remaining' => $user->tokenTtlRemaining(),
         ]);
 
-        return response()->json(['message' => 'Sesión cerrada exitosamente.'], 200);
+        // Borrar cookies — se sobrescriben con valores vacíos y expiración
+        // en el pasado. El browser las elimina automáticamente.
+        $secure = config('app.env') === 'production';
+
+        $clearAccess = cookie(
+            name:     'access_token',
+            value:    '',
+            minutes:  -1,
+            path:     '/',
+            domain:   null,
+            secure:   $secure,
+            httpOnly: true,
+        );
+
+        $clearRefresh = cookie(
+            name:     'refresh_token',
+            value:    '',
+            minutes:  -1,
+            path:     '/api/v1/auth/refresh',
+            domain:   null,
+            secure:   $secure,
+            httpOnly: true,
+        );
+
+        return response()
+            ->json(['message' => 'Sesión cerrada exitosamente.'], 200)
+            ->withCookie($clearAccess)
+            ->withCookie($clearRefresh);
     }
 }
