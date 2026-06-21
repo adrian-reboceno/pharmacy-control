@@ -216,7 +216,8 @@ class LaboratoryController extends Controller
     )]
     public function destroy(Request $request, string $id): JsonResponse
     {
-        $this->controller->destroy($id, $request->user()->id);
+        $actorUserId = $request->attributes->get('authenticated_user')->userId;
+        $this->controller->destroy($id, $actorUserId);
 
         return response()->json(null, 204);
     }
