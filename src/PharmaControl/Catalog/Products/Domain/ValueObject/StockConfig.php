@@ -7,9 +7,9 @@ namespace PharmaControl\Catalog\Products\Domain\ValueObject;
 final readonly class StockConfig
 {
     public function __construct(
-        public readonly int  $minStock,
-        public readonly int  $maxStock,
-        public readonly int  $expiryAlertDays,
+        public readonly int $minStock,
+        public readonly int $maxStock,
+        public readonly int $expiryAlertDays,
         public readonly bool $manageLots,
         public readonly bool $allowFraction,
     ) {

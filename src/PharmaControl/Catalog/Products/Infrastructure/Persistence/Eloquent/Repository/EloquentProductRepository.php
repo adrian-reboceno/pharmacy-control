@@ -30,9 +30,9 @@ final class EloquentProductRepository implements ProductRepositoryContract
 
         foreach ($product->getIngredients() as $ingredient) {
             DB::table('product_active_ingredients')->insert([
-                'product_id'        => $product->getId()->value,
-                'ingredient_id'     => $ingredient->ingredientId,
-                'concentration'     => $ingredient->concentration,
+                'product_id' => $product->getId()->value,
+                'ingredient_id' => $ingredient->ingredientId,
+                'concentration' => $ingredient->concentration,
                 'concentration_unit' => $ingredient->concentrationUnit,
             ]);
         }
@@ -106,19 +106,19 @@ final class EloquentProductRepository implements ProductRepositoryContract
 
         $query->orderBy('name', 'asc');
 
-        $perPage   = min((int) ($filters['per_page'] ?? 20), 100);
-        $page      = max((int) ($filters['page'] ?? 1), 1);
+        $perPage = min((int) ($filters['per_page'] ?? 20), 100);
+        $page = max((int) ($filters['page'] ?? 1), 1);
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'data'         => array_map(
+            'data' => array_map(
                 fn (EloquentProduct $m) => $this->mapper->toDomain($m),
                 $paginator->items()
             ),
-            'total'        => $paginator->total(),
-            'per_page'     => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'per_page' => $paginator->perPage(),
             'current_page' => $paginator->currentPage(),
-            'last_page'    => $paginator->lastPage(),
+            'last_page' => $paginator->lastPage(),
         ];
     }
 }

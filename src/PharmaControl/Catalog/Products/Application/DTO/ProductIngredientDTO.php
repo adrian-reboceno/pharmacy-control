@@ -17,8 +17,8 @@ final readonly class ProductIngredientDTO
     public static function fromEntity(ProductIngredient $entity): self
     {
         return new self(
-            ingredientId:      $entity->ingredientId,
-            concentration:     $entity->concentration,
+            ingredientId: $entity->ingredientId,
+            concentration: $entity->concentration,
             concentrationUnit: $entity->concentrationUnit,
         );
     }

@@ -27,21 +27,21 @@ final class ProductTest extends TestCase
     private function makeProduct(array $overrides = []): Product
     {
         return Product::create(
-            id:            ProductId::generate(),
-            type:          $overrides['type'] ?? ProductType::GENERIC,
-            name:          new ProductName($overrides['name'] ?? 'Paracetamol 500mg'),
-            description:   $overrides['description'] ?? null,
-            statusId:      new StatusId('550e8400-e29b-41d4-a716-446655440001'),
-            categoryId:    new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
-            laboratoryId:  $overrides['laboratoryId'] ?? null,
+            id: ProductId::generate(),
+            type: $overrides['type'] ?? ProductType::GENERIC,
+            name: new ProductName($overrides['name'] ?? 'Paracetamol 500mg'),
+            description: $overrides['description'] ?? null,
+            statusId: new StatusId('550e8400-e29b-41d4-a716-446655440001'),
+            categoryId: new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
+            laboratoryId: $overrides['laboratoryId'] ?? null,
             saleCondition: SaleCondition::SIN_RECETA,
-            sanitaryReg:   null,
-            barcode:       null,
-            specs:         new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
-            stockConfig:   new StockConfig(5, 100, 30, true, false),
-            margins:       new ProductMargins(20.0, 10.0),
-            ingredients:   [],
-            createdBy:     new UserId('550e8400-e29b-41d4-a716-446655440003'),
+            sanitaryReg: null,
+            barcode: null,
+            specs: new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
+            stockConfig: new StockConfig(5, 100, 30, true, false),
+            margins: new ProductMargins(20.0, 10.0),
+            ingredients: [],
+            createdBy: new UserId('550e8400-e29b-41d4-a716-446655440003'),
         );
     }
 
@@ -49,7 +49,7 @@ final class ProductTest extends TestCase
     public function it_records_product_created_event_on_create(): void
     {
         $product = $this->makeProduct();
-        $events  = $product->releaseEvents();
+        $events = $product->releaseEvents();
 
         $this->assertCount(1, $events);
         $this->assertInstanceOf(ProductCreated::class, $events[0]);
@@ -72,18 +72,18 @@ final class ProductTest extends TestCase
         $product->releaseEvents();
 
         $product->update(
-            name:          new ProductName('Ibuprofeno 400mg'),
-            description:   null,
-            statusId:      new StatusId('550e8400-e29b-41d4-a716-446655440001'),
-            categoryId:    new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
-            laboratoryId:  null,
+            name: new ProductName('Ibuprofeno 400mg'),
+            description: null,
+            statusId: new StatusId('550e8400-e29b-41d4-a716-446655440001'),
+            categoryId: new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
+            laboratoryId: null,
             saleCondition: SaleCondition::SIN_RECETA,
-            sanitaryReg:   null,
-            barcode:       null,
-            specs:         new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
-            stockConfig:   new StockConfig(5, 100, 30, true, false),
-            margins:       new ProductMargins(20.0, 10.0),
-            ingredients:   [],
+            sanitaryReg: null,
+            barcode: null,
+            specs: new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
+            stockConfig: new StockConfig(5, 100, 30, true, false),
+            margins: new ProductMargins(20.0, 10.0),
+            ingredients: [],
         );
 
         $events = $product->releaseEvents();
@@ -180,22 +180,22 @@ final class ProductTest extends TestCase
     public function it_replaces_ingredients_on_update(): void
     {
         $ingredient = new ProductIngredient('ing-id', '500', 'mg');
-        $product    = $this->makeProduct();
+        $product = $this->makeProduct();
         $product->releaseEvents();
 
         $product->update(
-            name:          new ProductName('Paracetamol 500mg'),
-            description:   null,
-            statusId:      new StatusId('550e8400-e29b-41d4-a716-446655440001'),
-            categoryId:    new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
-            laboratoryId:  null,
+            name: new ProductName('Paracetamol 500mg'),
+            description: null,
+            statusId: new StatusId('550e8400-e29b-41d4-a716-446655440001'),
+            categoryId: new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
+            laboratoryId: null,
             saleCondition: SaleCondition::SIN_RECETA,
-            sanitaryReg:   null,
-            barcode:       null,
-            specs:         new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
-            stockConfig:   new StockConfig(5, 100, 30, true, false),
-            margins:       new ProductMargins(20.0, 10.0),
-            ingredients:   [$ingredient],
+            sanitaryReg: null,
+            barcode: null,
+            specs: new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
+            stockConfig: new StockConfig(5, 100, 30, true, false),
+            margins: new ProductMargins(20.0, 10.0),
+            ingredients: [$ingredient],
         );
 
         $this->assertCount(1, $product->getIngredients());

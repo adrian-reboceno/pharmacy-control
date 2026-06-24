@@ -13,10 +13,10 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class ProductCreated implements DomainEvent
 {
     public function __construct(
-        public readonly ProductId          $id,
-        public readonly ProductType        $type,
-        public readonly ProductName        $name,
-        public readonly ?UserId            $createdBy,
+        public readonly ProductId $id,
+        public readonly ProductType $type,
+        public readonly ProductName $name,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

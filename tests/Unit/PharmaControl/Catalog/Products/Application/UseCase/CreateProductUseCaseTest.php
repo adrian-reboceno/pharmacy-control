@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\PharmaControl\Catalog\Products\Application\UseCase;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PharmaControl\Auth\Domain\Contract\Service\EventPublisherContract;
 use PharmaControl\Catalog\Location\Domain\Contract\Repository\LocationRepositoryContract;
 use PharmaControl\Catalog\Products\Application\DTO\ProductDTO;
@@ -16,23 +15,26 @@ use PharmaControl\Catalog\Products\Domain\Exception\DuplicateBarcodeException;
 use PharmaControl\Catalog\Products\Domain\Exception\DuplicateProductNameException;
 use PharmaControl\Catalog\Products\Domain\Exception\InvalidBarcodeException;
 use PharmaControl\Catalog\Products\Domain\Model\Product;
-use PharmaControl\Catalog\Products\Domain\ValueObject\ProductName;
+use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 
 final class CreateProductUseCaseTest extends TestCase
 {
-    private ProductRepositoryContract&MockObject  $productRepo;
+    private ProductRepositoryContract&MockObject $productRepo;
+
     private LocationRepositoryContract&MockObject $locationRepo;
-    private EventPublisherContract&MockObject     $events;
-    private CreateProductUseCase                  $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private CreateProductUseCase $useCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->productRepo  = $this->createMock(ProductRepositoryContract::class);
+        $this->productRepo = $this->createMock(ProductRepositoryContract::class);
         $this->locationRepo = $this->createMock(LocationRepositoryContract::class);
-        $this->events       = $this->createMock(EventPublisherContract::class);
+        $this->events = $this->createMock(EventPublisherContract::class);
 
         $this->useCase = new CreateProductUseCase(
             $this->productRepo,
@@ -44,30 +46,30 @@ final class CreateProductUseCaseTest extends TestCase
     private function makeCommand(array $overrides = []): CreateProductCommand
     {
         return new CreateProductCommand(
-            type:            $overrides['type'] ?? 'GENERIC',
-            name:            $overrides['name'] ?? 'Paracetamol 500mg',
-            description:     null,
-            statusId:        '550e8400-e29b-41d4-a716-446655440001',
-            categoryId:      '550e8400-e29b-41d4-a716-446655440002',
-            laboratoryId:    $overrides['laboratoryId'] ?? null,
-            saleCondition:   'SIN_RECETA',
-            sanitaryReg:     null,
-            barcode:         $overrides['barcode'] ?? null,
-            unitId:          '550e8400-e29b-41d4-a716-446655440004',
-            presentationId:  '550e8400-e29b-41d4-a716-446655440005',
-            routeId:         '550e8400-e29b-41d4-a716-446655440006',
-            unitsPerBox:     10,
+            type: $overrides['type'] ?? 'GENERIC',
+            name: $overrides['name'] ?? 'Paracetamol 500mg',
+            description: null,
+            statusId: '550e8400-e29b-41d4-a716-446655440001',
+            categoryId: '550e8400-e29b-41d4-a716-446655440002',
+            laboratoryId: $overrides['laboratoryId'] ?? null,
+            saleCondition: 'SIN_RECETA',
+            sanitaryReg: null,
+            barcode: $overrides['barcode'] ?? null,
+            unitId: '550e8400-e29b-41d4-a716-446655440004',
+            presentationId: '550e8400-e29b-41d4-a716-446655440005',
+            routeId: '550e8400-e29b-41d4-a716-446655440006',
+            unitsPerBox: 10,
             unitsPerBlister: 10,
-            locationId:      null,
-            minStock:        5,
-            maxStock:        100,
+            locationId: null,
+            minStock: 5,
+            maxStock: 100,
             expiryAlertDays: 30,
-            manageLots:      true,
-            allowFraction:   false,
-            retailMargin:    20.0,
+            manageLots: true,
+            allowFraction: false,
+            retailMargin: 20.0,
             wholesaleMargin: 10.0,
-            ingredients:     [],
-            actorUserId:     '550e8400-e29b-41d4-a716-446655440003',
+            ingredients: [],
+            actorUserId: '550e8400-e29b-41d4-a716-446655440003',
         );
     }
 

@@ -77,27 +77,27 @@ class ProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         $result = $this->controller->index([
-            'search'        => $request->query('search'),
-            'type'          => $request->query('type'),
-            'status_id'     => $request->query('status_id'),
-            'category_id'   => $request->query('category_id'),
+            'search' => $request->query('search'),
+            'type' => $request->query('type'),
+            'status_id' => $request->query('status_id'),
+            'category_id' => $request->query('category_id'),
             'laboratory_id' => $request->query('laboratory_id'),
             'sale_condition' => $request->query('sale_condition'),
-            'manage_lots'   => $request->query('manage_lots') !== null
+            'manage_lots' => $request->query('manage_lots') !== null
                 ? filter_var($request->query('manage_lots'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null,
-            'is_active'     => $request->query('is_active') !== null
+            'is_active' => $request->query('is_active') !== null
                 ? filter_var($request->query('is_active'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : null,
-            'per_page'      => $request->query('per_page', 20),
-            'page'          => $request->query('page', 1),
+            'per_page' => $request->query('per_page', 20),
+            'page' => $request->query('page', 1),
         ]);
 
         return response()->json([
             'data' => ProductResource::collection($result['data']),
             'meta' => [
-                'total'        => $result['total'],
-                'per_page'     => $result['per_page'],
+                'total' => $result['total'],
+                'per_page' => $result['per_page'],
                 'current_page' => $result['current_page'],
-                'last_page'    => $result['last_page'],
+                'last_page' => $result['last_page'],
             ],
         ]);
     }
@@ -171,36 +171,36 @@ class ProductController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'type'                             => 'required|string|in:GENERIC,BRANDED',
-            'name'                             => 'required|string|max:200',
-            'description'                      => 'nullable|string|max:1000',
-            'status_id'                        => 'required|uuid',
-            'category_id'                      => 'required|uuid',
-            'laboratory_id'                    => 'nullable|uuid',
-            'sale_condition'                   => 'required|string|in:SIN_RECETA,CON_RECETA,CON_RECETA_RETENIDA',
-            'sanitary_reg'                     => 'nullable|string|min:5|max:50',
-            'barcode'                          => ['nullable', 'string', 'size:13', 'regex:/^\d{13}$/'],
-            'unit_id'                          => 'required|uuid',
-            'presentation_id'                  => 'required|uuid',
-            'route_id'                         => 'required|uuid',
-            'units_per_box'                    => 'required|integer|min:1',
-            'units_per_blister'                => 'required|integer|min:1',
-            'location_id'                      => 'nullable|uuid',
-            'min_stock'                        => 'required|integer|min:0',
-            'max_stock'                        => 'required|integer|min:1',
-            'expiry_alert_days'                => 'required|integer|min:1',
-            'manage_lots'                      => 'required|boolean',
-            'allow_fraction'                   => 'required|boolean',
-            'retail_margin'                    => 'required|numeric|min:0|max:100',
-            'wholesale_margin'                 => 'required|numeric|min:0|max:100',
-            'ingredients'                      => 'nullable|array',
-            'ingredients.*.ingredient_id'      => 'required|uuid',
-            'ingredients.*.concentration'      => 'required|string|max:30',
+            'type' => 'required|string|in:GENERIC,BRANDED',
+            'name' => 'required|string|max:200',
+            'description' => 'nullable|string|max:1000',
+            'status_id' => 'required|uuid',
+            'category_id' => 'required|uuid',
+            'laboratory_id' => 'nullable|uuid',
+            'sale_condition' => 'required|string|in:SIN_RECETA,CON_RECETA,CON_RECETA_RETENIDA',
+            'sanitary_reg' => 'nullable|string|min:5|max:50',
+            'barcode' => ['nullable', 'string', 'size:13', 'regex:/^\d{13}$/'],
+            'unit_id' => 'required|uuid',
+            'presentation_id' => 'required|uuid',
+            'route_id' => 'required|uuid',
+            'units_per_box' => 'required|integer|min:1',
+            'units_per_blister' => 'required|integer|min:1',
+            'location_id' => 'nullable|uuid',
+            'min_stock' => 'required|integer|min:0',
+            'max_stock' => 'required|integer|min:1',
+            'expiry_alert_days' => 'required|integer|min:1',
+            'manage_lots' => 'required|boolean',
+            'allow_fraction' => 'required|boolean',
+            'retail_margin' => 'required|numeric|min:0|max:100',
+            'wholesale_margin' => 'required|numeric|min:0|max:100',
+            'ingredients' => 'nullable|array',
+            'ingredients.*.ingredient_id' => 'required|uuid',
+            'ingredients.*.concentration' => 'required|string|max:30',
             'ingredients.*.concentration_unit' => 'required|string|max:20',
         ]);
 
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->store([...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new ProductResource($dto))->response()->setStatusCode(201);
     }
@@ -225,35 +225,35 @@ class ProductController extends Controller
     public function update(Request $request, string $id): JsonResponse
     {
         $validated = $request->validate([
-            'name'                             => 'required|string|max:200',
-            'description'                      => 'nullable|string|max:1000',
-            'status_id'                        => 'required|uuid',
-            'category_id'                      => 'required|uuid',
-            'laboratory_id'                    => 'nullable|uuid',
-            'sale_condition'                   => 'required|string|in:SIN_RECETA,CON_RECETA,CON_RECETA_RETENIDA',
-            'sanitary_reg'                     => 'nullable|string|min:5|max:50',
-            'barcode'                          => ['nullable', 'string', 'size:13', 'regex:/^\d{13}$/'],
-            'unit_id'                          => 'required|uuid',
-            'presentation_id'                  => 'required|uuid',
-            'route_id'                         => 'required|uuid',
-            'units_per_box'                    => 'required|integer|min:1',
-            'units_per_blister'                => 'required|integer|min:1',
-            'location_id'                      => 'nullable|uuid',
-            'min_stock'                        => 'required|integer|min:0',
-            'max_stock'                        => 'required|integer|min:1',
-            'expiry_alert_days'                => 'required|integer|min:1',
-            'manage_lots'                      => 'required|boolean',
-            'allow_fraction'                   => 'required|boolean',
-            'retail_margin'                    => 'required|numeric|min:0|max:100',
-            'wholesale_margin'                 => 'required|numeric|min:0|max:100',
-            'ingredients'                      => 'nullable|array',
-            'ingredients.*.ingredient_id'      => 'required|uuid',
-            'ingredients.*.concentration'      => 'required|string|max:30',
+            'name' => 'required|string|max:200',
+            'description' => 'nullable|string|max:1000',
+            'status_id' => 'required|uuid',
+            'category_id' => 'required|uuid',
+            'laboratory_id' => 'nullable|uuid',
+            'sale_condition' => 'required|string|in:SIN_RECETA,CON_RECETA,CON_RECETA_RETENIDA',
+            'sanitary_reg' => 'nullable|string|min:5|max:50',
+            'barcode' => ['nullable', 'string', 'size:13', 'regex:/^\d{13}$/'],
+            'unit_id' => 'required|uuid',
+            'presentation_id' => 'required|uuid',
+            'route_id' => 'required|uuid',
+            'units_per_box' => 'required|integer|min:1',
+            'units_per_blister' => 'required|integer|min:1',
+            'location_id' => 'nullable|uuid',
+            'min_stock' => 'required|integer|min:0',
+            'max_stock' => 'required|integer|min:1',
+            'expiry_alert_days' => 'required|integer|min:1',
+            'manage_lots' => 'required|boolean',
+            'allow_fraction' => 'required|boolean',
+            'retail_margin' => 'required|numeric|min:0|max:100',
+            'wholesale_margin' => 'required|numeric|min:0|max:100',
+            'ingredients' => 'nullable|array',
+            'ingredients.*.ingredient_id' => 'required|uuid',
+            'ingredients.*.concentration' => 'required|string|max:30',
             'ingredients.*.concentration_unit' => 'required|string|max:20',
         ]);
 
         $actorUserId = $request->attributes->get('authenticated_user')->userId;
-        $dto         = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
+        $dto = $this->controller->update($id, [...$validated, 'actor_user_id' => $actorUserId]);
 
         return (new ProductResource($dto))->response()->setStatusCode(200);
     }
@@ -313,12 +313,12 @@ class ProductController extends Controller
         ]);
 
         $imageContent = base64_encode(file_get_contents($validated['image']->path()));
-        $mimeType     = $validated['image']->getMimeType();
-        $actorUserId  = $request->attributes->get('authenticated_user')->userId;
+        $mimeType = $validated['image']->getMimeType();
+        $actorUserId = $request->attributes->get('authenticated_user')->userId;
 
         $dto = $this->controller->addImage($id, [
             'image_content' => $imageContent,
-            'mime_type'     => $mimeType,
+            'mime_type' => $mimeType,
             'actor_user_id' => $actorUserId,
         ]);
 
@@ -383,7 +383,7 @@ class ProductController extends Controller
     public function reorderImages(Request $request, string $id): JsonResponse
     {
         $validated = $request->validate([
-            'order'   => 'required|array|min:1',
+            'order' => 'required|array|min:1',
             'order.*' => 'required|uuid',
         ]);
 

@@ -36,7 +36,7 @@ final class SyncProductToMongoJob implements ShouldQueue
     {
         Log::error('SyncProductToMongoJob falló permanentemente', [
             'product_id' => $this->document['id'],
-            'error'      => $exception->getMessage(),
+            'error' => $exception->getMessage(),
         ]);
     }
 }

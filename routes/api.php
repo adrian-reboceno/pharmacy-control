@@ -17,9 +17,9 @@ use App\Http\Controllers\Catalog\ClassificationController;
 use App\Http\Controllers\Catalog\LaboratoryController;
 use App\Http\Controllers\Catalog\LocationController;
 use App\Http\Controllers\Catalog\PresentationController;
+use App\Http\Controllers\Catalog\ProductController;
 use App\Http\Controllers\Catalog\RouteController;
 use App\Http\Controllers\Catalog\StatusController;
-use App\Http\Controllers\Catalog\ProductController;
 use App\Http\Controllers\Catalog\UnitOfMeasurementController;
 use App\Http\Controllers\Suppliers\SupplierController;
 use Illuminate\Support\Facades\Route;
@@ -128,14 +128,14 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.locations.manage'])->gro
 });
 
 Route::prefix('v1/catalog')->middleware(['rbac2:catalog.products.manage'])->group(function (): void {
-    Route::get('/products',             [ProductController::class, 'index']);
-    Route::post('/products',            [ProductController::class, 'store']);
-    Route::get('/products/{id}',        [ProductController::class, 'show']);
-    Route::put('/products/{id}',        [ProductController::class, 'update']);
-    Route::delete('/products/{id}',     [ProductController::class, 'destroy']);
-    Route::post('/products/{id}/images',                  [ProductController::class, 'addImage']);
-    Route::delete('/products/{id}/images/{imageId}',      [ProductController::class, 'removeImage']);
-    Route::put('/products/{id}/images/reorder',           [ProductController::class, 'reorderImages']);
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+    Route::post('/products/{id}/images', [ProductController::class, 'addImage']);
+    Route::delete('/products/{id}/images/{imageId}', [ProductController::class, 'removeImage']);
+    Route::put('/products/{id}/images/reorder', [ProductController::class, 'reorderImages']);
 });
 
 Route::prefix('v1')->middleware(['rbac2:catalog.suppliers.manage'])->group(function (): void {

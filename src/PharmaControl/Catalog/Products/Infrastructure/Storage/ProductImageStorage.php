@@ -14,14 +14,14 @@ final class ProductImageStorage
     {
         $extension = match ($mimeType) {
             'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
+            'image/png' => 'png',
             'image/webp' => 'webp',
-            default      => throw new \InvalidArgumentException("Tipo de imagen no soportado: {$mimeType}"),
+            default => throw new \InvalidArgumentException("Tipo de imagen no soportado: {$mimeType}"),
         };
 
-        $filename = uniqid() . ".{$extension}";
-        $path     = "products/{$productId}/{$filename}";
-        $decoded  = base64_decode($imageContent);
+        $filename = uniqid().".{$extension}";
+        $path = "products/{$productId}/{$filename}";
+        $decoded = base64_decode($imageContent);
 
         Storage::put($path, $decoded);
         $url = Storage::url($path);
@@ -29,11 +29,11 @@ final class ProductImageStorage
         $sortOrder = EloquentProductImage::where('product_id', $productId)->count();
 
         EloquentProductImage::create([
-            'id'         => Str::uuid()->toString(),
+            'id' => Str::uuid()->toString(),
             'product_id' => $productId,
-            'url'        => $url,
-            'filename'   => $filename,
-            'mime_type'  => $mimeType,
+            'url' => $url,
+            'filename' => $filename,
+            'mime_type' => $mimeType,
             'size_bytes' => strlen($decoded),
             'sort_order' => $sortOrder,
             'is_primary' => $sortOrder === 0,

@@ -31,9 +31,9 @@ use PharmaControl\Catalog\Status\Domain\ValueObject\StatusId;
 final class UpdateProductUseCase
 {
     public function __construct(
-        private readonly ProductRepositoryContract  $productRepo,
+        private readonly ProductRepositoryContract $productRepo,
         private readonly LocationRepositoryContract $locationRepo,
-        private readonly EventPublisherContract     $events,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(UpdateProductCommand $cmd): ProductDTO
@@ -47,15 +47,15 @@ final class UpdateProductUseCase
             throw new BrandedProductRequiresLaboratoryException;
         }
 
-        $name            = new ProductName($cmd->name);
-        $existingByName  = $this->productRepo->findByName($name);
+        $name = new ProductName($cmd->name);
+        $existingByName = $this->productRepo->findByName($name);
         if ($existingByName !== null && ! $existingByName->getId()->equals($product->getId())) {
             throw new DuplicateProductNameException($cmd->name);
         }
 
         $barcode = null;
         if ($cmd->barcode !== null) {
-            $barcode        = new Barcode($cmd->barcode);
+            $barcode = new Barcode($cmd->barcode);
             $existingByCode = $this->productRepo->findByBarcode($barcode);
             if ($existingByCode !== null && ! $existingByCode->getId()->equals($product->getId())) {
                 throw new DuplicateBarcodeException($cmd->barcode);
@@ -74,42 +74,42 @@ final class UpdateProductUseCase
 
         $ingredients = array_map(
             fn (array $i) => new ProductIngredient(
-                ingredientId:      $i['ingredient_id'],
-                concentration:     $i['concentration'],
+                ingredientId: $i['ingredient_id'],
+                concentration: $i['concentration'],
                 concentrationUnit: $i['concentration_unit'],
             ),
             $cmd->ingredients
         );
 
         $product->update(
-            name:          $name,
-            description:   $cmd->description,
-            statusId:      new StatusId($cmd->statusId),
-            categoryId:    new CategoryId($cmd->categoryId),
-            laboratoryId:  $cmd->laboratoryId !== null ? new LaboratoryId($cmd->laboratoryId) : null,
+            name: $name,
+            description: $cmd->description,
+            statusId: new StatusId($cmd->statusId),
+            categoryId: new CategoryId($cmd->categoryId),
+            laboratoryId: $cmd->laboratoryId !== null ? new LaboratoryId($cmd->laboratoryId) : null,
             saleCondition: SaleCondition::from($cmd->saleCondition),
-            sanitaryReg:   $cmd->sanitaryReg !== null ? new SanitaryReg($cmd->sanitaryReg) : null,
-            barcode:       $barcode,
-            specs:         new ProductSpecs(
-                unitId:          $cmd->unitId,
-                presentationId:  $cmd->presentationId,
-                routeId:         $cmd->routeId,
-                unitsPerBox:     $cmd->unitsPerBox,
+            sanitaryReg: $cmd->sanitaryReg !== null ? new SanitaryReg($cmd->sanitaryReg) : null,
+            barcode: $barcode,
+            specs: new ProductSpecs(
+                unitId: $cmd->unitId,
+                presentationId: $cmd->presentationId,
+                routeId: $cmd->routeId,
+                unitsPerBox: $cmd->unitsPerBox,
                 unitsPerBlister: $cmd->unitsPerBlister,
-                locationId:      $cmd->locationId,
+                locationId: $cmd->locationId,
             ),
-            stockConfig:   new StockConfig(
-                minStock:        $cmd->minStock,
-                maxStock:        $cmd->maxStock,
+            stockConfig: new StockConfig(
+                minStock: $cmd->minStock,
+                maxStock: $cmd->maxStock,
                 expiryAlertDays: $cmd->expiryAlertDays,
-                manageLots:      $cmd->manageLots,
-                allowFraction:   $cmd->allowFraction,
+                manageLots: $cmd->manageLots,
+                allowFraction: $cmd->allowFraction,
             ),
-            margins:       new ProductMargins(
-                retailMargin:    $cmd->retailMargin,
+            margins: new ProductMargins(
+                retailMargin: $cmd->retailMargin,
                 wholesaleMargin: $cmd->wholesaleMargin,
             ),
-            ingredients:   $ingredients,
+            ingredients: $ingredients,
         );
 
         $this->productRepo->save($product);

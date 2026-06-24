@@ -40,6 +40,9 @@ use PharmaControl\Catalog\Location\Domain\Contract\Repository\LocationRepository
 use PharmaControl\Catalog\Location\Infrastructure\Persistence\Eloquent\Repository\EloquentLocationRepository;
 use PharmaControl\Catalog\Presentations\Domain\Contract\Repository\PresentationRepositoryContract;
 use PharmaControl\Catalog\Presentations\Infrastructure\Persistence\Eloquent\Repository\EloquentPresentationRepository;
+use PharmaControl\Catalog\Products\Domain\Contract\Repository\ProductRepositoryContract;
+use PharmaControl\Catalog\Products\Infrastructure\Persistence\Eloquent\Repository\EloquentProductRepository;
+use PharmaControl\Catalog\Products\Infrastructure\Storage\ProductImageStorage;
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\RouteRepositoryContract;
 use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Persistence\Eloquent\Repository\EloquentRouteRepository;
 use PharmaControl\Catalog\Status\Domain\Contract\Repository\StatusRepositoryContract;
@@ -47,9 +50,6 @@ use PharmaControl\Catalog\Status\Infrastructure\Persistence\Eloquent\Repository\
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
 use PharmaControl\Shared\Infrastructure\Mongo\MongoCatalogSyncService;
-use PharmaControl\Catalog\Products\Domain\Contract\Repository\ProductRepositoryContract;
-use PharmaControl\Catalog\Products\Infrastructure\Persistence\Eloquent\Repository\EloquentProductRepository;
-use PharmaControl\Catalog\Products\Infrastructure\Storage\ProductImageStorage;
 use PharmaControl\Suppliers\Domain\Contract\Repository\SupplierRepositoryContract;
 use PharmaControl\Suppliers\Infrastructure\Persistence\Eloquent\Repository\EloquentSupplierRepository;
 

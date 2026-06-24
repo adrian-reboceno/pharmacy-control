@@ -11,9 +11,11 @@ class EloquentProductImage extends Model
 {
     use HasUuids;
 
-    protected $table        = 'product_images';
-    protected $keyType      = 'string';
-    public    $incrementing = false;
+    protected $table = 'product_images';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -27,10 +29,10 @@ class EloquentProductImage extends Model
     ];
 
     protected $casts = [
-        'is_primary'  => 'boolean',
-        'size_bytes'  => 'integer',
-        'sort_order'  => 'integer',
-        'created_at'  => 'immutable_datetime',
-        'updated_at'  => 'immutable_datetime',
+        'is_primary' => 'boolean',
+        'size_bytes' => 'integer',
+        'sort_order' => 'integer',
+        'created_at' => 'immutable_datetime',
+        'updated_at' => 'immutable_datetime',
     ];
 }

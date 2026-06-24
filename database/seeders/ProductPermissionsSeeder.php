@@ -25,7 +25,7 @@ class ProductPermissionsSeeder extends Seeder
         $created = [];
         foreach ($permissions as $name) {
             $created[$name] = Permission::firstOrCreate([
-                'name'       => $name,
+                'name' => $name,
                 'guard_name' => 'api',
             ]);
         }
