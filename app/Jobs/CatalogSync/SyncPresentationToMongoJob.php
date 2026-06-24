@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Jobs\CatalogSync;
@@ -8,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use PharmaControl\Shared\Infrastructure\Mongo\MongoCatalogSyncService;
 
 final class SyncPresentationToMongoJob implements ShouldQueue
@@ -44,9 +46,9 @@ final class SyncPresentationToMongoJob implements ShouldQueue
 
     public function failed(\Throwable $exception): void
     {
-        \Illuminate\Support\Facades\Log::error('SyncPresentationToMongoJob falló permanentemente', [
+        Log::error('SyncPresentationToMongoJob falló permanentemente', [
             'presentation_id' => $this->document['id'],
-            'error'           => $exception->getMessage(),
+            'error' => $exception->getMessage(),
         ]);
     }
 }

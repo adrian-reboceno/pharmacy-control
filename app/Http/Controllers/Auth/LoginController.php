@@ -9,11 +9,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Route;
 use OpenApi\Attributes as OA;
+use PharmaControl\Auth\Application\DTO\AuthTokenDTO;
 use PharmaControl\Auth\Infrastructure\Controller\LoginController as AuthController;
 
 class LoginController extends Controller
 {
-    private const ACCESS_TTL  = 900;
+    private const ACCESS_TTL = 900;
+
     private const REFRESH_TTL = 604_800;
 
     public function __construct(
@@ -32,8 +34,8 @@ class LoginController extends Controller
             content: new OA\JsonContent(
                 required: ['email', 'password', 'client_type'],
                 properties: [
-                    new OA\Property(property: 'email',       type: 'string', format: 'email',    example: 'admin@pharmaco.mx'),
-                    new OA\Property(property: 'password',    type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
+                    new OA\Property(property: 'email', type: 'string', format: 'email', example: 'admin@pharmaco.mx'),
+                    new OA\Property(property: 'password', type: 'string', format: 'password', example: 'Ch4ng3M3_N0w!#2026'),
                     new OA\Property(property: 'client_type', type: 'string', enum: ['WEB', 'MOBILE'], example: 'WEB'),
                 ]
             )
@@ -48,75 +50,75 @@ class LoginController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $request->validate([
-            'email'       => ['required', 'email'],
-            'password'    => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
             'client_type' => ['sometimes', 'string', 'in:WEB,MOBILE'],
         ]);
 
         $clientType = strtoupper($request->string('client_type', 'WEB')->toString());
 
-        /** @var \PharmaControl\Auth\Application\DTO\AuthTokenDTO $result */
+        /** @var AuthTokenDTO $result */
         $result = ($this->controller)([
-            'email'       => $request->string('email')->toString(),
-            'password'    => $request->string('password')->toString(),
+            'email' => $request->string('email')->toString(),
+            'password' => $request->string('password')->toString(),
             'client_type' => $clientType,
-            'ip_address'  => $request->ip(),
-            'user_agent'  => $request->userAgent(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
         ]);
 
         // MOBILE — tokens en el body JSON (comportamiento original)
         if ($clientType === 'MOBILE') {
             return response()->json([
                 'data' => [
-                    'access_token'              => $result->accessToken,
-                    'refresh_token'             => $result->refreshToken,
-                    'expires_in'                => $result->expiresIn,
-                    'requires_role_selection'   => $result->requiresRoleSelection,
-                    'requires_password_change'  => $result->requiresPasswordChange,
-                    'available_roles'           => $result->availableRoles,
-                    'active_role_id'            => $result->activeRoleId,
-                    'active_branch_id'          => $result->activeBranchId,
+                    'access_token' => $result->accessToken,
+                    'refresh_token' => $result->refreshToken,
+                    'expires_in' => $result->expiresIn,
+                    'requires_role_selection' => $result->requiresRoleSelection,
+                    'requires_password_change' => $result->requiresPasswordChange,
+                    'available_roles' => $result->availableRoles,
+                    'active_role_id' => $result->activeRoleId,
+                    'active_branch_id' => $result->activeBranchId,
                 ],
             ], 200);
         }
 
         // WEB — tokens en cookies HttpOnly, JavaScript nunca los ve
-        $secure   = config('app.env') === 'production';
+        $secure = config('app.env') === 'production';
         $sameSite = $secure ? 'Strict' : 'Lax';
 
         $accessCookie = cookie(
-            name:     'access_token',
-            value:    $result->accessToken,
-            minutes:  self::ACCESS_TTL / 60,
-            path:     '/',
-            domain:   null,
-            secure:   $secure,
+            name: 'access_token',
+            value: $result->accessToken,
+            minutes: self::ACCESS_TTL / 60,
+            path: '/',
+            domain: null,
+            secure: $secure,
             httpOnly: true,
-            raw:      false,
+            raw: false,
             sameSite: $sameSite,
         );
 
         $refreshCookie = cookie(
-            name:     'refresh_token',
-            value:    $result->refreshToken,
-            minutes:  self::REFRESH_TTL / 60,
-            path:     '/api/v1/auth/refresh',
-            domain:   null,
-            secure:   $secure,
+            name: 'refresh_token',
+            value: $result->refreshToken,
+            minutes: self::REFRESH_TTL / 60,
+            path: '/api/v1/auth/refresh',
+            domain: null,
+            secure: $secure,
             httpOnly: true,
-            raw:      false,
+            raw: false,
             sameSite: $sameSite,
         );
 
         return response()
             ->json([
                 'data' => [
-                    'expires_in'                => $result->expiresIn,
-                    'requires_role_selection'   => $result->requiresRoleSelection,
-                    'requires_password_change'  => $result->requiresPasswordChange,
-                    'available_roles'           => $result->availableRoles,
-                    'active_role_id'            => $result->activeRoleId,
-                    'active_branch_id'          => $result->activeBranchId,
+                    'expires_in' => $result->expiresIn,
+                    'requires_role_selection' => $result->requiresRoleSelection,
+                    'requires_password_change' => $result->requiresPasswordChange,
+                    'available_roles' => $result->availableRoles,
+                    'active_role_id' => $result->activeRoleId,
+                    'active_branch_id' => $result->activeBranchId,
                 ],
             ], 200)
             ->withCookie($accessCookie)

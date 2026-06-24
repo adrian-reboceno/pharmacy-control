@@ -15,9 +15,11 @@ use App\Http\Controllers\Catalog\ActiveIngredientController;
 use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\ClassificationController;
 use App\Http\Controllers\Catalog\LaboratoryController;
+use App\Http\Controllers\Catalog\LocationController;
 use App\Http\Controllers\Catalog\PresentationController;
 use App\Http\Controllers\Catalog\RouteController;
 use App\Http\Controllers\Catalog\StatusController;
+use App\Http\Controllers\Catalog\ProductController;
 use App\Http\Controllers\Catalog\UnitOfMeasurementController;
 use App\Http\Controllers\Suppliers\SupplierController;
 use Illuminate\Support\Facades\Route;
@@ -113,6 +115,26 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.statuses.manage'])->grou
     Route::get('/statuses/{id}', [StatusController::class, 'show']);
     Route::put('/statuses/{id}', [StatusController::class, 'update']);
     Route::delete('/statuses/{id}', [StatusController::class, 'destroy']);
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.locations.manage'])->group(function (): void {
+    Route::get('/locations', [LocationController::class, 'index']);
+    Route::get('/locations/tree', [LocationController::class, 'tree']);
+    Route::get('/locations/leaves', [LocationController::class, 'leaves']);
+    Route::post('/locations', [LocationController::class, 'store']);
+    Route::get('/locations/{id}', [LocationController::class, 'show']);
+    Route::put('/locations/{id}', [LocationController::class, 'update']);
+    Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
+});
+
+Route::prefix('v1/catalog')->middleware(['rbac2:catalog.products.manage'])->group(function (): void {
+    Route::get('/products',             [ProductController::class, 'index']);
+    Route::post('/products',            [ProductController::class, 'store']);
+    Route::get('/products/{id}',        [ProductController::class, 'show']);
+    Route::put('/products/{id}',        [ProductController::class, 'update']);
+    Route::delete('/products/{id}',     [ProductController::class, 'destroy']);
+    Route::post('/products/{id}/images',   [ProductController::class, 'addImage']);
+    Route::delete('/products/{id}/images', [ProductController::class, 'removeImage']);
 });
 
 Route::prefix('v1')->middleware(['rbac2:catalog.suppliers.manage'])->group(function (): void {

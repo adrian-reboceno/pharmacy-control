@@ -56,7 +56,7 @@ final class SyncClassificationToMongoJob implements ShouldQueue
     {
         Log::error('SyncClassificationToMongoJob falló permanentemente', [
             'classification_id' => $this->document['id'],
-            'error'             => $exception->getMessage(),
+            'error' => $exception->getMessage(),
         ]);
     }
 }

@@ -115,8 +115,8 @@ return [
         ],
 
         'mongodb' => [
-            'driver'   => 'mongodb',
-            'dsn'      => env('MONGO_DSN', 'mongodb://pharma-mongodb:27017'),
+            'driver' => 'mongodb',
+            'dsn' => env('MONGO_DSN', 'mongodb://pharma-mongodb:27017'),
             'database' => env('MONGO_DATABASE', 'pharma_control'),
         ],
 

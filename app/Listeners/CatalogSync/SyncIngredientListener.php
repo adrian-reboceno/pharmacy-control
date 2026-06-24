@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Listeners\CatalogSync;
@@ -48,15 +49,15 @@ final class SyncIngredientListener
         $dto = IngredientDTO::fromDomain($ingredient);
 
         SyncIngredientToMongoJob::dispatch([
-            'id'          => $dto->id,
-            'name'        => $dto->name,
-            'dci_code'    => $dto->dciCode,
-            'cas_number'  => $dto->casNumber,
+            'id' => $dto->id,
+            'name' => $dto->name,
+            'dci_code' => $dto->dciCode,
+            'cas_number' => $dto->casNumber,
             'description' => $dto->description,
-            'is_active'   => $dto->isActive,
-            'created_by'  => $dto->createdBy,
-            'created_at'  => $dto->createdAt,
-            'updated_at'  => $dto->updatedAt,
+            'is_active' => $dto->isActive,
+            'created_by' => $dto->createdBy,
+            'created_at' => $dto->createdAt,
+            'updated_at' => $dto->updatedAt,
         ]);
     }
 }

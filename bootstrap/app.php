@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Request;
 use PharmaControl\Auth\Domain\Exception\AccountLockedException;
 use PharmaControl\Auth\Domain\Exception\InvalidCredentialsException;
@@ -20,6 +21,16 @@ use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotFoun
 use PharmaControl\Catalog\Classifications\Domain\Exception\ClassificationNotModifiableException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\DuplicateLaboratoryNameException;
 use PharmaControl\Catalog\Laboratories\Domain\Exception\LaboratoryNotFoundException;
+use PharmaControl\Catalog\Location\Domain\Exception\DuplicateLocationNameException;
+use PharmaControl\Catalog\Location\Domain\Exception\LocationMaxDepthException;
+use PharmaControl\Catalog\Location\Domain\Exception\LocationNotFoundException;
+use PharmaControl\Catalog\Products\Domain\Exception\BrandedProductRequiresLaboratoryException;
+use PharmaControl\Catalog\Products\Domain\Exception\DuplicateBarcodeException;
+use PharmaControl\Catalog\Products\Domain\Exception\DuplicateProductNameException;
+use PharmaControl\Catalog\Products\Domain\Exception\InvalidBarcodeException;
+use PharmaControl\Catalog\Products\Domain\Exception\LocationMustBePositionException;
+use PharmaControl\Catalog\Products\Domain\Exception\ProductNotFoundException;
+use PharmaControl\Catalog\Location\Domain\Exception\LocationNotLeafException;
 use PharmaControl\Catalog\Presentations\Domain\Exception\DuplicateAbbreviationException;
 use PharmaControl\Catalog\Presentations\Domain\Exception\DuplicatePresentationNameException;
 use PharmaControl\Catalog\Presentations\Domain\Exception\PresentationNotFoundException;
@@ -66,7 +77,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Esto se configura en config/cors.php (ver abajo).
         // Aquí solo aseguramos que el middleware HandleCors esté en el grupo api.
         $middleware->api(prepend: [
-            \Illuminate\Http\Middleware\HandleCors::class,
+            HandleCors::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -147,6 +158,36 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(function (DuplicateCasNumberException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (LocationNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateLocationNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (LocationMaxDepthException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'INVALID_LEVEL'], 422);
+        });
+        $exceptions->render(function (LocationNotLeafException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'NOT_A_POSITION'], 422);
+        });
+        $exceptions->render(function (ProductNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
+        });
+        $exceptions->render(function (DuplicateProductNameException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (DuplicateBarcodeException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 409);
+        });
+        $exceptions->render(function (InvalidBarcodeException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'INVALID_BARCODE'], 422);
+        });
+        $exceptions->render(function (BrandedProductRequiresLaboratoryException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'LABORATORY_REQUIRED'], 422);
+        });
+        $exceptions->render(function (LocationMustBePositionException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage(), 'error' => 'LOCATION_NOT_POSITION'], 422);
         });
         $exceptions->render(function (SharedDomainException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage(), 'error' => 'DOMAIN_ERROR'], 422);

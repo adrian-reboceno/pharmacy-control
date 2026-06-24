@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Artisan;
 use PharmaControl\Catalog\ActiveIngredient\Domain\Contract\Repository\IngredientRepositoryContract;
 use PharmaControl\Catalog\Categories\Domain\Contract\Repository\CategoryRepositoryContract;
 use PharmaControl\Catalog\Classifications\Domain\Contract\Repository\ClassificationRepositoryContract;
-use PharmaControl\Catalog\Laboratories\Application\DTO\LaboratoryDTO;
 use PharmaControl\Catalog\Laboratories\Domain\Contract\Repository\LaboratoryRepositoryContract;
 use PharmaControl\Catalog\Presentations\Domain\Contract\Repository\PresentationRepositoryContract;
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\RouteRepositoryContract;

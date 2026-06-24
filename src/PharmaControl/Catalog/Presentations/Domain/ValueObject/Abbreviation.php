@@ -15,7 +15,7 @@ final readonly class Abbreviation
         if (mb_strlen($trimmed) > 20) {
             throw new \InvalidArgumentException('La abreviatura no puede exceder 20 caracteres.');
         }
-        if (!preg_match('/^[\p{L}\p{N}.\-_]+$/u', $trimmed)) {
+        if (! preg_match('/^[\p{L}\p{N}.\-_]+$/u', $trimmed)) {
             throw new \InvalidArgumentException("Abreviatura inválida: {$trimmed}. Solo letras, números, puntos y guiones.");
         }
     }

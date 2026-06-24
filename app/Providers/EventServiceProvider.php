@@ -4,109 +4,179 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Listeners\CatalogSync\SyncProductListener;
+use App\Listeners\CatalogSync\SyncCategoryListener;
+use App\Listeners\CatalogSync\SyncClassificationListener;
+use App\Listeners\CatalogSync\SyncIngredientListener;
+use App\Listeners\CatalogSync\SyncLaboratoryListener;
+use App\Listeners\CatalogSync\SyncLocationListener;
+use App\Listeners\CatalogSync\SyncPresentationListener;
+use App\Listeners\CatalogSync\SyncRouteListener;
+use App\Listeners\CatalogSync\SyncStatusListener;
+use App\Listeners\CatalogSync\SyncSupplierListener;
+use App\Listeners\CatalogSync\SyncUnitListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Event\IngredientCreated;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Event\IngredientDeactivated;
+use PharmaControl\Catalog\ActiveIngredient\Domain\Event\IngredientUpdated;
+use PharmaControl\Catalog\Categories\Domain\Event\CategoryCreated;
+use PharmaControl\Catalog\Categories\Domain\Event\CategoryDeactivated;
+use PharmaControl\Catalog\Categories\Domain\Event\CategoryUpdated;
+use PharmaControl\Catalog\Classifications\Domain\Event\ClassificationCreated;
+use PharmaControl\Catalog\Classifications\Domain\Event\ClassificationDeactivated;
+use PharmaControl\Catalog\Classifications\Domain\Event\ClassificationUpdated;
+use PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryCreated;
+use PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryDeactivated;
+use PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryUpdated;
+use PharmaControl\Catalog\Location\Domain\Event\LocationCreated;
+use PharmaControl\Catalog\Location\Domain\Event\LocationDeactivated;
+use PharmaControl\Catalog\Location\Domain\Event\LocationUpdated;
+use PharmaControl\Catalog\Presentations\Domain\Event\PresentationCreated;
+use PharmaControl\Catalog\Presentations\Domain\Event\PresentationDeactivated;
+use PharmaControl\Catalog\Presentations\Domain\Event\PresentationUpdated;
+use PharmaControl\Catalog\RoutesOfAdministration\Domain\Event\RouteCreated;
+use PharmaControl\Catalog\RoutesOfAdministration\Domain\Event\RouteDeactivated;
+use PharmaControl\Catalog\RoutesOfAdministration\Domain\Event\RouteUpdated;
+use PharmaControl\Catalog\Status\Domain\Event\StatusCreated;
+use PharmaControl\Catalog\Status\Domain\Event\StatusDeactivated;
+use PharmaControl\Catalog\Status\Domain\Event\StatusUpdated;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Event\UnitCreated;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Event\UnitDeactivated;
+use PharmaControl\Catalog\UnitOfMeasurement\Domain\Event\UnitUpdated;
+use PharmaControl\Catalog\Products\Domain\Event\ProductCreated;
+use PharmaControl\Catalog\Products\Domain\Event\ProductDeactivated;
+use PharmaControl\Catalog\Products\Domain\Event\ProductImageAdded;
+use PharmaControl\Catalog\Products\Domain\Event\ProductUpdated;
+use PharmaControl\Suppliers\Domain\Event\SupplierCreated;
+use PharmaControl\Suppliers\Domain\Event\SupplierDeactivated;
+use PharmaControl\Suppliers\Domain\Event\SupplierUpdated;
 
 class EventServiceProvider extends ServiceProvider
 {
     /** @var array<class-string, list<array{0: class-string, 1: string}|class-string>> */
     protected $listen = [
         // ── Laboratories ──
-        \PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryCreated::class => [
-            [\App\Listeners\CatalogSync\SyncLaboratoryListener::class, 'handleCreated'],
+        LaboratoryCreated::class => [
+            [SyncLaboratoryListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncLaboratoryListener::class, 'handleUpdated'],
+        LaboratoryUpdated::class => [
+            [SyncLaboratoryListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncLaboratoryListener::class, 'handleDeactivated'],
+        LaboratoryDeactivated::class => [
+            [SyncLaboratoryListener::class, 'handleDeactivated'],
         ],
 
         // ── Classifications ──
-        \PharmaControl\Catalog\Classifications\Domain\Event\ClassificationCreated::class => [
-            [\App\Listeners\CatalogSync\SyncClassificationListener::class, 'handleCreated'],
+        ClassificationCreated::class => [
+            [SyncClassificationListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\Classifications\Domain\Event\ClassificationUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncClassificationListener::class, 'handleUpdated'],
+        ClassificationUpdated::class => [
+            [SyncClassificationListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\Classifications\Domain\Event\ClassificationDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncClassificationListener::class, 'handleDeactivated'],
+        ClassificationDeactivated::class => [
+            [SyncClassificationListener::class, 'handleDeactivated'],
         ],
 
         // ── Categories ──
-        \PharmaControl\Catalog\Categories\Domain\Event\CategoryCreated::class => [
-            [\App\Listeners\CatalogSync\SyncCategoryListener::class, 'handleCreated'],
+        CategoryCreated::class => [
+            [SyncCategoryListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\Categories\Domain\Event\CategoryUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncCategoryListener::class, 'handleUpdated'],
+        CategoryUpdated::class => [
+            [SyncCategoryListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\Categories\Domain\Event\CategoryDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncCategoryListener::class, 'handleDeactivated'],
+        CategoryDeactivated::class => [
+            [SyncCategoryListener::class, 'handleDeactivated'],
         ],
 
         // ── UnitOfMeasurement ──
-        \PharmaControl\Catalog\UnitOfMeasurement\Domain\Event\UnitCreated::class => [
-            [\App\Listeners\CatalogSync\SyncUnitListener::class, 'handleCreated'],
+        UnitCreated::class => [
+            [SyncUnitListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\UnitOfMeasurement\Domain\Event\UnitUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncUnitListener::class, 'handleUpdated'],
+        UnitUpdated::class => [
+            [SyncUnitListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\UnitOfMeasurement\Domain\Event\UnitDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncUnitListener::class, 'handleDeactivated'],
+        UnitDeactivated::class => [
+            [SyncUnitListener::class, 'handleDeactivated'],
         ],
 
         // ── Presentations ──
-        \PharmaControl\Catalog\Presentations\Domain\Event\PresentationCreated::class => [
-            [\App\Listeners\CatalogSync\SyncPresentationListener::class, 'handleCreated'],
+        PresentationCreated::class => [
+            [SyncPresentationListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\Presentations\Domain\Event\PresentationUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncPresentationListener::class, 'handleUpdated'],
+        PresentationUpdated::class => [
+            [SyncPresentationListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\Presentations\Domain\Event\PresentationDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncPresentationListener::class, 'handleDeactivated'],
+        PresentationDeactivated::class => [
+            [SyncPresentationListener::class, 'handleDeactivated'],
         ],
 
         // ── RoutesOfAdministration ──
-        \PharmaControl\Catalog\RoutesOfAdministration\Domain\Event\RouteCreated::class => [
-            [\App\Listeners\CatalogSync\SyncRouteListener::class, 'handleCreated'],
+        RouteCreated::class => [
+            [SyncRouteListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\RoutesOfAdministration\Domain\Event\RouteUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncRouteListener::class, 'handleUpdated'],
+        RouteUpdated::class => [
+            [SyncRouteListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\RoutesOfAdministration\Domain\Event\RouteDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncRouteListener::class, 'handleDeactivated'],
+        RouteDeactivated::class => [
+            [SyncRouteListener::class, 'handleDeactivated'],
         ],
 
         // ── Status ──
-        \PharmaControl\Catalog\Status\Domain\Event\StatusCreated::class => [
-            [\App\Listeners\CatalogSync\SyncStatusListener::class, 'handleCreated'],
+        StatusCreated::class => [
+            [SyncStatusListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\Status\Domain\Event\StatusUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncStatusListener::class, 'handleUpdated'],
+        StatusUpdated::class => [
+            [SyncStatusListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\Status\Domain\Event\StatusDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncStatusListener::class, 'handleDeactivated'],
+        StatusDeactivated::class => [
+            [SyncStatusListener::class, 'handleDeactivated'],
         ],
 
         // ── ActiveIngredient ──
-        \PharmaControl\Catalog\ActiveIngredient\Domain\Event\IngredientCreated::class => [
-            [\App\Listeners\CatalogSync\SyncIngredientListener::class, 'handleCreated'],
+        IngredientCreated::class => [
+            [SyncIngredientListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Catalog\ActiveIngredient\Domain\Event\IngredientUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncIngredientListener::class, 'handleUpdated'],
+        IngredientUpdated::class => [
+            [SyncIngredientListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Catalog\ActiveIngredient\Domain\Event\IngredientDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncIngredientListener::class, 'handleDeactivated'],
+        IngredientDeactivated::class => [
+            [SyncIngredientListener::class, 'handleDeactivated'],
+        ],
+
+        // ── Location ──
+        LocationCreated::class => [
+            [SyncLocationListener::class, 'handleCreated'],
+        ],
+        LocationUpdated::class => [
+            [SyncLocationListener::class, 'handleUpdated'],
+        ],
+        LocationDeactivated::class => [
+            [SyncLocationListener::class, 'handleDeactivated'],
+        ],
+
+        // ── Products ──
+        ProductCreated::class => [
+            [SyncProductListener::class, 'handleCreated'],
+        ],
+        ProductUpdated::class => [
+            [SyncProductListener::class, 'handleUpdated'],
+        ],
+        ProductDeactivated::class => [
+            [SyncProductListener::class, 'handleDeactivated'],
+        ],
+        ProductImageAdded::class => [
+            [SyncProductListener::class, 'handleImageAdded'],
         ],
 
         // ── Suppliers ──
-        \PharmaControl\Suppliers\Domain\Event\SupplierCreated::class => [
-            [\App\Listeners\CatalogSync\SyncSupplierListener::class, 'handleCreated'],
+        SupplierCreated::class => [
+            [SyncSupplierListener::class, 'handleCreated'],
         ],
-        \PharmaControl\Suppliers\Domain\Event\SupplierUpdated::class => [
-            [\App\Listeners\CatalogSync\SyncSupplierListener::class, 'handleUpdated'],
+        SupplierUpdated::class => [
+            [SyncSupplierListener::class, 'handleUpdated'],
         ],
-        \PharmaControl\Suppliers\Domain\Event\SupplierDeactivated::class => [
-            [\App\Listeners\CatalogSync\SyncSupplierListener::class, 'handleDeactivated'],
+        SupplierDeactivated::class => [
+            [SyncSupplierListener::class, 'handleDeactivated'],
         ],
     ];
 

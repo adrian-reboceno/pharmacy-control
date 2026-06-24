@@ -37,9 +37,9 @@ class LogoutController extends Controller
         $user = $request->attributes->get('authenticated_user');
 
         ($this->controller)([
-            'user_id'             => $user->userId,
-            'session_id'          => $user->sessionId,
-            'jti'                 => $user->jti,
+            'user_id' => $user->userId,
+            'session_id' => $user->sessionId,
+            'jti' => $user->jti,
             'token_ttl_remaining' => $user->tokenTtlRemaining(),
         ]);
 
@@ -48,22 +48,22 @@ class LogoutController extends Controller
         $secure = config('app.env') === 'production';
 
         $clearAccess = cookie(
-            name:     'access_token',
-            value:    '',
-            minutes:  -1,
-            path:     '/',
-            domain:   null,
-            secure:   $secure,
+            name: 'access_token',
+            value: '',
+            minutes: -1,
+            path: '/',
+            domain: null,
+            secure: $secure,
             httpOnly: true,
         );
 
         $clearRefresh = cookie(
-            name:     'refresh_token',
-            value:    '',
-            minutes:  -1,
-            path:     '/api/v1/auth/refresh',
-            domain:   null,
-            secure:   $secure,
+            name: 'refresh_token',
+            value: '',
+            minutes: -1,
+            path: '/api/v1/auth/refresh',
+            domain: null,
+            secure: $secure,
             httpOnly: true,
         );
 

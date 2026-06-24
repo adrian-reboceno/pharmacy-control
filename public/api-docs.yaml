@@ -47,7 +47,7 @@ paths:
       tags:
         - Auth
       summary: 'Iniciar sesión'
-      description: 'Autentica al usuario y devuelve par de tokens JWT. Si el usuario tiene múltiples roles, requires_role_selection será true.'
+      description: 'WEB: tokens en cookies HttpOnly. MOBILE: tokens en body JSON.'
       operationId: d00f4d12443a970455f396756440af3f
       requestBody:
         required: true
@@ -75,40 +75,23 @@ paths:
       responses:
         '200':
           description: 'Login exitoso'
-          content:
-            application/json:
-              schema:
-                properties:
-                  access_token: { type: string }
-                  refresh_token: { type: string }
-                  expires_in: { type: integer, example: 900 }
-                  requires_role_selection: { type: boolean, example: false }
-                  requires_password_change: { type: boolean, example: false }
-                type: object
         '401':
           $ref: '#/components/responses/Unauthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
         '423':
           description: 'Cuenta bloqueada'
-          content:
-            application/json:
-              schema:
-                properties:
-                  message: { type: string, example: 'Cuenta bloqueada.' }
-                  error: { type: string, example: ACCOUNT_LOCKED }
-                type: object
       security: []
   /v1/auth/logout:
     post:
       tags:
         - Auth
       summary: 'Cerrar sesión'
-      description: 'Revoca el token actual e invalida la sesión.'
+      description: 'Revoca el token actual, invalida la sesión y borra las cookies HttpOnly.'
       operationId: aa947ef5386e68877a4da98bc98274e2
       responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
+        '200':
+          description: 'Sesión cerrada'
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
@@ -119,27 +102,23 @@ paths:
       tags:
         - Auth
       summary: 'Renovar tokens'
-      description: 'Intercambia el refresh token por un nuevo par. El refresh token anterior queda invalidado.'
+      description: 'WEB: lee refresh_token de cookie HttpOnly y rota ambas cookies. MOBILE: acepta refresh_token en body y devuelve tokens en body.'
       operationId: 8ec7f584cf069a47d99088337c63343c
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
-              required:
-                - refresh_token
               properties:
                 refresh_token:
+                  description: 'Solo para MOBILE'
                   type: string
-                  example: a3f8c2...
               type: object
       responses:
         '200':
           description: 'Tokens renovados'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
       security: []
   '/v1/auth/users/{userId}/roles':
     post:
@@ -218,6 +197,229 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/active-ingredients:
+    get:
+      tags:
+        - 'Catalog · Active Ingredients'
+      summary: 'Listar ingredientes activos'
+      description: 'Lista paginada. La búsqueda aplica sobre nombre, código DCI y número CAS.'
+      operationId: 69b0597490881aa12afb25523e10830d
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Búsqueda en nombre, DCI o CAS'
+          required: false
+          schema:
+            type: string
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/IngredientResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Active Ingredients'
+      summary: 'Crear ingrediente activo'
+      description: 'El número CAS es opcional. Si se envía debe tener el formato NNNNNN-NN-N (ej: 26787-78-0).'
+      operationId: a5118a074b2347069e7dc75f731e26ec
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - dci_code
+              properties:
+                name:
+                  type: string
+                  example: Amoxicilina
+                  maxLength: 150
+                dci_code:
+                  type: string
+                  example: amoxicillin
+                  maxLength: 30
+                cas_number:
+                  type: string
+                  example: 26787-78-0
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '201':
+          description: 'Ingrediente creado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngredientResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre, DCI o CAS duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/active-ingredients/{id}':
+    get:
+      tags:
+        - 'Catalog · Active Ingredients'
+      summary: 'Obtener ingrediente activo'
+      operationId: e86f945f6c9221bd5ce20fe3fd3cef52
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Ingrediente encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngredientResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Active Ingredients'
+      summary: 'Actualizar ingrediente activo'
+      operationId: 1549dbbc99622587b47cc10f52621bc3
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - dci_code
+              properties:
+                name:
+                  type: string
+                  maxLength: 150
+                dci_code:
+                  type: string
+                  maxLength: 30
+                cas_number:
+                  type: string
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 500
+              type: object
+      responses:
+        '200':
+          description: 'Ingrediente actualizado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngredientResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre, DCI o CAS duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Active Ingredients'
+      summary: 'Desactivar ingrediente activo'
+      description: 'Soft delete lógico. No elimina el registro.'
+      operationId: 1c571e9c51a64a9122f7da0612c28cab
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
       security:
         -
           bearerAuth: []
@@ -817,6 +1019,284 @@ paths:
       summary: 'Desactivar laboratorio'
       description: 'Soft delete lógico — establece is_active = false. No elimina el registro.'
       operationId: 31118b86dbec44157fb95d9e2b025f37
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/locations:
+    get:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Lista plana de ubicaciones'
+      operationId: aa48b34a91caa0139e9d289a8aa274f2
+      parameters:
+        -
+          name: level
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 1
+              - 2
+              - 3
+              - 4
+        -
+          name: parent_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: 'Lista de ubicaciones'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/LocationResponse' } }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Crear ubicación'
+      description: 'Crea un nodo en la jerarquía. El nivel debe coincidir con el nivel hijo del padre dado. Las Zonas (level=1) deben tener parent_id nulo.'
+      operationId: b0877652754f44d72ac3e303e4a0ec11
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - level
+              properties:
+                name:
+                  type: string
+                  example: 'Pasillo A'
+                  maxLength: 100
+                level:
+                  type: integer
+                  example: 2
+                  enum: [1, 2, 3, 4]
+                parent_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+              type: object
+      responses:
+        '201':
+          description: 'Ubicación creada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 'parent_id no encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 'Nombre duplicado en el mismo nivel'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: 'Nivel inválido para el padre dado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/locations/tree:
+    get:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Árbol completo de ubicaciones'
+      operationId: e1e9c9bc0306a20f03e0000f33bfea92
+      parameters:
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: 'Árbol anidado Zona > Pasillo > Estante > Posición'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/LocationResponse' } }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+  /v1/catalog/locations/leaves:
+    get:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Posiciones activas (level=4)'
+      description: 'Devuelve solo las Posiciones activas. Se usa en el formulario de creación de productos.'
+      operationId: efad3dd3c637b6ee8d7502869f7c7c4d
+      parameters:
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: 'Lista de posiciones'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/LocationResponse' } }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/locations/{id}':
+    get:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Obtener ubicación por ID'
+      operationId: fa0625a64dc779db918da8acfd166f93
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Ubicación encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Actualizar ubicación'
+      description: 'Actualiza nombre y descripción. El parent_id y el level son inmutables tras la creación.'
+      operationId: bc9bb9fce46af89e12f10d361a730e0d
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+              type: object
+      responses:
+        '200':
+          description: 'Ubicación actualizada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Locations'
+      summary: 'Desactivar ubicación'
+      description: 'Soft delete lógico (is_active = false). Los hijos NO se desactivan automáticamente.'
+      operationId: ad515c6e4b47d1e14e9d6296f22dadb5
       parameters:
         -
           name: id
@@ -1956,6 +2436,38 @@ paths:
           bearerAuth: []
 components:
   schemas:
+    IngredientResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Amoxicilina
+        dci_code:
+          type: string
+          example: amoxicillin
+        cas_number:
+          type: string
+          example: 26787-78-0
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     CategoryResponse:
       properties:
         id:
@@ -2077,6 +2589,48 @@ components:
         is_active:
           type: boolean
           example: true
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
+    LocationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: 'Pos 1'
+        level:
+          description: '1=Zona, 2=Pasillo, 3=Estante, 4=Posición'
+          type: integer
+          example: 4
+        level_label:
+          type: string
+          example: Posición
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          example: true
+        is_leaf:
+          type: boolean
+          example: true
+        full_path:
+          type: string
+          example: 'OTC General > Pasillo 1 > Estante 1 > Pos 1'
         created_by:
           type: string
           format: uuid
@@ -2404,6 +2958,9 @@ components:
       scheme: bearer
 tags:
   -
+    name: 'Catalog · Active Ingredients'
+    description: 'Ingredientes activos farmacológicos (DCI/INN)'
+  -
     name: 'Catalog · Categories'
     description: 'Categorías jerárquicas de productos (árbol libre con Adjacency List)'
   -
@@ -2412,6 +2969,9 @@ tags:
   -
     name: 'Catalog · Laboratories'
     description: 'Catálogo de laboratorios fabricantes'
+  -
+    name: 'Catalog · Locations'
+    description: 'Ubicaciones físicas de productos en la farmacia (Zona > Pasillo > Estante > Posición)'
   -
     name: 'Catalog · Presentations'
     description: 'Formas farmacéuticas de los productos'

@@ -44,19 +44,19 @@ final class SyncClassificationListener
         $dto = ClassificationDTO::fromDomain($classification);
 
         SyncClassificationToMongoJob::dispatch([
-            'id'                     => $dto->id,
-            'lgs_group'              => $dto->lgsGroup,
-            'lgs_group_label'        => $dto->lgsGroupLabel,
-            'name'                   => $dto->name,
-            'prescription_type'      => $dto->prescriptionType,
+            'id' => $dto->id,
+            'lgs_group' => $dto->lgsGroup,
+            'lgs_group_label' => $dto->lgsGroupLabel,
+            'name' => $dto->name,
+            'prescription_type' => $dto->prescriptionType,
             'prescription_type_label' => $dto->prescriptionTypeLabel,
-            'validity_days'          => $dto->validityDays,
-            'validity_note'          => $dto->validityNote,
-            'is_controlled'          => $dto->isControlled,
-            'is_active'              => $dto->isActive,
-            'created_by'             => $dto->createdBy,
-            'created_at'             => $dto->createdAt,
-            'updated_at'             => $dto->updatedAt,
+            'validity_days' => $dto->validityDays,
+            'validity_note' => $dto->validityNote,
+            'is_controlled' => $dto->isControlled,
+            'is_active' => $dto->isActive,
+            'created_by' => $dto->createdBy,
+            'created_at' => $dto->createdAt,
+            'updated_at' => $dto->updatedAt,
         ]);
     }
 }

@@ -44,14 +44,14 @@ final class SyncPresentationListener
         $dto = PresentationDTO::fromDomain($presentation);
 
         SyncPresentationToMongoJob::dispatch([
-            'id'           => $dto->id,
-            'name'         => $dto->name,
+            'id' => $dto->id,
+            'name' => $dto->name,
             'abbreviation' => $dto->abbreviation,
-            'description'  => $dto->description,
-            'is_active'    => $dto->isActive,
-            'created_by'   => $dto->createdBy,
-            'created_at'   => $dto->createdAt,
-            'updated_at'   => $dto->updatedAt,
+            'description' => $dto->description,
+            'is_active' => $dto->isActive,
+            'created_by' => $dto->createdBy,
+            'created_at' => $dto->createdAt,
+            'updated_at' => $dto->updatedAt,
         ]);
     }
 }

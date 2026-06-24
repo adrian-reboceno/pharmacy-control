@@ -44,14 +44,14 @@ final class SyncLaboratoryListener
         $dto = LaboratoryDTO::fromDomain($laboratory);
 
         SyncLaboratoryToMongoJob::dispatch([
-            'id'           => $dto->id,
-            'name'         => $dto->name,
+            'id' => $dto->id,
+            'name' => $dto->name,
             'country_code' => $dto->countryCode,
-            'website'      => $dto->website,
-            'is_active'    => $dto->isActive,
-            'created_by'   => $dto->createdBy,
-            'created_at'   => $dto->createdAt,
-            'updated_at'   => $dto->updatedAt,
+            'website' => $dto->website,
+            'is_active' => $dto->isActive,
+            'created_by' => $dto->createdBy,
+            'created_at' => $dto->createdAt,
+            'updated_at' => $dto->updatedAt,
         ]);
     }
 }
