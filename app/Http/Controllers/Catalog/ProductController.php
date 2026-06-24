@@ -326,8 +326,33 @@ class ProductController extends Controller
     }
 
     #[OA\Delete(
-        path: '/v1/catalog/products/{id}/images',
+        path: '/v1/catalog/products/{id}/images/{imageId}',
         summary: 'Eliminar imagen del producto',
+        tags: ['Catalog · Products'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+            new OA\Parameter(name: 'imageId', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [
+            new OA\Response(response: 204, ref: '#/components/responses/NoContent'),
+            new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
+            new OA\Response(response: 403, ref: '#/components/responses/Forbidden'),
+            new OA\Response(response: 404, ref: '#/components/responses/NotFound'),
+        ]
+    )]
+    public function removeImage(Request $request, string $id, string $imageId): JsonResponse
+    {
+        $actorUserId = $request->attributes->get('authenticated_user')->userId;
+
+        $this->controller->removeImage($id, $imageId, $actorUserId);
+
+        return response()->json(null, 204);
+    }
+
+    #[OA\Put(
+        path: '/v1/catalog/products/{id}/images/reorder',
+        summary: 'Reordenar imágenes del producto',
         tags: ['Catalog · Products'],
         security: [['bearerAuth' => []]],
         parameters: [
@@ -336,9 +361,14 @@ class ProductController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['image_url'],
+                required: ['order'],
                 properties: [
-                    new OA\Property(property: 'image_url', type: 'string', example: 'https://...'),
+                    new OA\Property(
+                        property: 'order',
+                        type: 'array',
+                        items: new OA\Items(type: 'string', format: 'uuid'),
+                        description: 'IDs de imágenes en el orden deseado (primera = portada)'
+                    ),
                 ]
             )
         ),
@@ -350,12 +380,14 @@ class ProductController extends Controller
             new OA\Response(response: 422, ref: '#/components/responses/UnprocessableEntity'),
         ]
     )]
-    public function removeImage(Request $request, string $id): JsonResponse
+    public function reorderImages(Request $request, string $id): JsonResponse
     {
-        $validated   = $request->validate(['image_url' => 'required|string|url']);
-        $actorUserId = $request->attributes->get('authenticated_user')->userId;
+        $validated = $request->validate([
+            'order'   => 'required|array|min:1',
+            'order.*' => 'required|uuid',
+        ]);
 
-        $this->controller->removeImage($id, $validated['image_url'], $actorUserId);
+        $this->controller->reorderImages($id, $validated['order']);
 
         return response()->json(null, 204);
     }
