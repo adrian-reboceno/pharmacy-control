@@ -10,8 +10,8 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class ProductImageAdded implements DomainEvent
 {
     public function __construct(
-        public readonly ProductId          $id,
-        public readonly string             $imageUrl,
+        public readonly ProductId $id,
+        public readonly string $imageUrl,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

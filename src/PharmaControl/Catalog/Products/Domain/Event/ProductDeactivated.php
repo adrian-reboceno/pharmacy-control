@@ -10,7 +10,7 @@ use PharmaControl\Shared\Event\DomainEvent;
 final readonly class ProductDeactivated implements DomainEvent
 {
     public function __construct(
-        public readonly ProductId          $id,
+        public readonly ProductId $id,
         public readonly \DateTimeImmutable $occurredAt,
     ) {}
 

@@ -58,8 +58,8 @@ return new class extends Migration
             $table->index('is_active');
         });
 
-        DB::statement("CREATE UNIQUE INDEX products_name_lower_unique ON products (LOWER(name))");
-        DB::statement("CREATE UNIQUE INDEX products_barcode_unique ON products (barcode) WHERE barcode IS NOT NULL");
+        DB::statement('CREATE UNIQUE INDEX products_name_lower_unique ON products (LOWER(name))');
+        DB::statement('CREATE UNIQUE INDEX products_barcode_unique ON products (barcode) WHERE barcode IS NOT NULL');
         DB::statement("ALTER TABLE products ADD CONSTRAINT products_type_check CHECK (type IN ('GENERIC','BRANDED'))");
         DB::statement("ALTER TABLE products ADD CONSTRAINT products_sale_condition_check CHECK (sale_condition IN ('SIN_RECETA','CON_RECETA','CON_RECETA_RETENIDA'))");
     }

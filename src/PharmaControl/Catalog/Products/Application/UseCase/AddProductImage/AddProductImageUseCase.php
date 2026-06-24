@@ -15,8 +15,8 @@ final class AddProductImageUseCase
 {
     public function __construct(
         private readonly ProductRepositoryContract $productRepo,
-        private readonly ProductImageStorage       $imageStorage,
-        private readonly EventPublisherContract    $events,
+        private readonly ProductImageStorage $imageStorage,
+        private readonly EventPublisherContract $events,
     ) {}
 
     public function __invoke(AddProductImageCommand $cmd): ProductDTO

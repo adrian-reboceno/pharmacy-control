@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit\PharmaControl\Catalog\Products\Application\UseCase;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PharmaControl\Auth\Domain\Contract\Service\EventPublisherContract;
 use PharmaControl\Auth\Domain\ValueObject\UserId;
 use PharmaControl\Catalog\Categories\Domain\ValueObject\CategoryId;
@@ -24,14 +23,18 @@ use PharmaControl\Catalog\Products\Domain\ValueObject\ProductType;
 use PharmaControl\Catalog\Products\Domain\ValueObject\SaleCondition;
 use PharmaControl\Catalog\Products\Domain\ValueObject\StockConfig;
 use PharmaControl\Catalog\Status\Domain\ValueObject\StatusId;
+use PHPUnit\Framework\MockObject\MockObject;
 use Tests\TestCase;
 
 final class UpdateProductUseCaseTest extends TestCase
 {
-    private ProductRepositoryContract&MockObject  $productRepo;
+    private ProductRepositoryContract&MockObject $productRepo;
+
     private LocationRepositoryContract&MockObject $locationRepo;
-    private EventPublisherContract&MockObject     $events;
-    private UpdateProductUseCase                  $useCase;
+
+    private EventPublisherContract&MockObject $events;
+
+    private UpdateProductUseCase $useCase;
 
     private string $productId = '550e8400-e29b-41d4-a716-446655440010';
 
@@ -39,9 +42,9 @@ final class UpdateProductUseCaseTest extends TestCase
     {
         parent::setUp();
 
-        $this->productRepo  = $this->createMock(ProductRepositoryContract::class);
+        $this->productRepo = $this->createMock(ProductRepositoryContract::class);
         $this->locationRepo = $this->createMock(LocationRepositoryContract::class);
-        $this->events       = $this->createMock(EventPublisherContract::class);
+        $this->events = $this->createMock(EventPublisherContract::class);
 
         $this->useCase = new UpdateProductUseCase(
             $this->productRepo,
@@ -53,55 +56,55 @@ final class UpdateProductUseCaseTest extends TestCase
     private function makeExistingProduct(): Product
     {
         return Product::reconstitute(
-            id:            new ProductId($this->productId),
-            type:          ProductType::GENERIC,
-            name:          new ProductName('Paracetamol 500mg'),
-            description:   null,
-            statusId:      new StatusId('550e8400-e29b-41d4-a716-446655440001'),
-            categoryId:    new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
-            laboratoryId:  null,
+            id: new ProductId($this->productId),
+            type: ProductType::GENERIC,
+            name: new ProductName('Paracetamol 500mg'),
+            description: null,
+            statusId: new StatusId('550e8400-e29b-41d4-a716-446655440001'),
+            categoryId: new CategoryId('550e8400-e29b-41d4-a716-446655440002'),
+            laboratoryId: null,
             saleCondition: SaleCondition::SIN_RECETA,
-            sanitaryReg:   null,
-            barcode:       null,
-            specs:         new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
-            stockConfig:   new StockConfig(5, 100, 30, true, false),
-            margins:       new ProductMargins(20.0, 10.0),
-            ingredients:   [],
-            imageUrls:     [],
-            isActive:      true,
-            createdBy:     new UserId('550e8400-e29b-41d4-a716-446655440003'),
-            createdAt:     new \DateTimeImmutable,
-            updatedAt:     new \DateTimeImmutable,
+            sanitaryReg: null,
+            barcode: null,
+            specs: new ProductSpecs('u-id', 'pres-id', 'route-id', 10, 10, null),
+            stockConfig: new StockConfig(5, 100, 30, true, false),
+            margins: new ProductMargins(20.0, 10.0),
+            ingredients: [],
+            imageUrls: [],
+            isActive: true,
+            createdBy: new UserId('550e8400-e29b-41d4-a716-446655440003'),
+            createdAt: new \DateTimeImmutable,
+            updatedAt: new \DateTimeImmutable,
         );
     }
 
     private function makeCommand(array $overrides = []): UpdateProductCommand
     {
         return new UpdateProductCommand(
-            id:              $overrides['id'] ?? $this->productId,
-            name:            $overrides['name'] ?? 'Paracetamol 500mg',
-            description:     null,
-            statusId:        '550e8400-e29b-41d4-a716-446655440001',
-            categoryId:      '550e8400-e29b-41d4-a716-446655440002',
-            laboratoryId:    null,
-            saleCondition:   'SIN_RECETA',
-            sanitaryReg:     null,
-            barcode:         null,
-            unitId:          'u-id',
-            presentationId:  'pres-id',
-            routeId:         'route-id',
-            unitsPerBox:     10,
+            id: $overrides['id'] ?? $this->productId,
+            name: $overrides['name'] ?? 'Paracetamol 500mg',
+            description: null,
+            statusId: '550e8400-e29b-41d4-a716-446655440001',
+            categoryId: '550e8400-e29b-41d4-a716-446655440002',
+            laboratoryId: null,
+            saleCondition: 'SIN_RECETA',
+            sanitaryReg: null,
+            barcode: null,
+            unitId: 'u-id',
+            presentationId: 'pres-id',
+            routeId: 'route-id',
+            unitsPerBox: 10,
             unitsPerBlister: 10,
-            locationId:      null,
-            minStock:        5,
-            maxStock:        100,
+            locationId: null,
+            minStock: 5,
+            maxStock: 100,
             expiryAlertDays: 30,
-            manageLots:      true,
-            allowFraction:   false,
-            retailMargin:    20.0,
+            manageLots: true,
+            allowFraction: false,
+            retailMargin: 20.0,
             wholesaleMargin: 10.0,
-            ingredients:     [],
-            actorUserId:     '550e8400-e29b-41d4-a716-446655440003',
+            ingredients: [],
+            actorUserId: '550e8400-e29b-41d4-a716-446655440003',
         );
     }
 
@@ -137,7 +140,7 @@ final class UpdateProductUseCaseTest extends TestCase
         $this->productRepo->method('findById')->willReturn($product);
 
         $otherProduct = $this->createMock(Product::class);
-        $otherId      = new ProductId('550e8400-e29b-41d4-a716-446655440099');
+        $otherId = new ProductId('550e8400-e29b-41d4-a716-446655440099');
         $otherProduct->method('getId')->willReturn($otherId);
         $this->productRepo->method('findByName')->willReturn($otherProduct);
 

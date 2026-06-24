@@ -16,7 +16,7 @@ final readonly class ProductMarginsDTO
     public static function fromDomain(ProductMargins $margins): self
     {
         return new self(
-            retailMargin:    $margins->retailMargin,
+            retailMargin: $margins->retailMargin,
             wholesaleMargin: $margins->wholesaleMargin,
         );
     }

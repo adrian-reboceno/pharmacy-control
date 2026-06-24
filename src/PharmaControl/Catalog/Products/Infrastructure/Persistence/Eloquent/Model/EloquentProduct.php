@@ -14,9 +14,11 @@ class EloquentProduct extends Model
 {
     use HasUuids;
 
-    protected $table        = 'products';
-    protected $keyType      = 'string';
-    public    $incrementing = false;
+    protected $table = 'products';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -47,13 +49,13 @@ class EloquentProduct extends Model
     ];
 
     protected $casts = [
-        'is_active'        => 'boolean',
-        'manage_lots'      => 'boolean',
-        'allow_fraction'   => 'boolean',
-        'retail_margin'    => 'float',
+        'is_active' => 'boolean',
+        'manage_lots' => 'boolean',
+        'allow_fraction' => 'boolean',
+        'retail_margin' => 'float',
         'wholesale_margin' => 'float',
-        'created_at'       => 'immutable_datetime',
-        'updated_at'       => 'immutable_datetime',
+        'created_at' => 'immutable_datetime',
+        'updated_at' => 'immutable_datetime',
     ];
 
     public function ingredients(): BelongsToMany

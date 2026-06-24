@@ -15,7 +15,6 @@ use PharmaControl\Catalog\Presentations\Infrastructure\Persistence\Eloquent\Mode
 use PharmaControl\Catalog\RoutesOfAdministration\Infrastructure\Persistence\Eloquent\Model\EloquentRoute;
 use PharmaControl\Catalog\Status\Infrastructure\Persistence\Eloquent\Model\EloquentStatus;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Model\EloquentUnit;
-use PharmaControl\Catalog\Products\Infrastructure\Persistence\Eloquent\Model\EloquentProduct;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -23,12 +22,17 @@ final class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
-    private EloquentUser         $user;
-    private EloquentStatus       $status;
-    private EloquentCategory     $category;
-    private EloquentUnit         $unit;
+    private EloquentUser $user;
+
+    private EloquentStatus $status;
+
+    private EloquentCategory $category;
+
+    private EloquentUnit $unit;
+
     private EloquentPresentation $presentation;
-    private EloquentRoute        $route;
+
+    private EloquentRoute $route;
 
     protected function setUp(): void
     {
@@ -37,57 +41,57 @@ final class ProductTest extends TestCase
         Permission::findOrCreate('catalog.products.manage', 'sanctum');
 
         $this->user = EloquentUser::factory()->create([
-            'status'                => 'ACTIVE',
-            'password_hash'         => Hash::make('Secret123!'),
-            'must_change_password'  => false,
-            'email_verified_at'     => now(),
+            'status' => 'ACTIVE',
+            'password_hash' => Hash::make('Secret123!'),
+            'must_change_password' => false,
+            'email_verified_at' => now(),
         ]);
         $this->user->givePermissionTo('catalog.products.manage');
 
         $this->status = EloquentStatus::create([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Activo',
-            'code'        => 'ACTIVO',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Activo',
+            'code' => 'ACTIVO',
             'description' => null,
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ]);
 
         $this->category = EloquentCategory::create([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Analgésicos',
-            'slug'        => 'analgesicos',
-            'parent_id'   => null,
+            'id' => Str::uuid()->toString(),
+            'name' => 'Analgésicos',
+            'slug' => 'analgesicos',
+            'parent_id' => null,
             'description' => null,
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ]);
 
         $this->unit = EloquentUnit::create([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Miligramo',
-            'symbol'      => 'mg',
-            'type'        => 'QUANTITY',
-            'is_active'   => true,
-            'created_by'  => null,
+            'id' => Str::uuid()->toString(),
+            'name' => 'Miligramo',
+            'symbol' => 'mg',
+            'type' => 'QUANTITY',
+            'is_active' => true,
+            'created_by' => null,
         ]);
 
         $this->presentation = EloquentPresentation::create([
-            'id'           => Str::uuid()->toString(),
-            'name'         => 'Tableta',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Tableta',
             'abbreviation' => 'Tab',
-            'description'  => null,
-            'is_active'    => true,
-            'created_by'   => null,
+            'description' => null,
+            'is_active' => true,
+            'created_by' => null,
         ]);
 
         $this->route = EloquentRoute::create([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Oral',
-            'code'        => 'ORAL',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Oral',
+            'code' => 'ORAL',
             'description' => null,
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ]);
     }
 
@@ -99,29 +103,29 @@ final class ProductTest extends TestCase
     private function validPayload(array $overrides = []): array
     {
         return array_merge([
-            'type'             => 'GENERIC',
-            'name'             => 'Paracetamol 500mg Tabs',
-            'description'      => 'Analgésico de uso común',
-            'status_id'        => $this->status->id,
-            'category_id'      => $this->category->id,
-            'laboratory_id'    => null,
-            'sale_condition'   => 'SIN_RECETA',
-            'sanitary_reg'     => null,
-            'barcode'          => null,
-            'unit_id'          => $this->unit->id,
-            'presentation_id'  => $this->presentation->id,
-            'route_id'         => $this->route->id,
-            'units_per_box'    => 20,
+            'type' => 'GENERIC',
+            'name' => 'Paracetamol 500mg Tabs',
+            'description' => 'Analgésico de uso común',
+            'status_id' => $this->status->id,
+            'category_id' => $this->category->id,
+            'laboratory_id' => null,
+            'sale_condition' => 'SIN_RECETA',
+            'sanitary_reg' => null,
+            'barcode' => null,
+            'unit_id' => $this->unit->id,
+            'presentation_id' => $this->presentation->id,
+            'route_id' => $this->route->id,
+            'units_per_box' => 20,
             'units_per_blister' => 10,
-            'location_id'      => null,
-            'min_stock'        => 10,
-            'max_stock'        => 200,
+            'location_id' => null,
+            'min_stock' => 10,
+            'max_stock' => 200,
             'expiry_alert_days' => 30,
-            'manage_lots'      => true,
-            'allow_fraction'   => false,
-            'retail_margin'    => 25.0,
+            'manage_lots' => true,
+            'allow_fraction' => false,
+            'retail_margin' => 25.0,
             'wholesale_margin' => 15.0,
-            'ingredients'      => [],
+            'ingredients' => [],
         ], $overrides);
     }
 
@@ -148,7 +152,7 @@ final class ProductTest extends TestCase
     {
         $response = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload([
-                'type'          => 'BRANDED',
+                'type' => 'BRANDED',
                 'laboratory_id' => null,
             ]));
 
@@ -197,9 +201,9 @@ final class ProductTest extends TestCase
 
     public function test_get_single_returns_200_with_product_data(): void
     {
-        $create   = $this->actingAsUser()
+        $create = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload());
-        $id       = $create->json('data.id');
+        $id = $create->json('data.id');
 
         $response = $this->actingAsUser()
             ->getJson("/api/v1/catalog/products/{$id}");
@@ -221,7 +225,7 @@ final class ProductTest extends TestCase
     {
         $create = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload());
-        $id     = $create->json('data.id');
+        $id = $create->json('data.id');
 
         $response = $this->actingAsUser()
             ->putJson("/api/v1/catalog/products/{$id}", $this->validPayload([
@@ -236,7 +240,7 @@ final class ProductTest extends TestCase
     {
         $create = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload());
-        $id     = $create->json('data.id');
+        $id = $create->json('data.id');
 
         $response = $this->actingAsUser()
             ->deleteJson("/api/v1/catalog/products/{$id}");
@@ -260,20 +264,20 @@ final class ProductTest extends TestCase
     public function test_post_creates_product_with_ingredients(): void
     {
         $ingredient = EloquentIngredient::create([
-            'id'          => Str::uuid()->toString(),
-            'name'        => 'Paracetamol',
-            'dci_code'    => 'paracetamol',
-            'cas_number'  => null,
+            'id' => Str::uuid()->toString(),
+            'name' => 'Paracetamol',
+            'dci_code' => 'paracetamol',
+            'cas_number' => null,
             'description' => null,
-            'is_active'   => true,
-            'created_by'  => null,
+            'is_active' => true,
+            'created_by' => null,
         ]);
 
         $response = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload([
                 'ingredients' => [[
-                    'ingredient_id'    => $ingredient->id,
-                    'concentration'    => '500',
+                    'ingredient_id' => $ingredient->id,
+                    'concentration' => '500',
                     'concentration_unit' => 'mg',
                 ]],
             ]));
@@ -286,18 +290,18 @@ final class ProductTest extends TestCase
     public function test_post_creates_branded_product_with_laboratory(): void
     {
         $laboratory = EloquentLaboratory::create([
-            'id'           => Str::uuid()->toString(),
-            'name'         => 'Pfizer',
+            'id' => Str::uuid()->toString(),
+            'name' => 'Pfizer',
             'country_code' => 'US',
-            'website'      => null,
-            'is_active'    => true,
-            'created_by'   => null,
+            'website' => null,
+            'is_active' => true,
+            'created_by' => null,
         ]);
 
         $response = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload([
-                'type'          => 'BRANDED',
-                'name'          => 'Amoxicilina Pfizer 500mg',
+                'type' => 'BRANDED',
+                'name' => 'Amoxicilina Pfizer 500mg',
                 'laboratory_id' => $laboratory->id,
             ]));
 
@@ -328,7 +332,7 @@ final class ProductTest extends TestCase
     {
         $create = $this->actingAsUser()
             ->postJson('/api/v1/catalog/products', $this->validPayload());
-        $id     = $create->json('data.id');
+        $id = $create->json('data.id');
 
         $this->actingAsUser()->deleteJson("/api/v1/catalog/products/{$id}");
 

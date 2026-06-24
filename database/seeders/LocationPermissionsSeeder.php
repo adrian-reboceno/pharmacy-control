@@ -15,7 +15,7 @@ class LocationPermissionsSeeder extends Seeder
     {
         // 1. Crear el permiso
         $permission = Permission::firstOrCreate([
-            'name'       => 'catalog.locations.manage',
+            'name' => 'catalog.locations.manage',
             'guard_name' => 'api',
         ]);
 

@@ -26,81 +26,94 @@ use PharmaControl\Shared\Event\DomainEvent;
 
 final class Product
 {
-    private ProductName    $name;
-    private ?string        $description;
-    private StatusId       $statusId;
-    private CategoryId     $categoryId;
-    private ?LaboratoryId  $laboratoryId;
-    private SaleCondition  $saleCondition;
-    private ?SanitaryReg   $sanitaryReg;
-    private ?Barcode       $barcode;
-    private ProductSpecs   $specs;
-    private StockConfig    $stockConfig;
+    private ProductName $name;
+
+    private ?string $description;
+
+    private StatusId $statusId;
+
+    private CategoryId $categoryId;
+
+    private ?LaboratoryId $laboratoryId;
+
+    private SaleCondition $saleCondition;
+
+    private ?SanitaryReg $sanitaryReg;
+
+    private ?Barcode $barcode;
+
+    private ProductSpecs $specs;
+
+    private StockConfig $stockConfig;
+
     private ProductMargins $margins;
+
     /** @var ProductIngredient[] */
-    private array          $ingredients;
+    private array $ingredients;
+
     /** @var string[] */
-    private array          $imageUrls;
-    private bool           $isActive;
+    private array $imageUrls;
+
+    private bool $isActive;
 
     /** @var list<DomainEvent> */
     private array $domainEvents = [];
 
     private function __construct(
-        public readonly ProductId          $id,
-        public readonly ProductType        $type,
-        ProductName                        $name,
-        ?string                            $description,
-        StatusId                           $statusId,
-        CategoryId                         $categoryId,
-        ?LaboratoryId                      $laboratoryId,
-        SaleCondition                      $saleCondition,
-        ?SanitaryReg                       $sanitaryReg,
-        ?Barcode                           $barcode,
-        ProductSpecs                       $specs,
-        StockConfig                        $stockConfig,
-        ProductMargins                     $margins,
-        array                              $ingredients,
-        array                              $imageUrls,
-        bool                               $isActive,
-        public readonly ?UserId            $createdBy,
+        public readonly ProductId $id,
+        public readonly ProductType $type,
+        ProductName $name,
+        ?string $description,
+        StatusId $statusId,
+        CategoryId $categoryId,
+        ?LaboratoryId $laboratoryId,
+        SaleCondition $saleCondition,
+        ?SanitaryReg $sanitaryReg,
+        ?Barcode $barcode,
+        ProductSpecs $specs,
+        StockConfig $stockConfig,
+        ProductMargins $margins,
+        array $ingredients,
+        array $imageUrls,
+        bool $isActive,
+        public readonly ?UserId $createdBy,
         public readonly \DateTimeImmutable $createdAt,
-        private \DateTimeImmutable         $updatedAt,
+        private \DateTimeImmutable $updatedAt,
     ) {
-        $this->name          = $name;
-        $this->description   = $description;
-        $this->statusId      = $statusId;
-        $this->categoryId    = $categoryId;
-        $this->laboratoryId  = $laboratoryId;
+        $this->name = $name;
+        $this->description = $description;
+        $this->statusId = $statusId;
+        $this->categoryId = $categoryId;
+        $this->laboratoryId = $laboratoryId;
         $this->saleCondition = $saleCondition;
-        $this->sanitaryReg   = $sanitaryReg;
-        $this->barcode       = $barcode;
-        $this->specs         = $specs;
-        $this->stockConfig   = $stockConfig;
-        $this->margins       = $margins;
-        $this->ingredients   = $ingredients;
-        $this->imageUrls     = $imageUrls;
-        $this->isActive      = $isActive;
+        $this->sanitaryReg = $sanitaryReg;
+        $this->barcode = $barcode;
+        $this->specs = $specs;
+        $this->stockConfig = $stockConfig;
+        $this->margins = $margins;
+        $this->ingredients = $ingredients;
+        $this->imageUrls = $imageUrls;
+        $this->isActive = $isActive;
     }
 
     public static function create(
-        ProductId      $id,
-        ProductType    $type,
-        ProductName    $name,
-        ?string        $description,
-        StatusId       $statusId,
-        CategoryId     $categoryId,
-        ?LaboratoryId  $laboratoryId,
-        SaleCondition  $saleCondition,
-        ?SanitaryReg   $sanitaryReg,
-        ?Barcode       $barcode,
-        ProductSpecs   $specs,
-        StockConfig    $stockConfig,
+        ProductId $id,
+        ProductType $type,
+        ProductName $name,
+        ?string $description,
+        StatusId $statusId,
+        CategoryId $categoryId,
+        ?LaboratoryId $laboratoryId,
+        SaleCondition $saleCondition,
+        ?SanitaryReg $sanitaryReg,
+        ?Barcode $barcode,
+        ProductSpecs $specs,
+        StockConfig $stockConfig,
         ProductMargins $margins,
-        array          $ingredients,
-        ?UserId        $createdBy,
+        array $ingredients,
+        ?UserId $createdBy,
     ): self {
-        $now     = new \DateTimeImmutable;
+        $now = new \DateTimeImmutable;
         $product = new self(
             $id, $type, $name, $description,
             $statusId, $categoryId, $laboratoryId,
@@ -110,9 +123,9 @@ final class Product
             $createdBy, $now, $now,
         );
         $product->recordEvent(new ProductCreated(
-            id:        $id,
-            type:      $type,
-            name:      $name,
+            id: $id,
+            type: $type,
+            name: $name,
             createdBy: $createdBy,
             occurredAt: $now,
         ));
@@ -121,23 +134,23 @@ final class Product
     }
 
     public static function reconstitute(
-        ProductId      $id,
-        ProductType    $type,
-        ProductName    $name,
-        ?string        $description,
-        StatusId       $statusId,
-        CategoryId     $categoryId,
-        ?LaboratoryId  $laboratoryId,
-        SaleCondition  $saleCondition,
-        ?SanitaryReg   $sanitaryReg,
-        ?Barcode       $barcode,
-        ProductSpecs   $specs,
-        StockConfig    $stockConfig,
+        ProductId $id,
+        ProductType $type,
+        ProductName $name,
+        ?string $description,
+        StatusId $statusId,
+        CategoryId $categoryId,
+        ?LaboratoryId $laboratoryId,
+        SaleCondition $saleCondition,
+        ?SanitaryReg $sanitaryReg,
+        ?Barcode $barcode,
+        ProductSpecs $specs,
+        StockConfig $stockConfig,
         ProductMargins $margins,
-        array          $ingredients,
-        array          $imageUrls,
-        bool           $isActive,
-        ?UserId        $createdBy,
+        array $ingredients,
+        array $imageUrls,
+        bool $isActive,
+        ?UserId $createdBy,
         \DateTimeImmutable $createdAt,
         \DateTimeImmutable $updatedAt,
     ): self {
@@ -152,18 +165,18 @@ final class Product
     }
 
     public function update(
-        ProductName    $name,
-        ?string        $description,
-        StatusId       $statusId,
-        CategoryId     $categoryId,
-        ?LaboratoryId  $laboratoryId,
-        SaleCondition  $saleCondition,
-        ?SanitaryReg   $sanitaryReg,
-        ?Barcode       $barcode,
-        ProductSpecs   $specs,
-        StockConfig    $stockConfig,
+        ProductName $name,
+        ?string $description,
+        StatusId $statusId,
+        CategoryId $categoryId,
+        ?LaboratoryId $laboratoryId,
+        SaleCondition $saleCondition,
+        ?SanitaryReg $sanitaryReg,
+        ?Barcode $barcode,
+        ProductSpecs $specs,
+        StockConfig $stockConfig,
         ProductMargins $margins,
-        array          $ingredients,
+        array $ingredients,
     ): void {
         $changes = [];
 
@@ -177,23 +190,23 @@ final class Product
             $changes['status_id'] = ['old' => $this->statusId->value, 'new' => $statusId->value];
         }
 
-        $this->name          = $name;
-        $this->description   = $description;
-        $this->statusId      = $statusId;
-        $this->categoryId    = $categoryId;
-        $this->laboratoryId  = $laboratoryId;
+        $this->name = $name;
+        $this->description = $description;
+        $this->statusId = $statusId;
+        $this->categoryId = $categoryId;
+        $this->laboratoryId = $laboratoryId;
         $this->saleCondition = $saleCondition;
-        $this->sanitaryReg   = $sanitaryReg;
-        $this->barcode       = $barcode;
-        $this->specs         = $specs;
-        $this->stockConfig   = $stockConfig;
-        $this->margins       = $margins;
-        $this->ingredients   = $ingredients;
-        $this->updatedAt     = new \DateTimeImmutable;
+        $this->sanitaryReg = $sanitaryReg;
+        $this->barcode = $barcode;
+        $this->specs = $specs;
+        $this->stockConfig = $stockConfig;
+        $this->margins = $margins;
+        $this->ingredients = $ingredients;
+        $this->updatedAt = new \DateTimeImmutable;
 
         $this->recordEvent(new ProductUpdated(
-            id:         $this->id,
-            changes:    $changes,
+            id: $this->id,
+            changes: $changes,
             occurredAt: $this->updatedAt,
         ));
     }
@@ -203,10 +216,10 @@ final class Product
         if (! $this->isActive) {
             throw new \DomainException('El producto ya está inactivo.');
         }
-        $this->isActive  = false;
+        $this->isActive = false;
         $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new ProductDeactivated(
-            id:         $this->id,
+            id: $this->id,
             occurredAt: $this->updatedAt,
         ));
     }
@@ -217,10 +230,10 @@ final class Product
             throw new \DomainException('El producto ya tiene el máximo de 10 imágenes.');
         }
         $this->imageUrls[] = $url;
-        $this->updatedAt   = new \DateTimeImmutable;
+        $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new ProductImageAdded(
-            id:         $this->id,
-            imageUrl:   $url,
+            id: $this->id,
+            imageUrl: $url,
             occurredAt: $this->updatedAt,
         ));
     }
@@ -234,8 +247,8 @@ final class Product
         array_splice($this->imageUrls, (int) $key, 1);
         $this->updatedAt = new \DateTimeImmutable;
         $this->recordEvent(new ProductUpdated(
-            id:         $this->id,
-            changes:    ['image_removed' => $url],
+            id: $this->id,
+            changes: ['image_removed' => $url],
             occurredAt: $this->updatedAt,
         ));
     }
@@ -339,7 +352,7 @@ final class Product
 
     public function releaseEvents(): array
     {
-        $events           = $this->domainEvents;
+        $events = $this->domainEvents;
         $this->domainEvents = [];
 
         return $events;

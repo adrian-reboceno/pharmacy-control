@@ -1532,6 +1532,431 @@ paths:
       security:
         -
           bearerAuth: []
+  /v1/catalog/products:
+    get:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Listar productos'
+      operationId: e14a4b8707b11b14c82d5f7f4f47f62f
+      parameters:
+        -
+          name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        -
+          name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - GENERIC
+              - BRANDED
+        -
+          name: status_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        -
+          name: category_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        -
+          name: laboratory_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        -
+          name: sale_condition
+          in: query
+          required: false
+          schema:
+            type: string
+        -
+          name: manage_lots
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: is_active
+          in: query
+          required: false
+          schema:
+            type: boolean
+        -
+          name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        -
+          name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: 'Lista paginada de productos'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/ProductResponse' } }
+                  meta: { $ref: '#/components/schemas/PaginationMeta' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+      security:
+        -
+          bearerAuth: []
+    post:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Crear producto'
+      operationId: 0084b37d0373f502a42938dac3369c72
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - type
+                - name
+                - status_id
+                - category_id
+                - sale_condition
+                - unit_id
+                - presentation_id
+                - route_id
+                - units_per_box
+                - units_per_blister
+                - min_stock
+                - max_stock
+                - expiry_alert_days
+                - manage_lots
+                - allow_fraction
+                - retail_margin
+                - wholesale_margin
+              properties:
+                type:
+                  type: string
+                  enum: [GENERIC, BRANDED]
+                name:
+                  type: string
+                  maxLength: 200
+                description:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                status_id:
+                  type: string
+                  format: uuid
+                category_id:
+                  type: string
+                  format: uuid
+                laboratory_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                sale_condition:
+                  type: string
+                  enum: [SIN_RECETA, CON_RECETA, CON_RECETA_RETENIDA]
+                sanitary_reg:
+                  type: string
+                  nullable: true
+                barcode:
+                  type: string
+                  nullable: true
+                unit_id:
+                  type: string
+                  format: uuid
+                presentation_id:
+                  type: string
+                  format: uuid
+                route_id:
+                  type: string
+                  format: uuid
+                units_per_box:
+                  type: integer
+                  minimum: 1
+                units_per_blister:
+                  type: integer
+                  minimum: 1
+                location_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                min_stock:
+                  type: integer
+                  minimum: 0
+                max_stock:
+                  type: integer
+                  minimum: 1
+                expiry_alert_days:
+                  type: integer
+                  minimum: 1
+                manage_lots:
+                  type: boolean
+                allow_fraction:
+                  type: boolean
+                retail_margin:
+                  type: number
+                  maximum: 100
+                  minimum: 0
+                wholesale_margin:
+                  type: number
+                  maximum: 100
+                  minimum: 0
+                ingredients:
+                  type: array
+                  items: { type: object }
+              type: object
+      responses:
+        '201':
+          description: 'Producto creado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: 'Nombre o barcode duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/products/{id}':
+    get:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Obtener producto'
+      operationId: 3418bffa0a194f707a9cda3666e0a221
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Producto encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+    put:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Actualizar producto'
+      operationId: c363a6eb5112b7ffe78d4af33041e2b4
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 'Producto actualizado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: 'Nombre o barcode duplicado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Desactivar producto'
+      operationId: 91d0093131dc06849154d6fae2c84c62
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/products/{id}/images':
+    post:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Agregar imagen al producto'
+      operationId: 74bd5760343dea8f69efc1fb64b9c67f
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                image:
+                  type: string
+                  format: binary
+              type: object
+      responses:
+        '200':
+          description: 'Imagen añadida'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/products/{id}/images/{imageId}':
+    delete:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Eliminar imagen del producto'
+      operationId: bbadfdc03ab7ea83505471fe5d212d02
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        -
+          name: imageId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      security:
+        -
+          bearerAuth: []
+  '/v1/catalog/products/{id}/images/reorder':
+    put:
+      tags:
+        - 'Catalog · Products'
+      summary: 'Reordenar imágenes del producto'
+      operationId: e8c05ab9527790dfd624b7191553fe70
+      parameters:
+        -
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - order
+              properties:
+                order:
+                  description: 'IDs de imágenes en el orden deseado (primera = portada)'
+                  type: array
+                  items: { type: string, format: uuid }
+              type: object
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+      security:
+        -
+          bearerAuth: []
   /v1/catalog/routes-of-administration:
     get:
       tags:
@@ -2671,6 +3096,74 @@ components:
           type: string
           format: date-time
       type: object
+    ProductResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+            - GENERIC
+            - BRANDED
+        type_label:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status_id:
+          type: string
+          format: uuid
+        category_id:
+          type: string
+          format: uuid
+        laboratory_id:
+          type: string
+          format: uuid
+          nullable: true
+        sale_condition:
+          type: string
+          enum:
+            - SIN_RECETA
+            - CON_RECETA
+            - CON_RECETA_RETENIDA
+        sale_condition_label:
+          type: string
+        sanitary_reg:
+          type: string
+          nullable: true
+        barcode:
+          type: string
+          nullable: true
+        specs:
+          type: object
+        stock_config:
+          type: object
+        margins:
+          type: object
+        ingredients:
+          type: array
+          items:
+            type: object
+        image_urls:
+          type: array
+          items:
+            type: string
+        is_active:
+          type: boolean
+        created_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      type: object
     RouteResponse:
       properties:
         id:
@@ -2975,6 +3468,9 @@ tags:
   -
     name: 'Catalog · Presentations'
     description: 'Formas farmacéuticas de los productos'
+  -
+    name: 'Catalog · Products'
+    description: 'Productos farmacéuticos (genéricos y de marca)'
   -
     name: 'Catalog · Routes of Administration'
     description: 'Vías de administración de medicamentos'
