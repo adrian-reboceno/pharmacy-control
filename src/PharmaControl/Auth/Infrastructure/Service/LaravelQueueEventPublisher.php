@@ -62,12 +62,20 @@ final class LaravelQueueEventPublisher implements EventPublisherContract
     }
 
     private function onAccountUnlocked(AccountUnlocked $event): void {}
+
     private function onLoginFailed(LoginFailed $event): void {}
+
     private function onLoginSucceeded(LoginSucceeded $event): void {}
+
     private function onUserRegistered(UserRegistered $event): void {}
+
     private function onPasswordChanged(PasswordChanged $event): void {}
+
     private function onRoleAssigned(RoleAssigned $event): void {}
+
     private function onRoleRevoked(RoleRevoked $event): void {}
+
     private function onRoleSwitched(RoleSwitched $event): void {}
+
     private function onSessionRevoked(SessionRevoked $event): void {}
 }

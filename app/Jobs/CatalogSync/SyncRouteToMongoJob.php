@@ -48,7 +48,7 @@ final class SyncRouteToMongoJob implements ShouldQueue
     {
         Log::error('SyncRouteToMongoJob falló permanentemente', [
             'route_id' => $this->document['id'],
-            'error'    => $exception->getMessage(),
+            'error' => $exception->getMessage(),
         ]);
     }
 }

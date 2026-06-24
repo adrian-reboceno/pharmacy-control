@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RoutesOfAdministrationSeeder::class,     // 13 vías de administración predefinidas
             ProductStatusesSeeder::class,            // 3 estados de producto predefinidos
             ActiveIngredientsSeeder::class,          // 24 ingredientes activos predefinidos
+            LocationsSeeder::class,                  // 3 zonas × 2 pasillos × 3 estantes × 5 posiciones = 108 nodos
         ]);
     }
 }

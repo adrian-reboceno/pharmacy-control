@@ -36,6 +36,8 @@ use PharmaControl\Catalog\Classifications\Domain\Contract\Repository\Classificat
 use PharmaControl\Catalog\Classifications\Infrastructure\Persistence\Eloquent\Repository\EloquentClassificationRepository;
 use PharmaControl\Catalog\Laboratories\Domain\Contract\Repository\LaboratoryRepositoryContract;
 use PharmaControl\Catalog\Laboratories\Infrastructure\Persistence\Eloquent\Repository\EloquentLaboratoryRepository;
+use PharmaControl\Catalog\Location\Domain\Contract\Repository\LocationRepositoryContract;
+use PharmaControl\Catalog\Location\Infrastructure\Persistence\Eloquent\Repository\EloquentLocationRepository;
 use PharmaControl\Catalog\Presentations\Domain\Contract\Repository\PresentationRepositoryContract;
 use PharmaControl\Catalog\Presentations\Infrastructure\Persistence\Eloquent\Repository\EloquentPresentationRepository;
 use PharmaControl\Catalog\RoutesOfAdministration\Domain\Contract\Repository\RouteRepositoryContract;
@@ -45,6 +47,9 @@ use PharmaControl\Catalog\Status\Infrastructure\Persistence\Eloquent\Repository\
 use PharmaControl\Catalog\UnitOfMeasurement\Domain\Contract\Repository\UnitRepositoryContract;
 use PharmaControl\Catalog\UnitOfMeasurement\Infrastructure\Persistence\Eloquent\Repository\EloquentUnitRepository;
 use PharmaControl\Shared\Infrastructure\Mongo\MongoCatalogSyncService;
+use PharmaControl\Catalog\Products\Domain\Contract\Repository\ProductRepositoryContract;
+use PharmaControl\Catalog\Products\Infrastructure\Persistence\Eloquent\Repository\EloquentProductRepository;
+use PharmaControl\Catalog\Products\Infrastructure\Storage\ProductImageStorage;
 use PharmaControl\Suppliers\Domain\Contract\Repository\SupplierRepositoryContract;
 use PharmaControl\Suppliers\Infrastructure\Persistence\Eloquent\Repository\EloquentSupplierRepository;
 
@@ -91,6 +96,13 @@ class AppServiceProvider extends ServiceProvider
 
         // Catalog — Active Ingredients
         $this->app->bind(IngredientRepositoryContract::class, EloquentIngredientRepository::class);
+
+        // Catalog — Locations
+        $this->app->bind(LocationRepositoryContract::class, EloquentLocationRepository::class);
+
+        // Catalog — Products
+        $this->app->bind(ProductRepositoryContract::class, EloquentProductRepository::class);
+        $this->app->singleton(ProductImageStorage::class);
 
         // Suppliers
         $this->app->bind(SupplierRepositoryContract::class, EloquentSupplierRepository::class);

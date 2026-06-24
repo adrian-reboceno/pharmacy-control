@@ -52,7 +52,7 @@ final class SyncIngredientToMongoJob implements ShouldQueue
     {
         Log::error('SyncIngredientToMongoJob falló permanentemente', [
             'ingredient_id' => $this->document['id'],
-            'error'         => $exception->getMessage(),
+            'error' => $exception->getMessage(),
         ]);
     }
 }

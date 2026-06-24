@@ -44,12 +44,12 @@ final class SyncUnitListener
         $dto = UnitDTO::fromDomain($unit);
 
         SyncUnitToMongoJob::dispatch([
-            'id'         => $dto->id,
-            'name'       => $dto->name,
-            'symbol'     => $dto->symbol,
-            'type'       => $dto->type,
+            'id' => $dto->id,
+            'name' => $dto->name,
+            'symbol' => $dto->symbol,
+            'type' => $dto->type,
             'type_label' => $dto->typeLabel,
-            'is_active'  => $dto->isActive,
+            'is_active' => $dto->isActive,
             'created_by' => $dto->createdBy,
             'created_at' => $dto->createdAt,
             'updated_at' => $dto->updatedAt,

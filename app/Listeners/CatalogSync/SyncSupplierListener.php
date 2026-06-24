@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Listeners\CatalogSync;
@@ -48,24 +49,24 @@ final class SyncSupplierListener
         $dto = SupplierDTO::fromDomain($supplier);
 
         SyncSupplierToMongoJob::dispatch([
-            'id'         => $dto->id,
-            'type'       => $dto->type,
-            'rfc'        => $dto->rfc,
+            'id' => $dto->id,
+            'type' => $dto->type,
+            'rfc' => $dto->rfc,
             'legal_name' => $dto->legalName,
             'trade_name' => $dto->tradeName,
-            'address'    => [
-                'street'       => $dto->address->street,
-                'ext_number'   => $dto->address->extNumber,
-                'int_number'   => $dto->address->intNumber,
+            'address' => [
+                'street' => $dto->address->street,
+                'ext_number' => $dto->address->extNumber,
+                'int_number' => $dto->address->intNumber,
                 'neighborhood' => $dto->address->neighborhood,
                 'municipality' => $dto->address->municipality,
-                'state'        => $dto->address->state,
-                'postal_code'  => $dto->address->postalCode,
-                'country'      => $dto->address->country,
+                'state' => $dto->address->state,
+                'postal_code' => $dto->address->postalCode,
+                'country' => $dto->address->country,
             ],
-            'phone'      => $dto->phone,
-            'email'      => $dto->email,
-            'is_active'  => $dto->isActive,
+            'phone' => $dto->phone,
+            'email' => $dto->email,
+            'is_active' => $dto->isActive,
             'created_by' => $dto->createdBy,
             'created_at' => $dto->createdAt,
             'updated_at' => $dto->updatedAt,

@@ -7,11 +7,11 @@ namespace Tests\Unit\App\Listeners\CatalogSync;
 use App\Jobs\CatalogSync\SyncLaboratoryToMongoJob;
 use App\Listeners\CatalogSync\SyncLaboratoryListener;
 use Illuminate\Support\Facades\Queue;
-use PharmaControl\Catalog\Laboratories\Application\DTO\LaboratoryDTO;
 use PharmaControl\Catalog\Laboratories\Domain\Contract\Repository\LaboratoryRepositoryContract;
 use PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryCreated;
 use PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryDeactivated;
 use PharmaControl\Catalog\Laboratories\Domain\Event\LaboratoryUpdated;
+use PharmaControl\Catalog\Laboratories\Domain\Model\Laboratory;
 use PharmaControl\Catalog\Laboratories\Domain\ValueObject\CountryCode;
 use PharmaControl\Catalog\Laboratories\Domain\ValueObject\LaboratoryId;
 use PharmaControl\Catalog\Laboratories\Domain\ValueObject\LaboratoryName;
@@ -21,6 +21,7 @@ use Tests\TestCase;
 class SyncLaboratoryListenerTest extends TestCase
 {
     private LaboratoryRepositoryContract&MockObject $repository;
+
     private SyncLaboratoryListener $listener;
 
     protected function setUp(): void
@@ -28,7 +29,7 @@ class SyncLaboratoryListenerTest extends TestCase
         parent::setUp();
 
         $this->repository = $this->createMock(LaboratoryRepositoryContract::class);
-        $this->listener   = new SyncLaboratoryListener($this->repository);
+        $this->listener = new SyncLaboratoryListener($this->repository);
     }
 
     /** @test */
@@ -37,7 +38,7 @@ class SyncLaboratoryListenerTest extends TestCase
         Queue::fake();
 
         $laboratory = $this->buildMockLaboratory();
-        $id         = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
+        $id = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
 
         $this->repository->expects($this->once())
             ->method('findById')
@@ -49,7 +50,7 @@ class SyncLaboratoryListenerTest extends TestCase
             name: new LaboratoryName('Lab Prueba'),
             countryCode: new CountryCode('MX'),
             createdBy: null,
-            occurredAt: new \DateTimeImmutable(),
+            occurredAt: new \DateTimeImmutable,
         );
 
         $this->listener->handleCreated($event);
@@ -63,7 +64,7 @@ class SyncLaboratoryListenerTest extends TestCase
         Queue::fake();
 
         $laboratory = $this->buildMockLaboratory();
-        $id         = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
+        $id = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
 
         $this->repository->expects($this->once())
             ->method('findById')
@@ -77,7 +78,7 @@ class SyncLaboratoryListenerTest extends TestCase
             newCountryCode: new CountryCode('US'),
             previousWebsite: null,
             newWebsite: null,
-            occurredAt: new \DateTimeImmutable(),
+            occurredAt: new \DateTimeImmutable,
         );
 
         $this->listener->handleUpdated($event);
@@ -91,7 +92,7 @@ class SyncLaboratoryListenerTest extends TestCase
         Queue::fake();
 
         $laboratory = $this->buildMockLaboratory();
-        $id         = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
+        $id = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
 
         $this->repository->expects($this->once())
             ->method('findById')
@@ -99,7 +100,7 @@ class SyncLaboratoryListenerTest extends TestCase
 
         $event = new LaboratoryDeactivated(
             id: $id,
-            occurredAt: new \DateTimeImmutable(),
+            occurredAt: new \DateTimeImmutable,
         );
 
         $this->listener->handleDeactivated($event);
@@ -123,7 +124,7 @@ class SyncLaboratoryListenerTest extends TestCase
             name: new LaboratoryName('Lab Borrado'),
             countryCode: new CountryCode('MX'),
             createdBy: null,
-            occurredAt: new \DateTimeImmutable(),
+            occurredAt: new \DateTimeImmutable,
         );
 
         $this->listener->handleCreated($event);
@@ -137,7 +138,7 @@ class SyncLaboratoryListenerTest extends TestCase
         Queue::fake();
 
         $laboratory = $this->buildMockLaboratory('Nombre Completo Desde Repo');
-        $id         = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
+        $id = new LaboratoryId('550e8400-e29b-41d4-a716-446655440000');
 
         $this->repository->expects($this->once())
             ->method('findById')
@@ -149,20 +150,21 @@ class SyncLaboratoryListenerTest extends TestCase
             name: new LaboratoryName('Nombre Parcial Del Evento'),
             countryCode: new CountryCode('MX'),
             createdBy: null,
-            occurredAt: new \DateTimeImmutable(),
+            occurredAt: new \DateTimeImmutable,
         );
 
         $this->listener->handleCreated($event);
 
         Queue::assertPushed(SyncLaboratoryToMongoJob::class, function (SyncLaboratoryToMongoJob $job) {
             $doc = (fn () => $this->document)->call($job);
+
             return $doc['name'] === 'Nombre Completo Desde Repo';
         });
     }
 
     private function buildMockLaboratory(string $name = 'Lab Test'): object
     {
-        $mock = $this->createMock(\PharmaControl\Catalog\Laboratories\Domain\Model\Laboratory::class);
+        $mock = $this->createMock(Laboratory::class);
         $mock->method('getId')->willReturn(new LaboratoryId('550e8400-e29b-41d4-a716-446655440000'));
         $mock->method('getName')->willReturn(new LaboratoryName($name));
         $mock->method('getCountryCode')->willReturn(new CountryCode('MX'));

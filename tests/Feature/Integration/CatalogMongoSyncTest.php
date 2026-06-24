@@ -29,7 +29,7 @@ class CatalogMongoSyncTest extends TestCase
         Queue::fake();
 
         $payload = [
-            'name'         => 'Lab Integración Test',
+            'name' => 'Lab Integración Test',
             'country_code' => 'MX',
         ];
 
@@ -39,6 +39,7 @@ class CatalogMongoSyncTest extends TestCase
 
         Queue::assertPushedOn('catalog-sync', SyncLaboratoryToMongoJob::class, function (SyncLaboratoryToMongoJob $job) {
             $doc = (fn () => $this->document)->call($job);
+
             return $doc['name'] === 'Lab Integración Test'
                 && $doc['country_code'] === 'MX'
                 && $doc['is_active'] === true;
@@ -52,7 +53,7 @@ class CatalogMongoSyncTest extends TestCase
 
         // Primero crea
         $create = $this->postJson('/api/v1/catalog/laboratories', [
-            'name'         => 'Lab Original',
+            'name' => 'Lab Original',
             'country_code' => 'MX',
         ]);
         $create->assertStatus(201);
@@ -62,12 +63,13 @@ class CatalogMongoSyncTest extends TestCase
 
         // Actualiza
         $this->patchJson("/api/v1/catalog/laboratories/{$id}", [
-            'name'         => 'Lab Actualizado',
+            'name' => 'Lab Actualizado',
             'country_code' => 'US',
         ])->assertStatus(200);
 
         Queue::assertPushedOn('catalog-sync', SyncLaboratoryToMongoJob::class, function (SyncLaboratoryToMongoJob $job) {
             $doc = (fn () => $this->document)->call($job);
+
             return $doc['name'] === 'Lab Actualizado'
                 && $doc['country_code'] === 'US';
         });
@@ -79,7 +81,7 @@ class CatalogMongoSyncTest extends TestCase
         Queue::fake();
 
         $create = $this->postJson('/api/v1/catalog/laboratories', [
-            'name'         => 'Lab Para Desactivar',
+            'name' => 'Lab Para Desactivar',
             'country_code' => 'MX',
         ]);
         $create->assertStatus(201);
@@ -91,6 +93,7 @@ class CatalogMongoSyncTest extends TestCase
 
         Queue::assertPushedOn('catalog-sync', SyncLaboratoryToMongoJob::class, function (SyncLaboratoryToMongoJob $job) {
             $doc = (fn () => $this->document)->call($job);
+
             return $doc['is_active'] === false;
         });
     }
@@ -101,9 +104,9 @@ class CatalogMongoSyncTest extends TestCase
         Queue::fake();
 
         $response = $this->postJson('/api/v1/catalog/laboratories', [
-            'name'         => 'Lab DTO Match',
+            'name' => 'Lab DTO Match',
             'country_code' => 'MX',
-            'website'      => 'https://lab.example.com',
+            'website' => 'https://lab.example.com',
         ]);
         $response->assertStatus(201);
 

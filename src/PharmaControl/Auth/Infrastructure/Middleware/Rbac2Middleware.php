@@ -43,22 +43,22 @@ final class Rbac2Middleware
             return $this->unauthorized('Token expirado.');
         }
 
-        if (!empty($requiredPermission) && !$payload->hasPermission($requiredPermission)) {
+        if (! empty($requiredPermission) && ! $payload->hasPermission($requiredPermission)) {
             return $this->forbidden("Permiso requerido: {$requiredPermission}");
         }
 
         $authenticated = new AuthenticatedUser(
-            userId:         $payload->sub,
-            email:          $claims['email']      ?? '',
-            firstName:      $claims['first_name'] ?? '',
-            lastName:       $claims['last_name']  ?? '',
-            activeRoleId:   $payload->roleId,
+            userId: $payload->sub,
+            email: $claims['email'] ?? '',
+            firstName: $claims['first_name'] ?? '',
+            lastName: $claims['last_name'] ?? '',
+            activeRoleId: $payload->roleId,
             activeRoleName: $payload->roleName,
             activeBranchId: $payload->branchId,
-            permissions:    $payload->permissions,
-            sessionId:      $payload->sessionId,
-            jti:            $payload->jti,
-            tokenExp:       $payload->exp,
+            permissions: $payload->permissions,
+            sessionId: $payload->sessionId,
+            jti: $payload->jti,
+            tokenExp: $payload->exp,
         );
 
         $request->attributes->set('authenticated_user', $authenticated);
@@ -85,7 +85,7 @@ final class Rbac2Middleware
 
         // 2. Cookie HttpOnly — clientes web Angular
         $cookieToken = $request->cookie('access_token');
-        if (!empty($cookieToken)) {
+        if (! empty($cookieToken)) {
             return $cookieToken;
         }
 

@@ -14,14 +14,14 @@ use Tests\TestCase;
 class SyncLaboratoryToMongoJobTest extends TestCase
 {
     private array $document = [
-        'id'           => '550e8400-e29b-41d4-a716-446655440000',
-        'name'         => 'Laboratorio Test',
+        'id' => '550e8400-e29b-41d4-a716-446655440000',
+        'name' => 'Laboratorio Test',
         'country_code' => 'MX',
-        'website'      => null,
-        'is_active'    => true,
-        'created_by'   => null,
-        'created_at'   => '2026-01-01T00:00:00+00:00',
-        'updated_at'   => '2026-01-01T00:00:00+00:00',
+        'website' => null,
+        'is_active' => true,
+        'created_by' => null,
+        'created_at' => '2026-01-01T00:00:00+00:00',
+        'updated_at' => '2026-01-01T00:00:00+00:00',
     ];
 
     /** @test */
@@ -73,7 +73,7 @@ class SyncLaboratoryToMongoJobTest extends TestCase
     {
         Log::spy();
 
-        $job       = new SyncLaboratoryToMongoJob($this->document);
+        $job = new SyncLaboratoryToMongoJob($this->document);
         $exception = new \RuntimeException('Conexión MongoDB rechazada');
 
         $job->failed($exception);
@@ -82,7 +82,7 @@ class SyncLaboratoryToMongoJobTest extends TestCase
             ->once()
             ->with('SyncLaboratoryToMongoJob falló permanentemente', [
                 'laboratory_id' => '550e8400-e29b-41d4-a716-446655440000',
-                'error'         => 'Conexión MongoDB rechazada',
+                'error' => 'Conexión MongoDB rechazada',
             ]);
     }
 }
