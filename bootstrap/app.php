@@ -30,6 +30,7 @@ use PharmaControl\Catalog\Products\Domain\Exception\DuplicateProductNameExceptio
 use PharmaControl\Catalog\Products\Domain\Exception\InvalidBarcodeException;
 use PharmaControl\Catalog\Products\Domain\Exception\LocationMustBePositionException;
 use PharmaControl\Catalog\Products\Domain\Exception\ProductNotFoundException;
+use PharmaControl\Catalog\Products\Domain\Exception\ProductImageNotFoundException;
 use PharmaControl\Catalog\Location\Domain\Exception\LocationNotLeafException;
 use PharmaControl\Catalog\Presentations\Domain\Exception\DuplicateAbbreviationException;
 use PharmaControl\Catalog\Presentations\Domain\Exception\DuplicatePresentationNameException;
@@ -170,6 +171,9 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(function (LocationNotLeafException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage(), 'error' => 'NOT_A_POSITION'], 422);
+        });
+        $exceptions->render(function (ProductImageNotFoundException $e, Request $request): JsonResponse {
+            return response()->json(['message' => $e->getMessage()], 404);
         });
         $exceptions->render(function (ProductNotFoundException $e, Request $request): JsonResponse {
             return response()->json(['message' => $e->getMessage()], 404);

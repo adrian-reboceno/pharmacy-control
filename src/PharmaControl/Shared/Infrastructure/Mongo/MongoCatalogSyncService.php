@@ -20,9 +20,9 @@ final class MongoCatalogSyncService
      * Inserta o actualiza un documento en la colección indicada.
      * Operación idempotente — se puede reintentar sin efectos secundarios.
      *
-     * @param string               $collection Nombre de la colección Mongo (ej. 'laboratories')
-     * @param string               $id         UUID del documento (mismo que en Postgres)
-     * @param array<string, mixed> $document   Documento completo a almacenar
+     * @param  string  $collection  Nombre de la colección Mongo (ej. 'laboratories')
+     * @param  string  $id  UUID del documento (mismo que en Postgres)
+     * @param  array<string, mixed>  $document  Documento completo a almacenar
      */
     public function upsert(string $collection, string $id, array $document): void
     {
@@ -57,7 +57,7 @@ final class MongoCatalogSyncService
     /**
      * Crea índices en los campos indicados. Llamado una vez desde el comando de resync.
      *
-     * @param string[] $fields
+     * @param  string[]  $fields
      */
     public function ensureIndexes(string $collection, array $fields): void
     {

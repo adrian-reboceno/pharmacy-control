@@ -133,8 +133,9 @@ Route::prefix('v1/catalog')->middleware(['rbac2:catalog.products.manage'])->grou
     Route::get('/products/{id}',        [ProductController::class, 'show']);
     Route::put('/products/{id}',        [ProductController::class, 'update']);
     Route::delete('/products/{id}',     [ProductController::class, 'destroy']);
-    Route::post('/products/{id}/images',   [ProductController::class, 'addImage']);
-    Route::delete('/products/{id}/images', [ProductController::class, 'removeImage']);
+    Route::post('/products/{id}/images',                  [ProductController::class, 'addImage']);
+    Route::delete('/products/{id}/images/{imageId}',      [ProductController::class, 'removeImage']);
+    Route::put('/products/{id}/images/reorder',           [ProductController::class, 'reorderImages']);
 });
 
 Route::prefix('v1')->middleware(['rbac2:catalog.suppliers.manage'])->group(function (): void {
