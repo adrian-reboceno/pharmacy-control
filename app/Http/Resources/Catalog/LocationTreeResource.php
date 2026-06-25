@@ -20,7 +20,7 @@ class LocationTreeResource extends JsonResource
             'is_active' => $this->isActive,
             'is_leaf' => $this->isLeaf,
             'full_path' => $this->fullPath,
-            'children' => LocationTreeResource::collection($this->children ?? []),
+            'children' => LocationTreeResource::collection($this->getChildren()),
         ];
     }
 }
