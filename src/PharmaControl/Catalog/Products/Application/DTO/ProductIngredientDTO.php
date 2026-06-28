@@ -10,6 +10,7 @@ final readonly class ProductIngredientDTO
 {
     public function __construct(
         public readonly string $ingredientId,
+        public readonly string $ingredientName,
         public readonly string $concentration,
         public readonly string $concentrationUnit,
     ) {}
@@ -18,6 +19,7 @@ final readonly class ProductIngredientDTO
     {
         return new self(
             ingredientId: $entity->ingredientId,
+            ingredientName: '',
             concentration: $entity->concentration,
             concentrationUnit: $entity->concentrationUnit,
         );

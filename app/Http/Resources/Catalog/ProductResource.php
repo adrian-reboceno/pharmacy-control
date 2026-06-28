@@ -55,13 +55,19 @@ class ProductResource extends JsonResource
             ],
             'ingredients' => array_map(
                 fn (ProductIngredientDTO $i) => [
-                    'ingredient_id' => $i->ingredientId,
+                    'ingredient_id'   => $i->ingredientId,
+                    'ingredient_name' => $i->ingredientName,
                     'concentration' => $i->concentration,
                     'concentration_unit' => $i->concentrationUnit,
                 ],
                 $dto->ingredients
             ),
-            'image_urls' => $dto->imageUrls,
+            'images' => array_map(fn($img) => [
+                'id'         => $img->id,
+                'url'        => $img->url,
+                'is_primary' => $img->isPrimary,
+                'sort_order' => $img->sortOrder,
+            ], $dto->images),
             'is_active' => $dto->isActive,
             'created_by' => $dto->createdBy,
             'created_at' => $dto->createdAt,

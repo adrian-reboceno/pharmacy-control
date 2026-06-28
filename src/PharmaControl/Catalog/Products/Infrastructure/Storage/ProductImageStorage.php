@@ -23,8 +23,8 @@ final class ProductImageStorage
         $path = "products/{$productId}/{$filename}";
         $decoded = base64_decode($imageContent);
 
-        Storage::put($path, $decoded);
-        $url = Storage::url($path);
+        Storage::disk('public')->put($path, $decoded);
+        $url = Storage::disk('public')->url($path);
 
         $sortOrder = EloquentProductImage::where('product_id', $productId)->count();
 
@@ -50,7 +50,7 @@ final class ProductImageStorage
         }
 
         $path = str_replace(Storage::url(''), '', $image->url);
-        Storage::delete($path);
+        Storage::disk('public')->delete($path);
         $image->delete();
     }
 
