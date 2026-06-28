@@ -41,8 +41,10 @@ final class EloquentProductRepository implements ProductRepositoryContract
     public function findById(ProductId $id): ?Product
     {
         $model = EloquentProduct::with(['ingredients', 'images'])->find($id->value);
-
-        return $model !== null ? $this->mapper->toDomain($model) : null;
+        if ($model === null) {
+            return null;
+        }
+        return $this->mapper->toDomain($model);
     }
 
     public function findByName(ProductName $name): ?Product

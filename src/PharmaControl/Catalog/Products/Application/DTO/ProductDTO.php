@@ -26,8 +26,9 @@ final readonly class ProductDTO
         public readonly ProductMarginsDTO $margins,
         /** @var ProductIngredientDTO[] */
         public readonly array $ingredients,
-        /** @var string[] */
         public readonly array $imageUrls,
+        /** @var ProductImageDTO[] */
+        public readonly array $images,
         public readonly bool $isActive,
         public readonly ?string $createdBy,
         public readonly string $createdAt,
@@ -57,6 +58,7 @@ final readonly class ProductDTO
                 $p->getIngredients()
             ),
             imageUrls: $p->getImageUrls(),
+            images: [],
             isActive: $p->isActive(),
             createdBy: $p->getCreatedBy()?->value,
             createdAt: $p->getCreatedAt()->format(\DateTimeInterface::ATOM),

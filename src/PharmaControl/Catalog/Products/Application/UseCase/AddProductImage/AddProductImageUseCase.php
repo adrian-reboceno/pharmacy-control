@@ -39,6 +39,46 @@ final class AddProductImageUseCase
             $this->events->publish($event);
         }
 
-        return ProductDTO::fromDomain($product);
+       return $this->buildEnrichedDTO($cmd->productId, $product);
+    }
+    private function buildEnrichedDTO(string $productId, \PharmaControl\Catalog\Products\Domain\Model\Product $product): ProductDTO
+    {
+        $dto = ProductDTO::fromDomain($product);
+
+        $images = \Illuminate\Support\Facades\DB::table('product_images')
+            ->where('product_id', $productId)
+            ->orderBy('sort_order')
+            ->get(['id', 'url', 'is_primary', 'sort_order'])
+            ->map(fn($img) => new \PharmaControl\Catalog\Products\Application\DTO\ProductImageDTO(
+                id:        $img->id,
+                url:       $img->url,
+                isPrimary: (bool) $img->is_primary,
+                sortOrder: (int)  $img->sort_order,
+            ))->all();
+
+        return new ProductDTO(
+            id:                 $dto->id,
+            type:               $dto->type,
+            typeLabel:          $dto->typeLabel,
+            name:               $dto->name,
+            description:        $dto->description,
+            statusId:           $dto->statusId,
+            categoryId:         $dto->categoryId,
+            laboratoryId:       $dto->laboratoryId,
+            saleCondition:      $dto->saleCondition,
+            saleConditionLabel: $dto->saleConditionLabel,
+            sanitaryReg:        $dto->sanitaryReg,
+            barcode:            $dto->barcode,
+            specs:              $dto->specs,
+            stockConfig:        $dto->stockConfig,
+            margins:            $dto->margins,
+            ingredients:        $dto->ingredients,
+            imageUrls:          $dto->imageUrls,
+            images:             $images,
+            isActive:           $dto->isActive,
+            createdBy:          $dto->createdBy,
+            createdAt:          $dto->createdAt,
+            updatedAt:          $dto->updatedAt,
+        );
     }
 }
